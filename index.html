@@ -1,0 +1,3198 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>பூங்கொடி இயற்கை பண்ணை</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#f3f7ed;
+    color:#263b20;
+}
+
+/* ================= LOGIN ================= */
+
+#loginPage{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+    background:linear-gradient(135deg,#dceecb,#fffbe8);
+}
+
+.login-box{
+    width:100%;
+    max-width:430px;
+    background:white;
+    padding:30px;
+    border-radius:25px;
+    box-shadow:0 10px 35px rgba(0,0,0,.15);
+    text-align:center;
+}
+
+.login-logo{
+    width:190px;
+    height:190px;
+    object-fit:contain;
+    display:block;
+    margin:0 auto 15px;
+    border-radius:20px;
+}
+
+.login-box h1{
+    color:#245b21;
+    margin-bottom:6px;
+    font-size:25px;
+}
+
+.login-box p{
+    color:#777;
+    margin-bottom:20px;
+}
+
+.login-box select{
+    width:100%;
+    padding:14px;
+    margin:8px 0;
+    border:1px solid #ccc;
+    border-radius:10px;
+    font-size:15px;
+    outline:none;
+}
+
+.login-box select:focus{
+    border-color:#276522;
+}
+
+.login-language{
+    display:flex;
+    gap:8px;
+    justify-content:flex-end;
+    margin-bottom:8px;
+}
+
+.login-language button{
+    border:1px solid #ccc;
+    background:white;
+    border-radius:8px;
+    padding:7px 12px;
+    cursor:pointer;
+}
+
+.login-language button.active{
+    background:#276522;
+    color:white;
+}
+
+.btn{
+    border:none;
+    padding:13px 20px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:bold;
+    font-size:15px;
+}
+
+.login-btn{
+    width:100%;
+    background:#276522;
+    color:white;
+    margin-top:10px;
+}
+
+.login-btn:hover{
+    background:#194d16;
+}
+
+.google-btn{
+    width:100%;
+    background:white;
+    color:#333;
+    border:1px solid #ccc;
+    margin-top:12px;
+}
+
+.google-btn:hover{
+    background:#f5f5f5;
+}
+
+.error{
+    color:#d22;
+    margin-top:10px;
+}
+
+/* ================= APP ================= */
+
+#app{
+    display:none;
+}
+
+/* ================= HEADER ================= */
+
+header{
+    background:#1f551d;
+    color:white;
+    padding:15px 5%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.brand img{
+    width:80px;
+    height:80px;
+    object-fit:contain;
+    background:white;
+    border-radius:15px;
+    padding:4px;
+}
+
+.brand h2{
+    font-size:22px;
+}
+
+.brand small{
+    color:#d8edcf;
+}
+
+/* ================= USER ================= */
+
+.user-area{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    position:relative;
+}
+
+.user-circle{
+    width:48px;
+    height:48px;
+    border-radius:50%;
+    background:#f4c542;
+    color:#234c1e;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-weight:bold;
+    cursor:pointer;
+    border:2px solid white;
+    font-size:18px;
+    overflow:hidden;
+}
+
+.user-circle img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.user-name{
+    font-weight:bold;
+}
+
+/* ================= PROFILE MENU ================= */
+
+.profile-menu{
+    display:none;
+    position:absolute;
+    right:0;
+    top:60px;
+    width:290px;
+    background:white;
+    color:#333;
+    border-radius:16px;
+    box-shadow:0 8px 25px rgba(0,0,0,.18);
+    padding:18px;
+    z-index:1000;
+}
+
+.profile-menu.show{
+    display:block;
+}
+
+.profile-header{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding-bottom:15px;
+    border-bottom:1px solid #eee;
+}
+
+.profile-big-circle{
+    width:55px;
+    height:55px;
+    background:#f4c542;
+    color:#234c1e;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:bold;
+    font-size:20px;
+    overflow:hidden;
+}
+
+.profile-big-circle img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.profile-header h3{
+    color:#245b21;
+}
+
+.profile-header small{
+    color:#777;
+}
+
+.profile-menu button{
+    width:100%;
+    border:none;
+    background:#f1f6ed;
+    padding:12px;
+    margin-top:10px;
+    border-radius:9px;
+    text-align:left;
+    cursor:pointer;
+    font-weight:bold;
+    color:#245b21;
+}
+
+.profile-menu button:hover{
+    background:#dfeeda;
+}
+
+.profile-menu .profile-logout{
+    background:#ffe4e4;
+    color:#a00000;
+}
+
+/* ================= NAV ================= */
+
+nav{
+    background:white;
+    padding:10px 5%;
+    box-shadow:0 2px 10px rgba(0,0,0,.08);
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+nav button{
+    background:#edf5e8;
+    color:#245b21;
+    border:none;
+    padding:11px 18px;
+    border-radius:22px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+nav button.active,
+nav button:hover{
+    background:#276522;
+    color:white;
+}
+
+/* ================= MAIN ================= */
+
+main{
+    width:90%;
+    max-width:1200px;
+    margin:25px auto;
+}
+
+.section{
+    display:none;
+}
+
+.section.active{
+    display:block;
+}
+
+.welcome{
+    margin-bottom:20px;
+}
+
+.welcome h1{
+    color:#245b21;
+}
+
+.date-text{
+    color:#777;
+    margin-top:5px;
+}
+
+/* ================= DASHBOARD ================= */
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:18px;
+    margin:20px 0;
+}
+
+.card{
+    background:white;
+    padding:22px;
+    border-radius:18px;
+    box-shadow:0 4px 15px rgba(0,0,0,.08);
+}
+
+.card .icon{
+    font-size:30px;
+}
+
+.card h3{
+    margin:10px 0;
+    font-size:15px;
+    color:#777;
+}
+
+.card strong{
+    font-size:28px;
+    color:#245b21;
+}
+
+/* ================= FORM ================= */
+
+.form-box{
+    background:white;
+    padding:25px;
+    border-radius:20px;
+    box-shadow:0 4px 15px rgba(0,0,0,.08);
+    margin-bottom:25px;
+}
+
+.form-box h2{
+    margin-bottom:20px;
+    color:#245b21;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
+}
+
+.field label{
+    display:block;
+    margin-bottom:6px;
+    font-weight:bold;
+    color:#555;
+}
+
+.field input,
+.field textarea{
+    width:100%;
+    padding:12px;
+    border:1px solid #ccc;
+    border-radius:9px;
+    outline:none;
+}
+
+.field input:focus,
+.field textarea:focus{
+    border-color:#276522;
+}
+
+.field textarea{
+    min-height:100px;
+    resize:vertical;
+}
+
+.full{
+    grid-column:1/-1;
+}
+
+.save-btn{
+    background:#276522;
+    color:white;
+}
+
+.cancel-btn{
+    background:#ddd;
+    margin-left:8px;
+}
+
+/* ================= HISTORY ================= */
+
+.history-item{
+    background:white;
+    padding:20px;
+    margin:12px 0;
+    border-radius:15px;
+    box-shadow:0 3px 12px rgba(0,0,0,.08);
+}
+
+.history-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    margin-bottom:12px;
+}
+
+.history-top h3{
+    color:#245b21;
+}
+
+.history-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+}
+
+.history-value{
+    background:#f1f6ed;
+    padding:12px;
+    border-radius:10px;
+}
+
+.history-value span{
+    display:block;
+    font-size:12px;
+    color:#777;
+}
+
+.history-value b{
+    font-size:18px;
+}
+
+.edit-btn{
+    background:#e5f0dc;
+    color:#245b21;
+}
+
+.delete-btn{
+    background:#ffe1e1;
+    color:#a00;
+}
+
+/* ================= TABLE ================= */
+
+.table-box{
+    background:white;
+    padding:20px;
+    border-radius:20px;
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th,
+td{
+    padding:13px;
+    text-align:left;
+    border-bottom:1px solid #eee;
+}
+
+th{
+    background:#eaf3e4;
+    color:#245b21;
+}
+
+/* ================= REPORT ================= */
+
+.summary{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:20px;
+}
+
+.summary-card{
+    background:#245b21;
+    color:white;
+    padding:25px;
+    border-radius:18px;
+}
+
+.summary-card h3{
+    font-size:14px;
+    opacity:.8;
+    margin-bottom:8px;
+}
+
+.summary-card strong{
+    font-size:30px;
+}
+
+.profit-card{
+    background:#eaf5e5;
+    color:#245b21;
+}
+
+.loss-card{
+    background:#fff0f0;
+    color:#a00000;
+}
+
+/* ================= MODAL ================= */
+
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.55);
+    z-index:2000;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+}
+
+.modal.show{
+    display:flex;
+}
+
+.modal-box{
+    width:100%;
+    max-width:450px;
+    background:white;
+    border-radius:20px;
+    padding:25px;
+    box-shadow:0 10px 40px rgba(0,0,0,.25);
+    max-height:90vh;
+    overflow-y:auto;
+}
+
+.modal-box h2{
+    color:#245b21;
+    margin-bottom:20px;
+}
+
+.modal-box label{
+    display:block;
+    font-weight:bold;
+    margin-top:12px;
+    margin-bottom:5px;
+}
+
+.modal-box input,
+.modal-box select{
+    width:100%;
+    padding:12px;
+    border:1px solid #ccc;
+    border-radius:9px;
+}
+
+.modal-buttons{
+    display:flex;
+    gap:10px;
+    margin-top:20px;
+}
+
+.modal-buttons button{
+    flex:1;
+}
+
+.change-btn{
+    background:#276522;
+    color:white;
+}
+
+.close-btn{
+    background:#ddd;
+    color:#333;
+}
+
+.success-message{
+    background:#e1f4dc;
+    color:#24601e;
+    padding:12px;
+    border-radius:10px;
+    margin-top:10px;
+    display:none;
+}
+
+.modal-error{
+    color:#c00;
+    margin-top:8px;
+    font-size:14px;
+}
+
+/* ================= PROFILE PHOTO ================= */
+
+.profile-photo-preview{
+    width:110px;
+    height:110px;
+    border-radius:50%;
+    margin:10px auto 15px;
+    background:#f4c542;
+    color:#234c1e;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:40px;
+    font-weight:bold;
+    overflow:hidden;
+}
+
+.profile-photo-preview img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.photo-buttons{
+    display:flex;
+    gap:10px;
+    margin-bottom:20px;
+}
+
+.photo-buttons button{
+    flex:1;
+}
+
+/* ================= LANGUAGE ================= */
+
+.language-box{
+    background:#f1f6ed;
+    padding:15px;
+    border-radius:12px;
+    margin-top:15px;
+}
+
+.language-buttons{
+    display:flex;
+    gap:10px;
+    margin-top:10px;
+}
+
+.language-buttons button{
+    flex:1;
+    border:none;
+    padding:11px;
+    border-radius:9px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.language-buttons button.active{
+    background:#276522;
+    color:white;
+}
+
+/* ================= MOBILE ================= */
+
+@media(max-width:900px){
+
+    .cards{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .form-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .history-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
+@media(max-width:600px){
+
+    header{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .cards,
+    .form-grid,
+    .summary,
+    .history-grid{
+        grid-template-columns:1fr;
+    }
+
+    nav{
+        padding:10px;
+    }
+
+    nav button{
+        flex:1;
+        min-width:120px;
+    }
+
+    main{
+        width:94%;
+    }
+
+    .brand h2{
+        font-size:18px;
+    }
+
+    .brand img{
+        width:65px;
+        height:65px;
+    }
+
+    .history-top{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .user-area{
+        width:100%;
+    }
+
+    .profile-menu{
+        right:auto;
+        left:0;
+    }
+
+    .photo-buttons,
+    .language-buttons{
+        flex-direction:column;
+    }
+
+    .form-box,
+    .table-box{
+        padding:15px;
+    }
+
+    .history-top > div{
+        display:flex;
+        width:100%;
+    }
+
+    .history-top .btn{
+        flex:1;
+        padding:10px 8px;
+        font-size:13px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- =====================================================
+LOGIN
+===================================================== -->
+
+<div id="loginPage">
+
+<div class="login-box">
+
+<img
+src="logo.png"
+class="login-logo"
+alt="Farm Logo">
+
+<h1 id="loginTitle">
+பூங்கொடி இயற்கை பண்ணை
+</h1>
+
+<p id="loginSubtitle">
+<span data-i18n="loginSubtitle">Family Farm Management</span>
+</p>
+
+<select id="username">
+
+<option value="prabakaran">👨‍🌾 Prabakaran</option>
+
+<option value="poongodi">👩‍🌾 Poongodi</option>
+
+<option value="rajindharan">👨‍🌾 Rajindharan</option>
+
+<option value="sajindharan">👨‍🌾 Sajindharan</option>
+
+</select>
+
+<!-- PASSWORD REMOVED -->
+
+<button
+class="btn google-btn"
+onclick="loginWithGoogle()"
+data-i18n="googleLogin">
+
+🔵 Continue with Google
+
+</button>
+
+<div id="loginError" class="error"></div>
+
+<p style="margin-top:18px;font-size:12px;" id="authorizedText">
+<span data-i18n="authorized">🔒 Authorized Persons Only</span>
+</p>
+
+</div>
+</div>
+
+
+<!-- =====================================================
+APP
+===================================================== -->
+
+<div id="app">
+
+<header>
+
+<div class="brand">
+
+<img src="logo.png" alt="Farm Logo">
+
+<div>
+
+<h2 id="farmTitle">
+பூங்கொடி இயற்கை பண்ணை
+</h2>
+
+<small id="farmTagline">
+சரியானது தரமானது
+</small>
+
+</div>
+
+</div>
+
+
+<div class="user-area">
+
+<div
+class="user-circle"
+id="userInitial"
+onclick="toggleProfile()">
+
+P
+
+</div>
+
+<span
+class="user-name"
+id="userName">
+
+User
+
+</span>
+
+
+<div
+class="profile-menu"
+id="profileMenu">
+
+<div class="profile-header">
+
+<div
+class="profile-big-circle"
+id="profileInitial">
+
+P
+
+</div>
+
+<div>
+
+<h3 id="profileName">
+User
+</h3>
+
+<small id="familyMemberText">
+குடும்ப உறுப்பினர்
+</small>
+
+</div>
+
+</div>
+
+<button onclick="showAccountDetails()">
+👤 <span data-i18n="accountDetails">Account Details</span>
+</button>
+
+<button onclick="openChangePassword()">
+🔐 <span data-i18n="changePassword">Change Password</span>
+</button>
+
+<button onclick="openLanguageSettings()">
+🌐 <span data-i18n="language">Language</span>
+</button>
+
+<button
+class="profile-logout"
+onclick="logout()">
+
+🚪 <span data-i18n="logout">Logout</span>
+
+</button>
+
+</div>
+
+</div>
+
+</header>
+
+
+<!-- NAVIGATION -->
+
+<nav>
+
+<button
+class="active"
+onclick="showSection('dashboard',this)"
+data-i18n="dashboard">
+
+🏠 Dashboard
+
+</button>
+
+<button
+onclick="showSection('addData',this)"
+data-i18n="addDailyData">
+
+➕ Add Daily Data
+
+</button>
+
+<button
+onclick="showSection('history',this)"
+data-i18n="history">
+
+📅 History
+
+</button>
+
+<button
+onclick="showSection('report',this)"
+data-i18n="reports">
+
+📊 Reports
+
+</button>
+
+</nav>
+
+
+<main>
+
+<!-- =====================================================
+DASHBOARD
+===================================================== -->
+
+<section
+id="dashboard"
+class="section active">
+
+<div class="welcome">
+
+<h1 data-i18n="todayDashboard">
+🌿 Today's Farm Dashboard
+</h1>
+
+<div
+class="date-text"
+id="todayDate">
+</div>
+
+</div>
+
+
+<div class="cards">
+
+<div class="card">
+
+<div class="icon">🥚</div>
+
+<h3 data-i18n="quailEggsSold">
+Quail Eggs Sold
+</h3>
+
+<strong id="dashQuail">0</strong>
+
+</div>
+
+
+<div class="card">
+
+<div class="icon">🥚</div>
+
+<h3 data-i18n="nattuEggsSold">
+Nattu Koli Eggs Sold
+</h3>
+
+<strong id="dashNattu">0</strong>
+
+</div>
+
+
+<div
+class="card"
+onclick="openQuailMeatEntry()"
+style="cursor:pointer;"
+title="Click to enter Quail Meat sales">
+
+<div class="icon">🥩</div>
+
+<h3 data-i18n="quailMeatSold">
+Quail Meat Sold
+</h3>
+
+<strong id="dashQuailMeat">0</strong>
+
+</div>
+
+
+<div class="card">
+
+<div class="icon">💰</div>
+
+<h3 data-i18n="todaysSales">
+Today's Sales
+</h3>
+
+<strong id="dashSales">₹0</strong>
+
+</div>
+
+</div>
+
+
+<div class="form-box">
+
+<h2 data-i18n="todaysStock">
+📦 Today's Stock
+</h2>
+
+<div class="cards">
+
+<div class="card">
+
+<h3 data-i18n="quailEggsRemaining">
+Quail Eggs Remaining
+</h3>
+
+<strong id="stockQuail">0</strong>
+
+</div>
+
+
+<div class="card">
+
+<h3 data-i18n="nattuEggsRemaining">
+Nattu Koli Eggs Remaining
+</h3>
+
+<strong id="stockNattu">0</strong>
+
+</div>
+
+
+<div class="card">
+
+<h3 data-i18n="quailMeatRemaining">
+Quail Meat Remaining
+</h3>
+
+<strong id="stockQuailMeat">0</strong>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+ADD DATA
+===================================================== -->
+
+<section id="addData" class="section">
+
+<div class="form-box">
+
+<h2 data-i18n="addUpdateDaily">
+➕ Add / Update Daily Farm Details
+</h2>
+
+<div class="form-grid">
+
+<div class="field">
+
+<label data-i18n="date">📅 Date</label>
+
+<input type="date" id="dataDate">
+
+</div>
+
+
+<div class="field">
+
+<label data-i18n="quailProduced">
+🐦 Quail Produced
+</label>
+
+<input
+type="number"
+id="quailProduced"
+min="0">
+
+</div>
+
+
+<div class="field">
+
+<label data-i18n="quailSold">
+🥚 Quail Eggs Sold
+</label>
+
+<input
+type="number"
+id="quailSold"
+min="0">
+
+</div>
+
+
+<div class="field">
+
+<label data-i18n="nattuProduced">
+🥚 Nattu Koli Eggs Produced
+</label>
+
+<input
+type="number"
+id="nattuProduced"
+min="0">
+
+</div>
+
+
+<div class="field">
+
+<label data-i18n="nattuSold">
+🥚 Nattu Koli Eggs Sold
+</label>
+
+<input
+type="number"
+id="nattuSold"
+min="0">
+
+</div>
+
+
+<div class="field">
+
+<label data-i18n="quailMortality">
+🐦 Quail Mortality
+</label>
+
+<input
+type="number"
+id="quailMortality"
+min="0">
+
+</div>
+
+
+<div class="field">
+
+<label data-i18n="quailMeatAvailable">
+🥩 Quail Meat Available
+</label>
+
+<input
+type="number"
+id="quailMeatAvailable"
+min="0">
+
+</div>
+
+
+<div class="field">
+
+<label data-i18n="quailMeatSold">
+🥩 Quail Meat Sold
+</label>
+
+<input
+type="number"
+id="quailMeatSold"
+min="0">
+
+</div>
+
+
+<div class="field">
+
+<label data-i18n="medicine">
+💊 Medicine
+</label>
+
+<input
+type="number"
+id="medicine"
+min="0"
+placeholder="₹">
+
+</div>
+
+
+<div class="field">
+
+<label data-i18n="trayStickers">
+🏷️ Tray Stickers
+</label>
+
+<input
+type="number"
+id="trayStickers"
+min="0"
+placeholder="₹">
+
+</div>
+
+
+<div class="field">
+
+<label data-i18n="sales">
+💰 Total Sales ₹
+</label>
+
+<input
+type="number"
+id="sales"
+min="0">
+
+</div>
+
+
+<div class="field">
+
+<label data-i18n="expenses">
+💸 Other Expenses ₹
+</label>
+
+<input
+type="number"
+id="expenses"
+min="0">
+
+</div>
+
+
+<div class="field full">
+
+<label data-i18n="notes">
+📝 Farm Notes
+</label>
+
+<textarea
+id="notes"
+placeholder="Today's farm details..."></textarea>
+
+</div>
+
+</div>
+
+<br>
+
+<button
+class="btn save-btn"
+onclick="saveData()"
+data-i18n="saveData">
+
+💾 SAVE DATA
+
+</button>
+
+<button
+class="btn cancel-btn"
+onclick="clearForm()"
+data-i18n="clear">
+
+CLEAR
+
+</button>
+
+<input
+type="hidden"
+id="editId">
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+HISTORY
+===================================================== -->
+
+<section id="history" class="section">
+
+<div class="welcome">
+
+<h1 data-i18n="farmHistory">
+📅 Farm History
+</h1>
+
+<p
+class="date-text"
+data-i18n="previousRecords">
+
+Previous daily records
+
+</p>
+
+</div>
+
+<div id="historyList"></div>
+
+</section>
+
+
+<!-- =====================================================
+REPORT
+===================================================== -->
+
+<section id="report" class="section">
+
+<div class="welcome">
+
+<h1 data-i18n="farmReports">
+📊 Farm Reports
+</h1>
+
+<p
+class="date-text"
+data-i18n="completeSummary">
+
+Complete farm sales summary
+
+</p>
+
+</div>
+
+
+<div class="summary">
+
+<div class="summary-card">
+
+<h3 data-i18n="totalQuail">
+Total Quail Eggs Sold
+</h3>
+
+<strong id="totalQuail">0</strong>
+
+</div>
+
+
+<div class="summary-card">
+
+<h3 data-i18n="totalNattu">
+Total Nattu Koli Eggs Sold
+</h3>
+
+<strong id="totalNattu">0</strong>
+
+</div>
+
+
+<div class="summary-card">
+
+<h3 data-i18n="totalQuailMeat">
+Total Quail Meat Sold
+</h3>
+
+<strong id="totalQuailMeat">0</strong>
+
+</div>
+
+
+<div class="summary-card">
+
+<h3 data-i18n="totalSales">
+Total Sales
+</h3>
+
+<strong id="totalSales">₹0</strong>
+
+</div>
+
+
+<div class="summary-card">
+
+<h3 data-i18n="totalExpenses">
+Total Expenses
+</h3>
+
+<strong id="totalExpenses">₹0</strong>
+
+</div>
+
+
+<div class="summary-card profit-card">
+
+<h3 data-i18n="profit">
+Profit
+</h3>
+
+<strong id="profitAmount">₹0</strong>
+
+</div>
+
+
+<div class="summary-card loss-card">
+
+<h3 data-i18n="loss">
+Loss
+</h3>
+
+<strong id="lossAmount">₹0</strong>
+
+</div>
+
+</div>
+
+
+<br><br>
+
+<div class="table-box">
+
+<h2 data-i18n="dailySummary">
+📋 Daily Summary
+</h2>
+
+<br>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th data-i18n="date">Date</th>
+<th data-i18n="quailSold">Quail Sold</th>
+<th data-i18n="nattuSold">Nattu Sold</th>
+<th data-i18n="quailMortality">Mortality</th>
+<th data-i18n="quailMeat">Quail Meat</th>
+<th data-i18n="sales">Sales</th>
+<th data-i18n="expenses">Expenses</th>
+
+</tr>
+
+</thead>
+
+<tbody id="reportTable"></tbody>
+
+</table>
+
+</div>
+
+</section>
+
+</main>
+
+</div>
+
+
+<!-- =====================================================
+ACCOUNT DETAILS
+===================================================== -->
+
+<div
+class="modal"
+id="accountModal">
+
+<div class="modal-box">
+
+<h2 data-i18n="accountDetails">
+👤 Account Details
+</h2>
+
+<div
+class="profile-photo-preview"
+id="accountPhotoPreview">
+
+P
+
+</div>
+
+<div class="photo-buttons">
+
+<button
+class="btn change-btn"
+onclick="selectProfilePhoto()">
+
+📷 Add Profile
+
+</button>
+
+<button
+class="btn close-btn"
+onclick="closeModal('accountModal')">
+
+Close
+
+</button>
+
+</div>
+
+<input
+type="file"
+id="profilePhotoInput"
+accept="image/*"
+style="display:none;"
+onchange="changeProfilePhoto(event)">
+
+<label data-i18n="name">Name</label>
+
+<input
+type="text"
+id="accountName"
+readonly>
+
+<label data-i18n="loginMethod">Login Method</label>
+
+<input
+type="text"
+value="Google Account"
+readonly>
+
+<label data-i18n="selectedFamilyMember">Selected Family Member</label>
+
+<input
+type="text"
+id="accountSelectedUser"
+readonly>
+
+</div>
+
+</div>
+
+
+<!-- =====================================================
+CHANGE PASSWORD
+===================================================== -->
+
+<div
+class="modal"
+id="passwordModal">
+
+<div class="modal-box">
+
+<h2>
+🔐 Change Password
+</h2>
+
+<p style="color:#777;line-height:1.5;">
+Google login use pannuvathala password Firebase/Google account-la manage pannappadum.
+</p>
+
+<br>
+
+<p style="color:#245b21;font-weight:bold;">
+Password change panna Google Account settings use pannunga.
+</p>
+
+<div class="modal-buttons">
+
+<button
+class="btn close-btn"
+onclick="closeModal('passwordModal')">
+
+Close
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- =====================================================
+LANGUAGE
+===================================================== -->
+
+<div
+class="modal"
+id="languageModal">
+
+<div class="modal-box">
+
+<h2 data-i18n="languageTitle">
+🌐 Language
+</h2>
+
+<div class="language-box">
+
+<p data-i18n="selectLanguage">Select Language</p>
+
+<div class="language-buttons">
+
+<button
+id="englishBtn"
+data-language="en"
+class="active"
+onclick="setLanguage('en')">
+
+English
+
+</button>
+
+<button
+id="tamilBtn"
+data-language="ta"
+onclick="setLanguage('ta')">
+
+தமிழ்
+
+</button>
+
+</div>
+
+</div>
+
+<br>
+
+<button
+class="btn close-btn"
+style="width:100%;"
+onclick="closeModal('languageModal')">
+
+Close
+
+</button>
+
+</div>
+
+</div>
+
+
+<!-- =====================================================
+QUAIL MEAT ENTRY
+===================================================== -->
+
+<div
+class="modal"
+id="quailMeatModal">
+
+<div class="modal-box">
+
+<h2 data-i18n="quailMeatEntry">
+🥩 Quail Meat Entry
+</h2>
+
+<label>
+Quail Meat Available
+</label>
+
+<input
+type="number"
+id="meatAvailablePopup"
+min="0">
+
+<label>
+Quail Meat Sold
+</label>
+
+<input
+type="number"
+id="meatSoldPopup"
+min="0">
+
+<div class="modal-buttons">
+
+<button
+class="btn change-btn"
+onclick="saveQuailMeatEntry()">
+
+Save
+
+</button>
+
+<button
+class="btn close-btn"
+onclick="closeModal('quailMeatModal')">
+
+Close
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- =====================================================
+FIREBASE
+===================================================== -->
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+
+import {
+    getAuth,
+    GoogleAuthProvider,
+    signInWithPopup,
+    signInWithRedirect,
+    onAuthStateChanged,
+    signOut
+}
+from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+
+import {
+    getDatabase,
+    ref,
+    set,
+    get,
+    remove
+}
+from "https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
+
+
+/*
+==========================================================
+PASTE YOUR FIREBASE CONFIG HERE
+==========================================================
+
+Firebase Console
+→ Project Settings
+→ Your Apps
+→ Web App
+→ Firebase SDK setup
+→ Config
+*/
+
+const firebaseConfig = {
+
+    apiKey: "AIzaSyBxYGWRz3l1ustoNyFeBxsDfSTnMYrbgIg",
+
+    authDomain: "prs-farms.firebaseapp.com",
+
+    projectId: "prs-farms",
+
+    storageBucket: "prs-farms.firebasestorage.app",
+
+    messagingSenderId: "944134718763",
+
+    appId: "1:944134718763:web:99e3ef679f20f28f74716e",
+
+    measurementId: "G-B1R4S2Y7EC",
+    
+    databaseURL: "https://prs-farms-default-rtdb.firebaseio.com"
+
+};
+
+
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+
+const database = getDatabase(app);
+
+const provider = new GoogleAuthProvider();
+provider.setCustomParameters({prompt:"select_account"});
+
+let currentUser = null;
+
+async function resolveFamilyProfile(user, requestedProfile){
+
+    const fallback = {
+        key: requestedProfile,
+        name: getDisplayName(requestedProfile)
+    };
+
+    let profile = fallback;
+    try{
+        const profileRef = ref(database, `accountProfiles/${user.uid}`);
+        const snapshot = await get(profileRef);
+        profile = snapshot.exists() ? snapshot.val() : fallback;
+
+        if(!snapshot.exists()) await set(profileRef, profile);
+    }
+    catch(error){
+        console.error("Profile assignment error:", error);
+    }
+
+    localStorage.setItem("selectedFamilyUser", profile.key);
+    localStorage.setItem("familyProfileName", profile.name);
+    window.activeFamilyProfile = profile;
+    return profile;
+}
+
+
+/*
+==========================================================
+GOOGLE LOGIN
+==========================================================
+*/
+
+window.loginWithGoogle = async function(){
+
+    const selectedUser =
+        document.getElementById("username").value;
+
+    localStorage.setItem(
+        "selectedFamilyUser",
+        selectedUser
+    );
+
+    const errorBox =
+        document.getElementById("loginError");
+
+    errorBox.innerText = "";
+
+    try{
+
+        const result =
+            await signInWithPopup(auth,provider);
+
+        currentUser = result.user;
+        sessionStorage.removeItem("loginInProgress");
+
+        localStorage.setItem(
+            "googleEmail",
+            currentUser.email || ""
+        );
+
+        localStorage.setItem(
+            "googleName",
+            currentUser.displayName || ""
+        );
+
+        localStorage.setItem(
+            "googlePhoto",
+            currentUser.photoURL || ""
+        );
+
+        localStorage.setItem(
+            "googleUID",
+            currentUser.uid || ""
+        );
+
+        localStorage.setItem("familyProfileName", getDisplayName(selectedUser));
+        showApplication();
+        resolveFamilyProfile(currentUser, selectedUser)
+            .then(profile=>{
+                selectedUser = profile.key;
+                updateUser();
+            });
+
+    }
+    catch(error){
+
+        console.error(error);
+
+        if(error.code === "auth/popup-blocked" || error.code === "auth/popup-closed-by-user"){
+            sessionStorage.setItem("loginInProgress", "true");
+            await signInWithRedirect(auth, provider);
+            return;
+        }
+
+        errorBox.innerText = error.code === "auth/unauthorized-domain"
+            ? "இந்த website domain-ஐ Firebase Authorized Domains-ல் சேர்க்க வேண்டும்."
+            : "Google Login failed. Please try again.";
+
+    }
+
+};
+
+
+/*
+==========================================================
+AUTH STATE
+==========================================================
+*/
+
+onAuthStateChanged(auth,async(user)=>{
+
+    if(user){
+
+        currentUser = user;
+
+        if(sessionStorage.getItem("loginInProgress") === "true"){
+            sessionStorage.removeItem("loginInProgress");
+            const selected = localStorage.getItem("selectedFamilyUser") || "prabakaran";
+            localStorage.setItem("familyProfileName", getDisplayName(selected));
+            showApplication();
+            resolveFamilyProfile(user, selected)
+                .then(profile=>{
+                    selectedUser = profile.key;
+                    updateUser();
+                });
+        }
+
+    }
+
+});
+
+
+/*
+==========================================================
+LOGOUT
+==========================================================
+*/
+
+window.logout = async function(){
+
+    try{
+
+        await signOut(auth);
+
+        currentUser = null;
+
+        localStorage.removeItem(
+            "selectedFamilyUser"
+        );
+
+        localStorage.removeItem(
+            "googleEmail"
+        );
+
+        localStorage.removeItem(
+            "googleName"
+        );
+
+        localStorage.removeItem(
+            "googlePhoto"
+        );
+
+        localStorage.removeItem(
+            "googleUID"
+        );
+
+        document.getElementById("app").style.display =
+            "none";
+
+        document.getElementById("loginPage").style.display =
+            "flex";
+
+    }
+    catch(error){
+
+        console.error(error);
+
+    }
+
+};
+
+/*
+==========================================================
+SAVE DATA TO FIREBASE
+==========================================================
+*/
+
+window.saveToFirebase = async function(record) {
+
+    if (!currentUser) return false;
+
+    try {
+
+        const userUID = currentUser.uid;
+
+        const dataRef = ref(database, `sharedFarmData/${record.id}`);
+
+        await set(dataRef, record);
+
+        return true;
+
+    } 
+    catch (error) {
+
+        console.error("Firebase save error:", error);
+
+        return false;
+
+    }
+
+};
+
+/*
+==========================================================
+LOAD DATA FROM FIREBASE
+==========================================================
+*/
+
+window.loadFromFirebase = async function() {
+
+    if (!currentUser) return [];
+
+    try {
+
+        const userUID = currentUser.uid;
+
+        const dataRef = ref(database, "sharedFarmData");
+
+        const snapshot = await get(dataRef);
+
+        if (snapshot.exists()) {
+
+            const data = snapshot.val();
+
+            return Object.values(data || {});
+
+        }
+
+        return [];
+
+    } 
+    catch (error) {
+
+        console.error("Firebase load error:", error);
+
+        return [];
+
+    }
+
+};
+
+/*
+==========================================================
+DELETE FROM FIREBASE
+==========================================================
+*/
+
+window.deleteFromFirebase = async function(recordId) {
+
+    if (!currentUser) return false;
+
+    try {
+
+        const userUID = currentUser.uid;
+
+        const dataRef = ref(database, `sharedFarmData/${recordId}`);
+
+        await remove(dataRef);
+
+        return true;
+
+    } 
+    catch (error) {
+
+        console.error("Firebase delete error:", error);
+
+        return false;
+
+    }
+
+};
+
+</script>
+
+
+<script>
+
+/* =====================================================
+GLOBAL DATA
+===================================================== */
+
+let farmData =
+JSON.parse(
+    localStorage.getItem("farmData") || "[]"
+);
+
+let selectedUser =
+localStorage.getItem("selectedFamilyUser") ||
+"prabakaran";
+
+
+/* =====================================================
+SHOW APPLICATION
+===================================================== */
+
+function showApplication(){
+
+    selectedUser =
+        localStorage.getItem("selectedFamilyUser") ||
+        "prabakaran";
+
+    document.getElementById("loginPage")
+        .style.display = "none";
+
+    document.getElementById("app")
+        .style.display = "block";
+
+    setLanguage(localStorage.getItem("language") || "en");
+
+    updateUser();
+
+    setTodayDate();
+
+    loadData();
+
+    updateDashboard();
+
+    updateReports();
+
+}
+
+
+/* =====================================================
+USER NAME
+===================================================== */
+
+function getDisplayName(value){
+
+    const names = {
+
+        prabakaran:"Prabakaran",
+
+        poongodi:"Poongodi",
+
+        rajindharan:"Rajindharan",
+
+        sajindharan:"Sajindharan"
+
+    };
+
+    return names[value] || "User";
+
+}
+
+
+function updateUser(){
+
+    const name =
+        getDisplayName(selectedUser);
+
+    document.getElementById("userName")
+        .innerText = name;
+
+    document.getElementById("profileName")
+        .innerText = name;
+
+    document.getElementById("userInitial")
+        .innerText = name.charAt(0).toUpperCase();
+
+    document.getElementById("profileInitial")
+        .innerText = name.charAt(0).toUpperCase();
+
+    document.getElementById("accountName")
+        .value = name;
+
+    document.getElementById("accountSelectedUser")
+        .value = name;
+
+    document.getElementById("familyMemberText")
+        .innerText = localStorage.getItem("language") === "ta"
+            ? "குடும்ப உறுப்பினர்"
+            : "Family Member";
+
+    const googleName =
+        localStorage.getItem("googleName");
+
+    const googlePhoto =
+        localStorage.getItem(`profilePhoto_${localStorage.getItem("googleUID") || "guest"}_${selectedUser}`) ||
+        localStorage.getItem("googlePhoto");
+
+    if(googlePhoto){
+
+        document.getElementById("userInitial")
+            .innerHTML =
+            `<img src="${googlePhoto}" alt="Profile">`;
+
+        document.getElementById("profileInitial")
+            .innerHTML =
+            `<img src="${googlePhoto}" alt="Profile">`;
+
+        document.getElementById("accountPhotoPreview")
+            .innerHTML =
+            `<img src="${googlePhoto}" alt="Profile">`;
+
+    }
+
+}
+
+
+/* =====================================================
+TODAY DATE
+===================================================== */
+
+function setTodayDate(){
+
+    const today =
+        new Date();
+
+    document.getElementById("todayDate")
+        .innerText =
+        today.toLocaleDateString(
+            "en-IN",
+            {
+                weekday:"long",
+                year:"numeric",
+                month:"long",
+                day:"numeric"
+            }
+        );
+
+    document.getElementById("dataDate")
+        .value =
+        today.toISOString().split("T")[0];
+
+}
+
+
+/* =====================================================
+NAVIGATION
+===================================================== */
+
+window.showSection =
+function(sectionId,button){
+
+    document.querySelectorAll(".section")
+        .forEach(section=>{
+            section.classList.remove("active");
+        });
+
+    document.getElementById(sectionId)
+        .classList.add("active");
+
+    document.querySelectorAll("nav button")
+        .forEach(btn=>{
+            btn.classList.remove("active");
+        });
+
+    button.classList.add("active");
+
+    if(sectionId === "history"){
+        loadHistory();
+    }
+
+    if(sectionId === "report"){
+        updateReports();
+    }
+
+};
+
+
+/* =====================================================
+SAVE DATA
+===================================================== */
+
+window.saveData =
+function(){
+
+    const record = {
+
+        id:
+        document.getElementById("editId").value ||
+        Date.now().toString(),
+
+        date:
+        document.getElementById("dataDate").value,
+
+        quailProduced:
+        Number(document.getElementById("quailProduced").value) || 0,
+
+        quailSold:
+        Number(document.getElementById("quailSold").value) || 0,
+
+        nattuProduced:
+        Number(document.getElementById("nattuProduced").value) || 0,
+
+        nattuSold:
+        Number(document.getElementById("nattuSold").value) || 0,
+
+        quailMortality:
+        Number(document.getElementById("quailMortality").value) || 0,
+
+        quailMeatAvailable:
+        Number(document.getElementById("quailMeatAvailable").value) || 0,
+
+        quailMeatSold:
+        Number(document.getElementById("quailMeatSold").value) || 0,
+
+        medicine:
+        Number(document.getElementById("medicine").value) || 0,
+
+        trayStickers:
+        Number(document.getElementById("trayStickers").value) || 0,
+
+        sales:
+        Number(document.getElementById("sales").value) || 0,
+
+        expenses:
+        Number(document.getElementById("expenses").value) || 0,
+
+        notes:
+        document.getElementById("notes").value,
+
+        updatedBy:
+        localStorage.getItem("familyProfileName") ||
+        getDisplayName(localStorage.getItem("selectedFamilyUser")),
+
+        updatedAt:
+        new Date().toLocaleString("en-IN")
+
+    };
+
+    const existingIndex =
+        farmData.findIndex(
+            item => item.id === record.id
+        );
+
+    if(existingIndex >= 0){
+
+        farmData[existingIndex] = record;
+
+    }
+    else{
+
+        farmData.push(record);
+
+    }
+
+    localStorage.setItem(
+        "farmData",
+        JSON.stringify(farmData)
+    );
+
+    // Save to Firebase
+    saveToFirebase(record).then(success => {
+
+        if(success) {
+
+            alert(
+                "Daily farm data saved successfully!"
+            );
+
+        } else {
+
+            alert(
+                "Data saved locally. Check internet connection for cloud sync."
+            );
+
+        }
+
+    });
+
+    clearForm();
+
+    updateDashboard();
+
+    updateReports();
+
+    loadData();
+
+};
+
+
+/* =====================================================
+CLEAR FORM
+===================================================== */
+
+window.clearForm =
+function(){
+
+    document.getElementById("editId").value = "";
+
+    document.getElementById("dataDate").value =
+        new Date().toISOString().split("T")[0];
+
+    const fields = [
+
+        "quailProduced",
+        "quailSold",
+        "nattuProduced",
+        "nattuSold",
+        "quailMortality",
+        "quailMeatAvailable",
+        "quailMeatSold",
+        "medicine",
+        "trayStickers",
+        "sales",
+        "expenses",
+        "notes"
+
+    ];
+
+    fields.forEach(id=>{
+        document.getElementById(id).value = "";
+    });
+
+};
+
+
+/* =====================================================
+LOAD HISTORY
+===================================================== */
+
+function loadHistory(){
+
+    const list =
+        document.getElementById("historyList");
+
+    if(!list) return;
+
+    list.innerHTML = "";
+
+    if(farmData.length === 0){
+
+        list.innerHTML =
+            `<div class="history-item">
+                No records available.
+            </div>`;
+
+        return;
+
+    }
+
+
+    const sorted =
+        [...farmData].sort(
+            (a,b)=>
+                new Date(b.date) -
+                new Date(a.date)
+        );
+
+
+    sorted.forEach(record=>{
+
+        const item =
+            document.createElement("div");
+
+        item.className =
+            "history-item";
+
+        const tamil = localStorage.getItem("language") === "ta";
+        const labels = tamil
+            ? {edit:"திருத்து", delete:"நீக்கு", quail:"காடை விற்பனை", nattu:"நாட்டு கோழி விற்பனை", meat:"காடை இறைச்சி", sales:"விற்பனை", expenses:"செலவுகள்", mortality:"இறப்பு", updatedBy:"மாற்றியவர்", updatedAt:"மாற்றிய நேரம்"}
+            : {edit:"Edit", delete:"Delete", quail:"Quail Sold", nattu:"Nattu Sold", meat:"Quail Meat", sales:"Sales", expenses:"Expenses", mortality:"Mortality", updatedBy:"Updated By", updatedAt:"Updated At"};
+
+        item.innerHTML = `
+
+        <div class="history-top">
+
+            <h3>📅 ${record.date}</h3>
+
+            <div>
+
+                <button
+                class="btn edit-btn"
+                onclick="editData('${record.id}')">
+
+                ✏️ ${labels.edit}
+
+                </button>
+
+                <button
+                class="btn delete-btn"
+                onclick="deleteData('${record.id}')">
+
+                🗑️ ${labels.delete}
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="history-grid">
+
+            <div class="history-value">
+
+                <span>${labels.quail}</span>
+
+                <b>${record.quailSold}</b>
+
+            </div>
+
+
+            <div class="history-value">
+
+                <span>${labels.nattu}</span>
+
+                <b>${record.nattuSold}</b>
+
+            </div>
+
+
+            <div class="history-value">
+
+                <span>${labels.meat}</span>
+
+                <b>${record.quailMeatSold}</b>
+
+            </div>
+
+
+            <div class="history-value">
+
+                <span>${labels.sales}</span>
+
+                <b>₹${record.sales}</b>
+
+            </div>
+
+
+            <div class="history-value">
+
+                <span>${labels.expenses}</span>
+
+                <b>₹${record.expenses}</b>
+
+            </div>
+
+
+            <div class="history-value">
+
+                <span>${labels.mortality}</span>
+
+                <b>${record.quailMortality}</b>
+
+            </div>
+
+
+            <div class="history-value">
+
+                <span>${labels.updatedBy}</span>
+
+                <b>${record.updatedBy || "-"}</b>
+
+            </div>
+
+
+            <div class="history-value">
+
+                <span>${labels.updatedAt}</span>
+
+                <b style="font-size:12px;">
+                    ${record.updatedAt || "-"}
+                </b>
+
+            </div>
+
+        </div>
+
+        `;
+
+        list.appendChild(item);
+
+    });
+
+}
+
+
+/* =====================================================
+EDIT DATA
+===================================================== */
+
+window.editData =
+function(id){
+
+    const record =
+        farmData.find(
+            item => item.id === id
+        );
+
+    if(!record) return;
+
+
+    document.getElementById("editId").value =
+        record.id;
+
+    document.getElementById("dataDate").value =
+        record.date;
+
+    document.getElementById("quailProduced").value =
+        record.quailProduced;
+
+    document.getElementById("quailSold").value =
+        record.quailSold;
+
+    document.getElementById("nattuProduced").value =
+        record.nattuProduced;
+
+    document.getElementById("nattuSold").value =
+        record.nattuSold;
+
+    document.getElementById("quailMortality").value =
+        record.quailMortality;
+
+    document.getElementById("quailMeatAvailable").value =
+        record.quailMeatAvailable;
+
+    document.getElementById("quailMeatSold").value =
+        record.quailMeatSold;
+
+    document.getElementById("medicine").value =
+        record.medicine;
+
+    document.getElementById("trayStickers").value =
+        record.trayStickers;
+
+    document.getElementById("sales").value =
+        record.sales;
+
+    document.getElementById("expenses").value =
+        record.expenses;
+
+    document.getElementById("notes").value =
+        record.notes;
+
+    showSection(
+        "addData",
+        document.querySelectorAll("nav button")[1]
+    );
+
+};
+
+
+/* =====================================================
+DELETE DATA
+===================================================== */
+
+window.deleteData =
+function(id){
+
+    if(
+        !confirm(
+            "Are you sure you want to delete this record?"
+        )
+    ) return;
+
+    farmData =
+        farmData.filter(
+            item => item.id !== id
+        );
+
+    localStorage.setItem(
+        "farmData",
+        JSON.stringify(farmData)
+    );
+
+    // Delete from Firebase
+    deleteFromFirebase(id).then(success => {
+
+        if(success) {
+
+            console.log("Record deleted from Firebase");
+
+        }
+
+    });
+
+    loadHistory();
+
+    updateDashboard();
+
+    updateReports();
+
+};
+
+
+/* =====================================================
+DASHBOARD
+===================================================== */
+
+function updateDashboard(){
+
+    const today =
+        new Date()
+        .toISOString()
+        .split("T")[0];
+
+
+    const todayRecords =
+        farmData.filter(
+            item => item.date === today
+        );
+
+
+    let quail = 0;
+
+    let nattu = 0;
+
+    let meat = 0;
+
+    let sales = 0;
+
+    let quailProduced = 0;
+
+    let nattuProduced = 0;
+
+    let meatAvailable = 0;
+
+
+    todayRecords.forEach(record=>{
+
+        quail += Number(record.quailSold) || 0;
+
+        nattu += Number(record.nattuSold) || 0;
+
+        meat += Number(record.quailMeatSold) || 0;
+
+        sales += Number(record.sales) || 0;
+
+        quailProduced +=
+            Number(record.quailProduced) || 0;
+
+        nattuProduced +=
+            Number(record.nattuProduced) || 0;
+
+        meatAvailable +=
+            Number(record.quailMeatAvailable) || 0;
+
+    });
+
+
+    document.getElementById("dashQuail")
+        .innerText = quail;
+
+    document.getElementById("dashNattu")
+        .innerText = nattu;
+
+    document.getElementById("dashQuailMeat")
+        .innerText = meat;
+
+    document.getElementById("dashSales")
+        .innerText = "₹" + sales;
+
+
+    document.getElementById("stockQuail")
+        .innerText =
+        Math.max(
+            0,
+            quailProduced - quail
+        );
+
+    document.getElementById("stockNattu")
+        .innerText =
+        Math.max(
+            0,
+            nattuProduced - nattu
+        );
+
+    document.getElementById("stockQuailMeat")
+        .innerText =
+        Math.max(
+            0,
+            meatAvailable - meat
+        );
+
+}
+
+
+/* =====================================================
+REPORTS
+===================================================== */
+
+function updateReports(){
+
+    let totalQuail = 0;
+
+    let totalNattu = 0;
+
+    let totalMeat = 0;
+
+    let totalSales = 0;
+
+    let totalExpenses = 0;
+
+
+    farmData.forEach(record=>{
+
+        totalQuail +=
+            Number(record.quailSold) || 0;
+
+        totalNattu +=
+            Number(record.nattuSold) || 0;
+
+        totalMeat +=
+            Number(record.quailMeatSold) || 0;
+
+        totalSales +=
+            Number(record.sales) || 0;
+
+        totalExpenses +=
+            (Number(record.expenses) || 0) +
+            (Number(record.medicine) || 0) +
+            (Number(record.trayStickers) || 0);
+
+    });
+
+
+    const difference =
+        totalSales - totalExpenses;
+
+
+    document.getElementById("totalQuail")
+        .innerText = totalQuail;
+
+    document.getElementById("totalNattu")
+        .innerText = totalNattu;
+
+    document.getElementById("totalQuailMeat")
+        .innerText = totalMeat;
+
+    document.getElementById("totalSales")
+        .innerText = "₹" + totalSales;
+
+    document.getElementById("totalExpenses")
+        .innerText = "₹" + totalExpenses;
+
+
+    if(difference >= 0){
+
+        document.getElementById("profitAmount")
+            .innerText = "₹" + difference;
+
+        document.getElementById("lossAmount")
+            .innerText = "₹0";
+
+    }
+    else{
+
+        document.getElementById("profitAmount")
+            .innerText = "₹0";
+
+        document.getElementById("lossAmount")
+            .innerText =
+            "₹" + Math.abs(difference);
+
+    }
+
+
+    const table =
+        document.getElementById("reportTable");
+
+    table.innerHTML = "";
+
+
+    const sorted =
+        [...farmData].sort(
+            (a,b)=>
+                new Date(b.date) -
+                new Date(a.date)
+        );
+
+
+    sorted.forEach(record=>{
+
+        const row =
+            document.createElement("tr");
+
+        row.innerHTML = `
+
+        <td>${record.date}</td>
+
+        <td>${record.quailSold}</td>
+
+        <td>${record.nattuSold}</td>
+
+        <td>${record.quailMortality}</td>
+
+        <td>${record.quailMeatSold}</td>
+
+        <td>₹${record.sales}</td>
+
+        <td>₹${record.expenses}</td>
+
+        `;
+
+        table.appendChild(row);
+
+    });
+
+}
+
+
+/* =====================================================
+PROFILE
+===================================================== */
+
+window.toggleProfile =
+function(){
+
+    document.getElementById("profileMenu")
+        .classList.toggle("show");
+
+};
+
+
+window.showAccountDetails =
+function(){
+
+    document.getElementById("profileMenu")
+        .classList.remove("show");
+
+    document.getElementById("accountModal")
+        .classList.add("show");
+
+};
+
+
+window.openChangePassword =
+function(){
+
+    document.getElementById("profileMenu")
+        .classList.remove("show");
+
+    document.getElementById("passwordModal")
+        .classList.add("show");
+
+};
+
+
+window.openLanguageSettings =
+function(){
+
+    document.getElementById("profileMenu")
+        .classList.remove("show");
+
+    document.getElementById("languageModal")
+        .classList.add("show");
+
+};
+
+
+window.closeModal =
+function(id){
+
+    document.getElementById(id)
+        .classList.remove("show");
+
+};
+
+
+/* =====================================================
+PROFILE PHOTO
+===================================================== */
+
+window.selectProfilePhoto =
+function(){
+
+    document.getElementById("profilePhotoInput")
+        .click();
+
+};
+
+
+window.changeProfilePhoto =
+function(event){
+
+    const file =
+        event.target.files[0];
+
+    if(!file) return;
+
+
+    const reader =
+        new FileReader();
+
+
+    reader.onload =
+    function(e){
+
+        const image =
+            e.target.result;
+
+        localStorage.setItem(
+            `profilePhoto_${localStorage.getItem("googleUID") || "guest"}_${selectedUser}`,
+            image
+        );
+
+        document.getElementById("userInitial")
+            .innerHTML =
+            `<img src="${image}" alt="Profile">`;
+
+        document.getElementById("profileInitial")
+            .innerHTML =
+            `<img src="${image}" alt="Profile">`;
+
+        document.getElementById("accountPhotoPreview")
+            .innerHTML =
+            `<img src="${image}" alt="Profile">`;
+
+    };
+
+
+    reader.readAsDataURL(file);
+
+};
+
+
+/* =====================================================
+QUAIL MEAT
+===================================================== */
+
+window.openQuailMeatEntry =
+function(){
+
+    document.getElementById("quailMeatModal")
+        .classList.add("show");
+
+};
+
+
+window.saveQuailMeatEntry =
+function(){
+
+    document.getElementById("quailMeatAvailable")
+        .value =
+        document.getElementById("meatAvailablePopup")
+        .value;
+
+    document.getElementById("quailMeatSold")
+        .value =
+        document.getElementById("meatSoldPopup")
+        .value;
+
+    closeModal("quailMeatModal");
+
+};
+
+
+/* =====================================================
+LANGUAGE
+===================================================== */
+
+window.setLanguage =
+function(language){
+
+    const translations = {
+        en: {
+            loginSubtitle:"Family Farm Management", googleLogin:"🔵 Continue with Google", authorized:"🔒 Authorized Persons Only",
+            accountDetails:"Account Details", changePassword:"Change Password", language:"Language", logout:"Logout", name:"Name", loginMethod:"Login Method", selectedFamilyMember:"Selected Family Member", languageTitle:"🌐 Language", selectLanguage:"Select Language", quailMeatEntry:"🥩 Quail Meat Entry",
+            dashboard:"🏠 Dashboard", addDailyData:"➕ Add Daily Data", history:"📅 History", reports:"📊 Reports",
+            todayDashboard:"🌿 Today's Farm Dashboard", quailEggsSold:"Quail Eggs Sold", nattuEggsSold:"Nattu Koli Eggs Sold",
+            quailMeatSold:"Quail Meat Sold", todaysSales:"Today's Sales", todaysStock:"📦 Today's Stock", quailEggsRemaining:"Quail Eggs Remaining",
+            nattuEggsRemaining:"Nattu Koli Eggs Remaining", quailMeatRemaining:"Quail Meat Remaining", addUpdateDaily:"➕ Add / Update Daily Farm Details",
+            date:"📅 Date", quailProduced:"🐦 Quail Produced", quailSold:"🥚 Quail Eggs Sold", nattuProduced:"🥚 Nattu Koli Eggs Produced",
+            nattuSold:"🥚 Nattu Koli Eggs Sold", quailMortality:"🐦 Quail Mortality", quailMeatAvailable:"🥩 Quail Meat Available",
+            medicine:"💊 Medicine", trayStickers:"🏷️ Tray Stickers", sales:"💰 Total Sales ₹", expenses:"💸 Other Expenses ₹", notes:"📝 Farm Notes",
+            saveData:"💾 SAVE DATA", clear:"CLEAR", farmHistory:"📅 Farm History", previousRecords:"Previous daily records",
+            farmReports:"📊 Farm Reports", completeSummary:"Complete farm sales summary", totalQuail:"Total Quail Eggs Sold", totalNattu:"Total Nattu Koli Eggs Sold",
+            totalQuailMeat:"Total Quail Meat Sold", totalSales:"Total Sales", totalExpenses:"Total Expenses", profit:"Profit", loss:"Loss", dailySummary:"📋 Daily Summary"
+        },
+        ta: {
+            loginSubtitle:"குடும்ப பண்ணை மேலாண்மை", googleLogin:"🔵 Google மூலம் தொடரவும்", authorized:"🔒 அனுமதிக்கப்பட்டவர்கள் மட்டும்",
+            accountDetails:"கணக்கு விவரங்கள்", changePassword:"கடவுச்சொல்லை மாற்று", language:"மொழி", logout:"வெளியேறு", name:"பெயர்", loginMethod:"உள்நுழைவு முறை", selectedFamilyMember:"தேர்ந்தெடுத்த குடும்ப உறுப்பினர்", languageTitle:"🌐 மொழி", selectLanguage:"மொழியைத் தேர்ந்தெடுக்கவும்", quailMeatEntry:"🥩 காடை இறைச்சி பதிவு",
+            dashboard:"🏠 முகப்பு", addDailyData:"➕ தினசரி தகவல்", history:"📅 வரலாறு", reports:"📊 அறிக்கைகள்",
+            todayDashboard:"🌿 இன்றைய பண்ணை விவரங்கள்", quailEggsSold:"காடை முட்டைகள் விற்பனை", nattuEggsSold:"நாட்டு கோழி முட்டைகள் விற்பனை",
+            quailMeatSold:"காடை இறைச்சி விற்பனை", todaysSales:"இன்றைய விற்பனை", todaysStock:"📦 இன்றைய இருப்பு", quailEggsRemaining:"மீதமுள்ள காடை முட்டைகள்",
+            nattuEggsRemaining:"மீதமுள்ள நாட்டு கோழி முட்டைகள்", quailMeatRemaining:"மீதமுள்ள காடை இறைச்சி", addUpdateDaily:"➕ தினசரி பண்ணை விவரங்களை சேர் / மாற்று",
+            date:"📅 தேதி", quailProduced:"🐦 உற்பத்தி செய்யப்பட்ட காடைகள்", quailSold:"🥚 விற்ற காடை முட்டைகள்", nattuProduced:"🥚 உற்பத்தி செய்யப்பட்ட நாட்டு கோழி முட்டைகள்",
+            nattuSold:"🥚 விற்ற நாட்டு கோழி முட்டைகள்", quailMortality:"🐦 காடை இறப்பு", quailMeatAvailable:"🥩 கிடைக்கும் காடை இறைச்சி",
+            medicine:"💊 மருந்து", trayStickers:"🏷️ தட்டு ஸ்டிக்கர்கள்", sales:"💰 மொத்த விற்பனை ₹", expenses:"💸 பிற செலவுகள் ₹", notes:"📝 பண்ணை குறிப்புகள்",
+            saveData:"💾 தகவலை சேமி", clear:"அழி", farmHistory:"📅 பண்ணை வரலாறு", previousRecords:"முந்தைய தினசரி பதிவுகள்",
+            farmReports:"📊 பண்ணை அறிக்கைகள்", completeSummary:"முழுமையான பண்ணை விற்பனை சுருக்கம்", totalQuail:"மொத்த காடை முட்டைகள் விற்பனை", totalNattu:"மொத்த நாட்டு கோழி முட்டைகள் விற்பனை",
+            totalQuailMeat:"மொத்த காடை இறைச்சி விற்பனை", totalSales:"மொத்த விற்பனை", totalExpenses:"மொத்த செலவுகள்", profit:"லாபம்", loss:"நஷ்டம்", dailySummary:"📋 தினசரி சுருக்கம்"
+        }
+    };
+
+    const selectedTranslations = translations[language] || translations.en;
+    document.documentElement.lang = language === "ta" ? "ta" : "en";
+    localStorage.setItem("language", language);
+
+    document.querySelectorAll("[data-i18n]").forEach(element=>{
+        const key = element.dataset.i18n;
+        if(selectedTranslations[key]) element.innerHTML = selectedTranslations[key];
+    });
+
+    const options = {
+        prabakaran: language === "ta" ? "👨‍🌾 பிரபாகரன்" : "👨‍🌾 Prabakaran",
+        poongodi: language === "ta" ? "👩‍🌾 பூங்கொடி" : "👩‍🌾 Poongodi",
+        rajindharan: language === "ta" ? "👨‍🌾 ராஜிந்தரன்" : "👨‍🌾 Rajindharan",
+        sajindharan: language === "ta" ? "👨‍🌾 சஜிந்தரன்" : "👨‍🌾 Sajindharan"
+    };
+    Object.keys(options).forEach(key=>{
+        const option = document.querySelector(`#username option[value="${key}"]`);
+        if(option) option.textContent = options[key];
+    });
+
+    document.querySelectorAll('[data-language="en"]').forEach(button=>{
+        button.classList.toggle("active", language === "en");
+    });
+    document.querySelectorAll('[data-language="ta"]').forEach(button=>{
+        button.classList.toggle("active", language === "ta");
+    });
+    loadHistory();
+
+};
+
+
+/* =====================================================
+LOAD LOCAL DATA
+===================================================== */
+
+function loadData(){
+
+    const savedPhoto =
+        localStorage.getItem(`profilePhoto_${localStorage.getItem("googleUID") || "guest"}_${selectedUser}`) ||
+        localStorage.getItem("profilePhoto");
+
+    if(savedPhoto){
+
+        document.getElementById("userInitial")
+            .innerHTML =
+            `<img src="${savedPhoto}" alt="Profile">`;
+
+        document.getElementById("profileInitial")
+            .innerHTML =
+            `<img src="${savedPhoto}" alt="Profile">`;
+
+        document.getElementById("accountPhotoPreview")
+            .innerHTML =
+            `<img src="${savedPhoto}" alt="Profile">`;
+
+    }
+
+    // Load from Firebase
+    loadFromFirebase().then(firebaseData => {
+
+        if(firebaseData.length > 0) {
+
+            farmData = firebaseData;
+
+        }
+
+        loadHistory();
+
+    });
+
+}
+
+
+/* =====================================================
+INITIAL PAGE
+===================================================== */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        setTodayDate();
+
+    }
+);
+
+</script>
+
+</body>
+</html>
+```
