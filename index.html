@@ -1818,6 +1818,26 @@ provider.setCustomParameters({prompt:"select_account"});
 
 let currentUser = null;
 
+async function completeLogin(user){
+
+    currentUser = user;
+
+    const selected = localStorage.getItem("selectedFamilyUser") || "prabakaran";
+
+    localStorage.setItem("googleEmail", user.email || "");
+    localStorage.setItem("googleName", user.displayName || "");
+    localStorage.setItem("googlePhoto", user.photoURL || "");
+    localStorage.setItem("googleUID", user.uid || "");
+    localStorage.setItem("familyProfileName", getDisplayName(selected));
+
+    sessionStorage.removeItem("loginInProgress");
+    showApplication();
+
+    const profile = await resolveFamilyProfile(user, selected);
+    selectedUser = profile.key;
+    updateUser();
+}
+
 async function resolveFamilyProfile(user, requestedProfile){
 
     const fallback = {
@@ -1852,12 +1872,12 @@ GOOGLE LOGIN
 
 window.loginWithGoogle = async function(){
 
-    const selectedUser =
+    const selected =
         document.getElementById("username").value;
 
     localStorage.setItem(
         "selectedFamilyUser",
-        selectedUser
+        selected
     );
 
     const errorBox =
@@ -1870,36 +1890,9 @@ window.loginWithGoogle = async function(){
         const result =
             await signInWithPopup(auth,provider);
 
-        currentUser = result.user;
-        sessionStorage.removeItem("loginInProgress");
-
-        localStorage.setItem(
-            "googleEmail",
-            currentUser.email || ""
-        );
-
-        localStorage.setItem(
-            "googleName",
-            currentUser.displayName || ""
-        );
-
-        localStorage.setItem(
-            "googlePhoto",
-            currentUser.photoURL || ""
-        );
-
-        localStorage.setItem(
-            "googleUID",
-            currentUser.uid || ""
-        );
-
-        localStorage.setItem("familyProfileName", getDisplayName(selectedUser));
-        showApplication();
-        resolveFamilyProfile(currentUser, selectedUser)
-            .then(profile=>{
-                selectedUser = profile.key;
-                updateUser();
-            });
+        if(!currentUser || currentUser.uid !== result.user.uid){
+            await completeLogin(result.user);
+        }
 
     }
     catch(error){
@@ -1929,21 +1922,11 @@ AUTH STATE
 
 onAuthStateChanged(auth,async(user)=>{
 
-    if(user){
+    if(user && (!currentUser || currentUser.uid !== user.uid)){
 
         currentUser = user;
 
-        if(sessionStorage.getItem("loginInProgress") === "true"){
-            sessionStorage.removeItem("loginInProgress");
-            const selected = localStorage.getItem("selectedFamilyUser") || "prabakaran";
-            localStorage.setItem("familyProfileName", getDisplayName(selected));
-            showApplication();
-            resolveFamilyProfile(user, selected)
-                .then(profile=>{
-                    selectedUser = profile.key;
-                    updateUser();
-                });
-        }
+        await completeLogin(user);
 
     }
 
