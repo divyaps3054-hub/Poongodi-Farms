@@ -81,10 +81,13 @@ def record_values(form):
         "meat_available": number(form.get("meat_available")),
         "meat_price": number(form.get("meat_price")),
         "meat_sold": number(form.get("meat_sold")),
+        "mortality": number(form.get("mortality")),
+        "medicine": number(form.get("medicine")),
+        "tray_stickers": number(form.get("tray_stickers")),
         "expenses": number(form.get("expenses")),
         "notes": form.get("notes", "").strip(),
     }
-    for key in ("quail_available", "quail_price", "quail_sold", "nattu_available", "nattu_price", "nattu_sold", "meat_available", "meat_price", "meat_sold", "expenses"):
+    for key in ("quail_available", "quail_price", "quail_sold", "nattu_available", "nattu_price", "nattu_sold", "meat_available", "meat_price", "meat_sold", "mortality", "medicine", "tray_stickers", "expenses"):
         if values[key] < 0:
             raise ValueError("Negative values are not allowed.")
     if values["quail_sold"] > values["quail_available"] or values["nattu_sold"] > values["nattu_available"] or values["meat_sold"] > values["meat_available"]:
@@ -99,7 +102,7 @@ def totals(rows):
         result["nattu_sold"] += float(row["nattu_sold"])
         result["meat_sold"] += float(row["meat_sold"])
         result["sales"] += float(row["quail_sales"] + row["nattu_sales"] + row["meat_sales"])
-        result["expenses"] += float(row["expenses"])
+        result["expenses"] += float(row["expenses"] + row.get("medicine", 0) + row.get("tray_stickers", 0))
     result["net"] = result["sales"] - result["expenses"]
     return result
 
@@ -168,12 +171,13 @@ def api_create_record():
     try:
         values = record_values(request.get_json(silent=True) or {})
         query("""INSERT INTO daily_records (record_date, quail_available, quail_price, quail_sold, nattu_available,
-            nattu_price, nattu_sold, meat_available, meat_price, meat_sold, expenses, notes, updated_by)
+            nattu_price, nattu_sold, meat_available, meat_price, meat_sold, mortality, medicine, tray_stickers, expenses, notes, updated_by)
             VALUES (%(record_date)s, %(quail_available)s, %(quail_price)s, %(quail_sold)s, %(nattu_available)s,
-            %(nattu_price)s, %(nattu_sold)s, %(meat_available)s, %(meat_price)s, %(meat_sold)s, %(expenses)s,
+            %(nattu_price)s, %(nattu_sold)s, %(meat_available)s, %(meat_price)s, %(meat_sold)s, %(mortality)s, %(medicine)s, %(tray_stickers)s, %(expenses)s,
             %(notes)s, %(updated_by)s)""", {**values, "updated_by": session["user_id"]}, commit=True)
         activity("added a daily record")
-        return jsonify({"ok": True}), 201
+        record_id = query("SELECT id FROM daily_records WHERE updated_by=%s ORDER BY id DESC LIMIT 1", (session["user_id"],), one=True)["id"]
+        return jsonify({"ok": True, "id": record_id}), 201
     except ValueError as error:
         return jsonify({"error": str(error)}), 400
 
@@ -187,10 +191,11 @@ def api_update_record(record_id):
         query("""UPDATE daily_records SET record_date=%(record_date)s, quail_available=%(quail_available)s,
             quail_price=%(quail_price)s, quail_sold=%(quail_sold)s, nattu_available=%(nattu_available)s,
             nattu_price=%(nattu_price)s, nattu_sold=%(nattu_sold)s, meat_available=%(meat_available)s,
-            meat_price=%(meat_price)s, meat_sold=%(meat_sold)s, expenses=%(expenses)s, notes=%(notes)s,
+            meat_price=%(meat_price)s, meat_sold=%(meat_sold)s, mortality=%(mortality)s, medicine=%(medicine)s,
+            tray_stickers=%(tray_stickers)s, expenses=%(expenses)s, notes=%(notes)s,
             updated_by=%(updated_by)s, updated_at=NOW() WHERE id=%(id)s""", values, commit=True)
         activity("edited a sales record")
-        return jsonify({"ok": True})
+        return jsonify({"ok": True, "id": record_id})
     except ValueError as error:
         return jsonify({"error": str(error)}), 400
 

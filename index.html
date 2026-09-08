@@ -823,6 +823,12 @@ alt="Farm Logo">
 
 </select>
 
+<input
+type="password"
+id="backendPassword"
+placeholder="Family password"
+autocomplete="current-password">
+
 <!-- PASSWORD REMOVED -->
 
 <button
@@ -830,7 +836,7 @@ class="btn google-btn"
 onclick="loginWithGoogle()"
 data-i18n="googleLogin">
 
-🔵 Continue with Google
+🔐 Login to Farm
 
 </button>
 
@@ -1929,12 +1935,26 @@ window.loginWithGoogle = async function(){
 
     try{
 
-        const result =
-            await signInWithPopup(auth,provider);
-
-        if(!currentUser || currentUser.uid !== result.user.uid){
-            await completeLogin(result.user);
-        }
+        const profilesResponse = await fetch("http://127.0.0.1:5000/api/profiles");
+        const profilesData = await profilesResponse.json();
+        const selectedNames = {prabakaran: "Prabakaran", poongodi: "Poongodi", rajindharan: "Rajindharan", sajindharan: "Sajindharan"};
+        const selectedName = selectedNames[selected];
+        const selectedProfile = profilesData.profiles.find(profile => profile.name.toLowerCase() === selectedName.toLowerCase());
+        const password = document.getElementById("backendPassword").value;
+        const response = await fetch("http://127.0.0.1:5000/api/login", {
+            method: "POST",
+            credentials: "include",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+                email: "family@poongodifarm.local",
+                password,
+                profile_id: selectedProfile ? selectedProfile.id : null
+            })
+        });
+        const data = await response.json();
+        if(!response.ok) throw new Error(data.error || "Backend login failed.");
+        localStorage.setItem("backendUser", JSON.stringify(data.user));
+        await completeBackendLogin(data.user);
 
     }
     catch(error){
@@ -1947,13 +1967,22 @@ window.loginWithGoogle = async function(){
             return;
         }
 
-        errorBox.innerText = error.code === "auth/unauthorized-domain"
-            ? "இந்த website domain-ஐ Firebase Authorized Domains-ல் சேர்க்க வேண்டும்."
-            : "Google Login failed. Please try again.";
+        errorBox.innerText = error.message || "Backend login failed. Please check Flask and MySQL.";
 
     }
 
 };
+
+async function completeBackendLogin(user){
+
+    currentUser = user;
+    selectedUser = Object.keys({prabakaran: 1, poongodi: 1, rajindharan: 1, sajindharan: 1})
+        .find(key => getDisplayName(key).toLowerCase() === user.name.toLowerCase()) || selectedUser;
+    localStorage.setItem("selectedFamilyUser", selectedUser);
+    localStorage.setItem("familyProfileName", user.name);
+    showApplication();
+
+}
 
 
 /*
@@ -1962,17 +1991,7 @@ AUTH STATE
 ==========================================================
 */
 
-onAuthStateChanged(auth,async(user)=>{
-
-    if(user && (!currentUser || currentUser.uid !== user.uid)){
-
-        currentUser = user;
-
-        await completeLogin(user);
-
-    }
-
-});
+onAuthStateChanged(auth,()=>{});
 
 
 /*
@@ -1985,7 +2004,7 @@ window.logout = async function(){
 
     try{
 
-        await signOut(auth);
+        await fetch("http://127.0.0.1:5000/api/logout", {method: "POST", credentials: "include"});
 
         currentUser = null;
 
@@ -2005,6 +2024,8 @@ window.logout = async function(){
         localStorage.removeItem(
             "googleUID"
         );
+
+        localStorage.removeItem("backendUser");
 
         document.getElementById("app").style.display =
             "none";
@@ -2029,24 +2050,44 @@ SAVE DATA TO FIREBASE
 
 window.saveToFirebase = async function(record) {
 
-    if (!currentUser) return false;
+    if (!currentUser) return {success: false};
 
     try {
 
-        const userUID = currentUser.uid;
-
-        const dataRef = ref(database, `sharedFarmData/${record.id}`);
-
-        await set(dataRef, record);
-
-        return true;
+        const payload = {
+            record_date: record.date,
+            quail_available: record.quailProduced,
+            quail_price: record.quailRate,
+            quail_sold: record.quailSold,
+            nattu_available: record.nattuProduced,
+            nattu_price: record.nattuRate,
+            nattu_sold: record.nattuSold,
+            meat_available: record.quailMeatAvailable,
+            meat_price: record.quailMeatRate,
+            meat_sold: record.quailMeatSold,
+            mortality: record.quailMortality,
+            medicine: record.medicine,
+            tray_stickers: record.trayStickers,
+            expenses: record.expenses,
+            notes: record.notes
+        };
+        const backendId = record.backendId || (Number.isInteger(Number(record.id)) && String(record.id).length < 12 ? record.id : null);
+        const response = await fetch(backendId ? `http://127.0.0.1:5000/api/records/${backendId}` : "http://127.0.0.1:5000/api/records", {
+            method: backendId ? "PUT" : "POST",
+            credentials: "include",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(payload)
+        });
+        const data = await response.json();
+        if(!response.ok) throw new Error(data.error || "Could not save record.");
+        return {success: true, id: data.id || backendId};
 
     } 
     catch (error) {
 
-        console.error("Firebase save error:", error);
+        console.error("Backend save error:", error);
 
-        return false;
+        return {success: false, error: error.message};
 
     }
 
@@ -2064,26 +2105,35 @@ window.loadFromFirebase = async function() {
 
     try {
 
-        const userUID = currentUser.uid;
-
-        const dataRef = ref(database, "sharedFarmData");
-
-        const snapshot = await get(dataRef);
-
-        if (snapshot.exists()) {
-
-            const data = snapshot.val();
-
-            return Object.values(data || {});
-
-        }
-
-        return [];
+        const response = await fetch("http://127.0.0.1:5000/api/records", {credentials: "include"});
+        if(!response.ok) throw new Error("Could not load backend records.");
+        const records = await response.json();
+        return records.map(record => ({
+            id: String(record.id),
+            backendId: record.id,
+            date: record.record_date,
+            quailProduced: Number(record.quail_available),
+            quailRate: Number(record.quail_price),
+            quailSold: Number(record.quail_sold),
+            nattuProduced: Number(record.nattu_available),
+            nattuRate: Number(record.nattu_price),
+            nattuSold: Number(record.nattu_sold),
+            quailMeatAvailable: Number(record.meat_available),
+            quailMeatRate: Number(record.meat_price),
+            quailMeatSold: Number(record.meat_sold),
+            quailMortality: Number(record.mortality),
+            medicine: Number(record.medicine),
+            trayStickers: Number(record.tray_stickers),
+            expenses: Number(record.expenses),
+            notes: record.notes || "",
+            updatedBy: record.updated_by_name || "-",
+            updatedAt: record.updated_at || ""
+        }));
 
     } 
     catch (error) {
 
-        console.error("Firebase load error:", error);
+        console.error("Backend load error:", error);
 
         return [];
 
@@ -2103,18 +2153,13 @@ window.deleteFromFirebase = async function(recordId) {
 
     try {
 
-        const userUID = currentUser.uid;
-
-        const dataRef = ref(database, `sharedFarmData/${recordId}`);
-
-        await remove(dataRef);
-
-        return true;
+        const response = await fetch(`http://127.0.0.1:5000/api/records/${recordId}`, {method: "DELETE", credentials: "include"});
+        return response.ok;
 
     } 
     catch (error) {
 
-        console.error("Firebase delete error:", error);
+        console.error("Backend delete error:", error);
 
         return false;
 
@@ -2334,7 +2379,7 @@ SAVE DATA
 ===================================================== */
 
 window.saveData =
-function(){
+async function(){
 
     calculateTotalSales();
 
@@ -2401,45 +2446,32 @@ function(){
 
     };
 
-    const existingIndex =
-        farmData.findIndex(
-            item => item.id === record.id
-        );
+    const localRecordId = record.id;
+    const success = await saveToFirebase(record);
 
-    if(existingIndex >= 0){
+    if(success.success) {
 
-        farmData[existingIndex] = record;
-
-    }
-    else{
-
-        farmData.push(record);
-
-    }
-
-    localStorage.setItem(
-        "farmData",
-        JSON.stringify(farmData)
-    );
-
-    // Save to Firebase
-    saveToFirebase(record).then(success => {
-
-        if(success) {
-
-            alert(
-                "Daily farm data saved successfully!"
-            );
-
-        } else {
-
-            alert(
-                "Data saved locally. Check internet connection for cloud sync."
-            );
-
+        if(success.id){
+            record.backendId = success.id;
+            record.id = String(success.id);
         }
 
-    });
+        const existingIndex = farmData.findIndex(item => item.id === localRecordId);
+        if(existingIndex >= 0) farmData[existingIndex] = record;
+        else farmData.push(record);
+        localStorage.setItem("farmData", JSON.stringify(farmData));
+
+        alert(
+            "Daily farm data saved successfully!"
+        );
+
+    } else {
+
+        alert(
+            success.error || "Data could not be saved to the backend."
+        );
+
+    }
 
     clearForm();
 
@@ -3238,11 +3270,8 @@ function loadData(){
     // Load from Firebase
     loadFromFirebase().then(firebaseData => {
 
-        if(firebaseData.length > 0) {
-
-            farmData = firebaseData;
-
-        }
+        farmData = firebaseData;
+        localStorage.setItem("farmData", JSON.stringify(farmData));
 
         loadHistory();
 

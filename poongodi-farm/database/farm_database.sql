@@ -26,6 +26,9 @@ CREATE TABLE IF NOT EXISTS daily_records (
     meat_available DECIMAL(12,2) NOT NULL DEFAULT 0,
     meat_price DECIMAL(12,2) NOT NULL DEFAULT 0,
     meat_sold DECIMAL(12,2) NOT NULL DEFAULT 0,
+    mortality DECIMAL(12,2) NOT NULL DEFAULT 0,
+    medicine DECIMAL(12,2) NOT NULL DEFAULT 0,
+    tray_stickers DECIMAL(12,2) NOT NULL DEFAULT 0,
     expenses DECIMAL(12,2) NOT NULL DEFAULT 0,
     notes TEXT,
     updated_by INT NOT NULL,
@@ -38,6 +41,10 @@ CREATE TABLE IF NOT EXISTS daily_records (
     CONSTRAINT chk_nattu_stock CHECK (nattu_available >= 0 AND nattu_sold >= 0 AND nattu_sold <= nattu_available),
     CONSTRAINT chk_meat_stock CHECK (meat_available >= 0 AND meat_sold >= 0 AND meat_sold <= meat_available)
 );
+
+ALTER TABLE daily_records ADD COLUMN IF NOT EXISTS mortality DECIMAL(12,2) NOT NULL DEFAULT 0;
+ALTER TABLE daily_records ADD COLUMN IF NOT EXISTS medicine DECIMAL(12,2) NOT NULL DEFAULT 0;
+ALTER TABLE daily_records ADD COLUMN IF NOT EXISTS tray_stickers DECIMAL(12,2) NOT NULL DEFAULT 0;
 
 CREATE TABLE IF NOT EXISTS activity_logs (
     id INT AUTO_INCREMENT PRIMARY KEY,
