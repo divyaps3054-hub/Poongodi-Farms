@@ -6,11 +6,13 @@ CREATE TABLE IF NOT EXISTS users (
     name VARCHAR(100) NOT NULL,
     email VARCHAR(190) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
-    profile_photo VARCHAR(255) DEFAULT NULL,
+    profile_photo LONGTEXT DEFAULT NULL,
     role ENUM('admin','member') NOT NULL DEFAULT 'member',
     is_active TINYINT(1) NOT NULL DEFAULT 1,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+ALTER TABLE users MODIFY profile_photo LONGTEXT DEFAULT NULL;
 
 CREATE TABLE IF NOT EXISTS daily_records (
     id INT AUTO_INCREMENT PRIMARY KEY,

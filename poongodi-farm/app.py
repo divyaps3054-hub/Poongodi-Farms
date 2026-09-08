@@ -218,6 +218,27 @@ def api_profile():
     return jsonify({"user": query("SELECT id, name, email, profile_photo, role FROM users WHERE id=%s", (session["user_id"],), one=True)})
 
 
+@app.put("/api/profile")
+@login_required
+def api_update_profile():
+    payload = request.get_json(silent=True) or {}
+    name = (payload.get("name") or session["name"]).strip()
+    profile_image = payload.get("profileImage")
+    if not name:
+        return jsonify({"error": "Name is required."}), 400
+    if profile_image is not None and not isinstance(profile_image, str):
+        return jsonify({"error": "Profile image must be a string."}), 400
+    query("UPDATE users SET name=%s, profile_photo=%s WHERE id=%s", (name, profile_image, session["user_id"]), commit=True)
+    session["name"] = name
+    return jsonify({"user": query("SELECT id, name, email, profile_photo, role FROM users WHERE id=%s", (session["user_id"],), one=True)})
+
+
+@app.post("/api/profile/upload")
+@login_required
+def api_upload_profile():
+    return api_update_profile()
+
+
 @app.put("/api/profile/password")
 @login_required
 def api_change_password():

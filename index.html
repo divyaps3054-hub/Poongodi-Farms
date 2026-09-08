@@ -1869,7 +1869,6 @@ async function completeLogin(user){
 
     localStorage.setItem("googleEmail", user.email || "");
     localStorage.setItem("googleName", user.displayName || "");
-    localStorage.setItem("googlePhoto", user.photoURL || "");
     localStorage.setItem("googleUID", user.uid || "");
     localStorage.setItem("familyProfileName", getDisplayName(selected));
 
@@ -2002,9 +2001,6 @@ window.logout = async function(){
             "googleName"
         );
 
-        localStorage.removeItem(
-            "googlePhoto"
-        );
 
         localStorage.removeItem(
             "googleUID"
@@ -2198,6 +2194,52 @@ function getDisplayName(value){
 
 }
 
+function getCurrentProfileKey(){
+
+    const identity =
+        selectedUser ||
+        localStorage.getItem("selectedFamilyUser") ||
+        "guest";
+
+    return `profile_${identity}`;
+
+}
+
+function getCurrentProfile(){
+
+    try{
+
+        return JSON.parse(
+            localStorage.getItem(getCurrentProfileKey()) || "null"
+        ) || {};
+
+    }
+    catch(error){
+
+        return {};
+
+    }
+
+}
+
+function renderCurrentProfile(){
+
+    const name = getDisplayName(selectedUser);
+    const profile = getCurrentProfile();
+    const initial = name.charAt(0).toUpperCase();
+    const image = profile.profileImage;
+
+    document.getElementById("userInitial").innerHTML =
+        image ? `<img src="${image}" alt="Profile">` : initial;
+
+    document.getElementById("profileInitial").innerHTML =
+        image ? `<img src="${image}" alt="Profile">` : initial;
+
+    document.getElementById("accountPhotoPreview").innerHTML =
+        image ? `<img src="${image}" alt="Profile">` : initial;
+
+}
+
 
 function updateUser(){
 
@@ -2210,12 +2252,6 @@ function updateUser(){
     document.getElementById("profileName")
         .innerText = name;
 
-    document.getElementById("userInitial")
-        .innerText = name.charAt(0).toUpperCase();
-
-    document.getElementById("profileInitial")
-        .innerText = name.charAt(0).toUpperCase();
-
     document.getElementById("accountName")
         .value = name;
 
@@ -2227,28 +2263,7 @@ function updateUser(){
             ? "குடும்ப உறுப்பினர்"
             : "Family Member";
 
-    const googleName =
-        localStorage.getItem("googleName");
-
-    const googlePhoto =
-        localStorage.getItem(`profilePhoto_${localStorage.getItem("googleUID") || "guest"}_${selectedUser}`) ||
-        localStorage.getItem("googlePhoto");
-
-    if(googlePhoto){
-
-        document.getElementById("userInitial")
-            .innerHTML =
-            `<img src="${googlePhoto}" alt="Profile">`;
-
-        document.getElementById("profileInitial")
-            .innerHTML =
-            `<img src="${googlePhoto}" alt="Profile">`;
-
-        document.getElementById("accountPhotoPreview")
-            .innerHTML =
-            `<img src="${googlePhoto}" alt="Profile">`;
-
-    }
+    renderCurrentProfile();
 
 }
 
@@ -3092,22 +3107,17 @@ function(event){
         const image =
             e.target.result;
 
+        const profile = getCurrentProfile();
+
+        profile.name = getDisplayName(selectedUser);
+        profile.profileImage = image;
+
         localStorage.setItem(
-            `profilePhoto_${localStorage.getItem("googleUID") || "guest"}_${selectedUser}`,
-            image
+            getCurrentProfileKey(),
+            JSON.stringify(profile)
         );
 
-        document.getElementById("userInitial")
-            .innerHTML =
-            `<img src="${image}" alt="Profile">`;
-
-        document.getElementById("profileInitial")
-            .innerHTML =
-            `<img src="${image}" alt="Profile">`;
-
-        document.getElementById("accountPhotoPreview")
-            .innerHTML =
-            `<img src="${image}" alt="Profile">`;
+        renderCurrentProfile();
 
     };
 
@@ -3223,25 +3233,7 @@ LOAD LOCAL DATA
 
 function loadData(){
 
-    const savedPhoto =
-        localStorage.getItem(`profilePhoto_${localStorage.getItem("googleUID") || "guest"}_${selectedUser}`) ||
-        localStorage.getItem("profilePhoto");
-
-    if(savedPhoto){
-
-        document.getElementById("userInitial")
-            .innerHTML =
-            `<img src="${savedPhoto}" alt="Profile">`;
-
-        document.getElementById("profileInitial")
-            .innerHTML =
-            `<img src="${savedPhoto}" alt="Profile">`;
-
-        document.getElementById("accountPhotoPreview")
-            .innerHTML =
-            `<img src="${savedPhoto}" alt="Profile">`;
-
-    }
+    renderCurrentProfile();
 
     // Load from Firebase
     loadFromFirebase().then(firebaseData => {
