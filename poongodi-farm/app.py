@@ -10,6 +10,7 @@ from decimal import Decimal, InvalidOperation
 from functools import wraps
 
 import mysql.connector
+import jwt
 from dotenv import load_dotenv
 from flask import Flask, flash, jsonify, redirect, render_template, request, session, url_for
 from flask_cors import CORS
@@ -262,12 +263,23 @@ def api_google_login():
     if not token:
         return jsonify({"error": "Google ID token is required."}), 400
     try:
-        query_string = urlencode({"id_token": token}).encode()
-        with urlopen("https://oauth2.googleapis.com/tokeninfo", data=query_string, timeout=8) as response:
-            token_info = json.load(response)
+        project_id = os.getenv("FIREBASE_PROJECT_ID", "prs-farms")
+        with urlopen("https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com", timeout=8) as response:
+            certificates = json.load(response)
+        header = jwt.get_unverified_header(token)
+        certificate = certificates.get(header.get("kid"))
+        if not certificate:
+            return jsonify({"error": "Google token key is not recognized."}), 401
+        token_info = jwt.decode(
+            token,
+            certificate,
+            algorithms=["RS256"],
+            audience=project_id,
+            issuer=f"https://securetoken.google.com/{project_id}",
+        )
         allowed_emails = {email.strip().lower() for email in os.getenv("GOOGLE_ALLOWED_EMAILS", "").split(",") if email.strip()}
         email = token_info.get("email", "").lower()
-        if token_info.get("aud") != os.getenv("FIREBASE_PROJECT_ID", "prs-farms") or token_info.get("email_verified") != "true":
+        if not email or token_info.get("email_verified") not in (True, "true"):
             return jsonify({"error": "Google account verification failed."}), 401
         if not allowed_emails:
             return jsonify({"error": "GOOGLE_ALLOWED_EMAILS is not configured."}), 503
@@ -281,7 +293,8 @@ def api_google_login():
         session.update(user_id=user["id"], name=user["name"], role=user["role"], email=user["email"])
         activity("logged in with Google")
         return jsonify({"user": api_user()})
-    except Exception:
+    except Exception as error:
+        app.logger.exception("Google login verification failed: %s", error)
         return jsonify({"error": "Google login verification is unavailable."}), 502
 
 
