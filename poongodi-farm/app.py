@@ -1,7 +1,10 @@
 import os
 import json
+import re
+import sqlite3
 from urllib.parse import urlencode
 from urllib.request import urlopen
+from pathlib import Path
 from datetime import date, datetime, timedelta
 from decimal import Decimal, InvalidOperation
 from functools import wraps
@@ -16,6 +19,101 @@ load_dotenv()
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "change-this-secret-key")
 CORS(app, supports_credentials=True, origins=os.getenv("FRONTEND_ORIGIN", "http://localhost:5173").split(","))
+SQLITE_PATH = Path(__file__).with_name("database") / "poongodi_farm.sqlite3"
+
+
+class SQLiteCursor:
+    def __init__(self, cursor):
+        self.cursor = cursor
+
+    def execute(self, sql, params=()):
+        sql = sql.replace("NOW()", "CURRENT_TIMESTAMP")
+        if isinstance(params, dict):
+            sql = re.sub(r"%\((\w+)\)s", r":\1", sql)
+        else:
+            sql = sql.replace("%s", "?")
+        self.cursor.execute(sql, params)
+
+    def fetchone(self):
+        row = self.cursor.fetchone()
+        return dict(row) if row else None
+
+    def fetchall(self):
+        return [dict(row) for row in self.cursor.fetchall()]
+
+    def close(self):
+        self.cursor.close()
+
+
+class SQLiteConnection:
+    def __init__(self):
+        self.connection = sqlite3.connect(SQLITE_PATH)
+        self.connection.row_factory = sqlite3.Row
+
+    def cursor(self, dictionary=False):
+        return SQLiteCursor(self.connection.cursor())
+
+    def commit(self):
+        self.connection.commit()
+
+    def close(self):
+        self.connection.close()
+
+
+def initialize_sqlite():
+    connection = sqlite3.connect(SQLITE_PATH)
+    connection.executescript("""
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            email TEXT NOT NULL UNIQUE,
+            password_hash TEXT NOT NULL,
+            profile_photo TEXT,
+            role TEXT NOT NULL DEFAULT 'member',
+            is_active INTEGER NOT NULL DEFAULT 1,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        );
+        CREATE TABLE IF NOT EXISTS daily_records (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            record_date TEXT NOT NULL,
+            quail_available REAL NOT NULL DEFAULT 0,
+            quail_price REAL NOT NULL DEFAULT 0,
+            quail_sold REAL NOT NULL DEFAULT 0,
+            nattu_available REAL NOT NULL DEFAULT 0,
+            nattu_price REAL NOT NULL DEFAULT 0,
+            nattu_sold REAL NOT NULL DEFAULT 0,
+            meat_available REAL NOT NULL DEFAULT 0,
+            meat_price REAL NOT NULL DEFAULT 0,
+            meat_sold REAL NOT NULL DEFAULT 0,
+            mortality REAL NOT NULL DEFAULT 0,
+            medicine REAL NOT NULL DEFAULT 0,
+            tray_stickers REAL NOT NULL DEFAULT 0,
+            expenses REAL NOT NULL DEFAULT 0,
+            notes TEXT,
+            updated_by INTEGER NOT NULL,
+            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            quail_sales REAL GENERATED ALWAYS AS (quail_price * quail_sold) STORED,
+            nattu_sales REAL GENERATED ALWAYS AS (nattu_price * nattu_sold) STORED,
+            meat_sales REAL GENERATED ALWAYS AS (meat_price * meat_sold) STORED
+        );
+        CREATE TABLE IF NOT EXISTS activity_logs (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            action TEXT NOT NULL,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        );
+    """)
+    password_hash = generate_password_hash(os.getenv("FAMILY_PASSWORD", "change-this-family-password"))
+    users = [
+        ("Prabakaran", "prabakaran@poongodifarm.local", "admin"),
+        ("Poongodi", "poongodi@poongodifarm.local", "member"),
+        ("Rajindharan", "rajindharan@poongodifarm.local", "member"),
+        ("Sajindharan", "sajindharan@poongodifarm.local", "member"),
+    ]
+    for name, email, role in users:
+        connection.execute("INSERT OR IGNORE INTO users (name,email,password_hash,role) VALUES (?,?,?,?)", (name, email, password_hash, role))
+    connection.commit()
+    connection.close()
 
 
 @app.errorhandler(mysql.connector.Error)
@@ -26,13 +124,17 @@ def handle_database_error(error):
 
 
 def db():
-    return mysql.connector.connect(
-        host=os.getenv("DB_HOST", "127.0.0.1"),
-        port=int(os.getenv("DB_PORT", "3306")),
-        user=os.getenv("DB_USER", "root"),
-        password=os.getenv("DB_PASSWORD", ""),
-        database=os.getenv("DB_NAME", "poongodi_farm"),
-    )
+    try:
+        return mysql.connector.connect(
+            host=os.getenv("DB_HOST", "127.0.0.1"),
+            port=int(os.getenv("DB_PORT", "3306")),
+            user=os.getenv("DB_USER", "root"),
+            password=os.getenv("DB_PASSWORD", ""),
+            database=os.getenv("DB_NAME", "poongodi_farm"),
+        )
+    except mysql.connector.Error:
+        initialize_sqlite()
+        return SQLiteConnection()
 
 
 def query(sql, params=(), one=False, commit=False):
