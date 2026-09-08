@@ -2201,6 +2201,10 @@ window.loadFromFirebase = async function() {
             quailMeatAvailable: Number(record.meat_available),
             quailMeatRate: Number(record.meat_price),
             quailMeatSold: Number(record.meat_sold),
+            sales:
+                Number(record.quail_sales || 0) +
+                Number(record.nattu_sales || 0) +
+                Number(record.meat_sales || 0),
             quailMortality: Number(record.mortality),
             medicine: Number(record.medicine),
             trayStickers: Number(record.tray_stickers),
@@ -2754,7 +2758,11 @@ function loadHistory(){
 
                 <span>${labels.expenses}</span>
 
-                <b>₹${record.expenses}</b>
+                <b>₹${(
+                    Number(record.expenses || 0) +
+                    Number(record.medicine || 0) +
+                    Number(record.trayStickers || 0)
+                ).toFixed(2)}</b>
 
             </div>
 
@@ -3120,9 +3128,13 @@ function updateReports(){
 
         <td>${record.quailMeatSold}</td>
 
-        <td>₹${record.sales}</td>
+        <td>₹${Number(record.sales || 0).toFixed(2)}</td>
 
-        <td>₹${record.expenses}</td>
+        <td>₹${(
+            Number(record.expenses || 0) +
+            Number(record.medicine || 0) +
+            Number(record.trayStickers || 0)
+        ).toFixed(2)}</td>
 
         `;
 
@@ -3358,6 +3370,8 @@ function loadData(){
         localStorage.setItem("farmData", JSON.stringify(farmData));
 
         loadHistory();
+        updateDashboard();
+        updateReports();
 
     });
 
