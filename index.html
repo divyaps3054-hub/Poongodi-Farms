@@ -2042,8 +2042,10 @@ window.loginWithGoogle = async function(){
     }
     catch(error){
         console.error(error);
-        if(error.code === "auth/popup-blocked" || error.code === "auth/popup-closed-by-user"){
-            errorBox.innerText = "Google popup was closed or blocked. Please allow popups and try again.";
+        const email = document.getElementById("backendEmail").value.trim();
+        const password = document.getElementById("backendPassword").value;
+        if(email && password){
+            await window.loginWithEmail();
         } else {
             errorBox.innerText = error.message || "Google login failed.";
         }

@@ -16,7 +16,7 @@ from flask import Flask, flash, jsonify, redirect, render_template, request, ses
 from flask_cors import CORS
 from werkzeug.security import check_password_hash, generate_password_hash
 
-load_dotenv()
+load_dotenv(override=True)
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "change-this-secret-key")
 CORS(app, supports_credentials=True, origins=os.getenv("FRONTEND_ORIGIN", "http://localhost:5173").split(","))
