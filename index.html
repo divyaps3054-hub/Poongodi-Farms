@@ -1170,6 +1170,20 @@ min="0">
 
 <div class="field">
 
+<label>🥚 Quail Egg Rate (₹ each)</label>
+
+<input
+type="number"
+id="quailRate"
+min="0"
+step="0.01"
+placeholder="Example: 4">
+
+</div>
+
+
+<div class="field">
+
 <label data-i18n="nattuProduced">
 🥚 Nattu Koli Eggs Produced
 </label>
@@ -1192,6 +1206,20 @@ min="0">
 type="number"
 id="nattuSold"
 min="0">
+
+</div>
+
+
+<div class="field">
+
+<label>🥚 Nattu Koli Egg Rate (₹ each)</label>
+
+<input
+type="number"
+id="nattuRate"
+min="0"
+step="0.01"
+placeholder="Example: 5">
 
 </div>
 
@@ -1240,6 +1268,20 @@ min="0">
 
 <div class="field">
 
+<label>🥩 Quail Meat Rate (₹ / kg)</label>
+
+<input
+type="number"
+id="quailMeatRate"
+min="0"
+step="0.01"
+placeholder="Example: 300">
+
+</div>
+
+
+<div class="field">
+
 <label data-i18n="medicine">
 💊 Medicine
 </label>
@@ -1277,7 +1319,9 @@ placeholder="₹">
 <input
 type="number"
 id="sales"
-min="0">
+min="0"
+readonly
+placeholder="Calculated automatically">
 
 </div>
 
@@ -2277,6 +2321,8 @@ SAVE DATA
 window.saveData =
 function(){
 
+    calculateTotalSales();
+
     const record = {
 
         id:
@@ -2292,11 +2338,17 @@ function(){
         quailSold:
         Number(document.getElementById("quailSold").value) || 0,
 
+        quailRate:
+        Number(document.getElementById("quailRate").value) || 0,
+
         nattuProduced:
         Number(document.getElementById("nattuProduced").value) || 0,
 
         nattuSold:
         Number(document.getElementById("nattuSold").value) || 0,
+
+        nattuRate:
+        Number(document.getElementById("nattuRate").value) || 0,
 
         quailMortality:
         Number(document.getElementById("quailMortality").value) || 0,
@@ -2306,6 +2358,9 @@ function(){
 
         quailMeatSold:
         Number(document.getElementById("quailMeatSold").value) || 0,
+
+        quailMeatRate:
+        Number(document.getElementById("quailMeatRate").value) || 0,
 
         medicine:
         Number(document.getElementById("medicine").value) || 0,
@@ -2386,6 +2441,25 @@ function(){
 CLEAR FORM
 ===================================================== */
 
+function calculateTotalSales(){
+
+    const quailSales =
+        (Number(document.getElementById("quailSold").value) || 0) *
+        (Number(document.getElementById("quailRate").value) || 0);
+
+    const nattuSales =
+        (Number(document.getElementById("nattuSold").value) || 0) *
+        (Number(document.getElementById("nattuRate").value) || 0);
+
+    const meatSales =
+        (Number(document.getElementById("quailMeatSold").value) || 0) *
+        (Number(document.getElementById("quailMeatRate").value) || 0);
+
+    document.getElementById("sales").value =
+        (quailSales + nattuSales + meatSales).toFixed(2);
+
+}
+
 window.clearForm =
 function(){
 
@@ -2398,11 +2472,14 @@ function(){
 
         "quailProduced",
         "quailSold",
+        "quailRate",
         "nattuProduced",
         "nattuSold",
+        "nattuRate",
         "quailMortality",
         "quailMeatAvailable",
         "quailMeatSold",
+        "quailMeatRate",
         "medicine",
         "trayStickers",
         "sales",
@@ -2416,6 +2493,17 @@ function(){
     });
 
 };
+
+[
+    "quailSold",
+    "quailRate",
+    "nattuSold",
+    "nattuRate",
+    "quailMeatSold",
+    "quailMeatRate"
+].forEach(id => {
+    document.getElementById(id).addEventListener("input", calculateTotalSales);
+});
 
 
 /* =====================================================
@@ -2606,11 +2694,17 @@ function(id){
     document.getElementById("quailSold").value =
         record.quailSold;
 
+    document.getElementById("quailRate").value =
+        record.quailRate || "";
+
     document.getElementById("nattuProduced").value =
         record.nattuProduced;
 
     document.getElementById("nattuSold").value =
         record.nattuSold;
+
+    document.getElementById("nattuRate").value =
+        record.nattuRate || "";
 
     document.getElementById("quailMortality").value =
         record.quailMortality;
@@ -2621,6 +2715,9 @@ function(id){
     document.getElementById("quailMeatSold").value =
         record.quailMeatSold;
 
+    document.getElementById("quailMeatRate").value =
+        record.quailMeatRate || "";
+
     document.getElementById("medicine").value =
         record.medicine;
 
@@ -2629,6 +2726,8 @@ function(id){
 
     document.getElementById("sales").value =
         record.sales;
+
+    calculateTotalSales();
 
     document.getElementById("expenses").value =
         record.expenses;
