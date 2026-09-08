@@ -31,8 +31,10 @@ class SQLiteCursor:
         sql = sql.replace("NOW()", "CURRENT_TIMESTAMP")
         if isinstance(params, dict):
             sql = re.sub(r"%\((\w+)\)s", r":\1", sql)
+            params = {key: float(value) if isinstance(value, Decimal) else value for key, value in params.items()}
         else:
             sql = sql.replace("%s", "?")
+            params = tuple(float(value) if isinstance(value, Decimal) else value for value in params)
         self.cursor.execute(sql, params)
 
     def fetchone(self):
