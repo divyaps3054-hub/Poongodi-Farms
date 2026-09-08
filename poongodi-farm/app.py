@@ -1,4 +1,7 @@
 import os
+import json
+from urllib.parse import urlencode
+from urllib.request import urlopen
 from datetime import date, datetime, timedelta
 from decimal import Decimal, InvalidOperation
 from functools import wraps
@@ -140,6 +143,37 @@ def api_login():
     session.update(user_id=user["id"], name=user["name"], role=user["role"], email=user["email"])
     activity("logged in")
     return jsonify({"user": api_user()})
+
+
+@app.post("/api/login/google")
+def api_google_login():
+    payload = request.get_json(silent=True) or {}
+    token = payload.get("id_token", "")
+    profile_id = payload.get("profile_id")
+    if not token:
+        return jsonify({"error": "Google ID token is required."}), 400
+    try:
+        query_string = urlencode({"id_token": token}).encode()
+        with urlopen("https://oauth2.googleapis.com/tokeninfo", data=query_string, timeout=8) as response:
+            token_info = json.load(response)
+        allowed_emails = {email.strip().lower() for email in os.getenv("GOOGLE_ALLOWED_EMAILS", "").split(",") if email.strip()}
+        email = token_info.get("email", "").lower()
+        if token_info.get("aud") != os.getenv("FIREBASE_PROJECT_ID", "prs-farms") or token_info.get("email_verified") != "true":
+            return jsonify({"error": "Google account verification failed."}), 401
+        if not allowed_emails:
+            return jsonify({"error": "GOOGLE_ALLOWED_EMAILS is not configured."}), 503
+        if email not in allowed_emails:
+            return jsonify({"error": "This Google account is not authorized for the farm."}), 403
+        user = query("SELECT * FROM users WHERE email=%s AND is_active=1", (email,), one=True)
+        if not user and profile_id:
+            user = query("SELECT * FROM users WHERE id=%s AND is_active=1", (profile_id,), one=True)
+        if not user:
+            return jsonify({"error": "No matching family profile was found."}), 403
+        session.update(user_id=user["id"], name=user["name"], role=user["role"], email=user["email"])
+        activity("logged in with Google")
+        return jsonify({"user": api_user()})
+    except Exception:
+        return jsonify({"error": "Google login verification is unavailable."}), 502
 
 
 @app.post("/api/logout")

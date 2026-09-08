@@ -13,6 +13,8 @@ Full-stack family farm management system.
 
 1. Create the database by importing `database/farm_database.sql` into MySQL.
 2. Set the MySQL credentials and family login values in `.env`.
+	For Google login, also set `FIREBASE_PROJECT_ID=prs-farms` and a comma-separated
+	`GOOGLE_ALLOWED_EMAILS` list containing the authorized Google accounts.
 3. Install backend packages:
 
 ```powershell

@@ -824,6 +824,13 @@ alt="Farm Logo">
 </select>
 
 <input
+type="email"
+id="backendEmail"
+placeholder="Email address"
+autocomplete="email"
+value="family@poongodifarm.local">
+
+<input
 type="password"
 id="backendPassword"
 placeholder="Family password"
@@ -832,11 +839,19 @@ autocomplete="current-password">
 <!-- PASSWORD REMOVED -->
 
 <button
+class="btn login-btn"
+onclick="loginWithEmail()">
+
+✉️ Login with Email
+
+</button>
+
+<button
 class="btn google-btn"
 onclick="loginWithGoogle()"
 data-i18n="googleLogin">
 
-🔐 Login to Farm
+🔵 Continue with Google
 
 </button>
 
@@ -1918,7 +1933,7 @@ GOOGLE LOGIN
 ==========================================================
 */
 
-window.loginWithGoogle = async function(){
+window.loginWithEmail = async function(){
 
     const selected =
         document.getElementById("username").value;
@@ -1940,13 +1955,14 @@ window.loginWithGoogle = async function(){
         const selectedNames = {prabakaran: "Prabakaran", poongodi: "Poongodi", rajindharan: "Rajindharan", sajindharan: "Sajindharan"};
         const selectedName = selectedNames[selected];
         const selectedProfile = profilesData.profiles.find(profile => profile.name.toLowerCase() === selectedName.toLowerCase());
+        const email = document.getElementById("backendEmail").value.trim();
         const password = document.getElementById("backendPassword").value;
         const response = await fetch("http://127.0.0.1:5000/api/login", {
             method: "POST",
             credentials: "include",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({
-                email: "family@poongodifarm.local",
+                email,
                 password,
                 profile_id: selectedProfile ? selectedProfile.id : null
             })
@@ -1961,14 +1977,44 @@ window.loginWithGoogle = async function(){
 
         console.error(error);
 
-        if(error.code === "auth/popup-blocked" || error.code === "auth/popup-closed-by-user"){
-            sessionStorage.setItem("loginInProgress", "true");
-            await signInWithRedirect(auth, provider);
-            return;
-        }
-
         errorBox.innerText = error.message || "Backend login failed. Please check Flask and MySQL.";
 
+    }
+
+};
+
+window.loginWithGoogle = async function(){
+
+    const selected = document.getElementById("username").value;
+    const errorBox = document.getElementById("loginError");
+    errorBox.innerText = "";
+    localStorage.setItem("selectedFamilyUser", selected);
+
+    try{
+        const result = await signInWithPopup(auth, provider);
+        const idToken = await result.user.getIdToken();
+        const profilesResponse = await fetch("http://127.0.0.1:5000/api/profiles");
+        const profilesData = await profilesResponse.json();
+        const selectedNames = {prabakaran: "Prabakaran", poongodi: "Poongodi", rajindharan: "Rajindharan", sajindharan: "Sajindharan"};
+        const selectedProfile = profilesData.profiles.find(profile => profile.name.toLowerCase() === selectedNames[selected].toLowerCase());
+        const response = await fetch("http://127.0.0.1:5000/api/login/google", {
+            method: "POST",
+            credentials: "include",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({id_token: idToken, profile_id: selectedProfile ? selectedProfile.id : null})
+        });
+        const data = await response.json();
+        if(!response.ok) throw new Error(data.error || "Google login failed.");
+        localStorage.setItem("backendUser", JSON.stringify(data.user));
+        await completeBackendLogin(data.user);
+    }
+    catch(error){
+        console.error(error);
+        if(error.code === "auth/popup-blocked" || error.code === "auth/popup-closed-by-user"){
+            errorBox.innerText = "Google popup was closed or blocked. Please allow popups and try again.";
+        } else {
+            errorBox.innerText = error.message || "Google login failed.";
+        }
     }
 
 };
