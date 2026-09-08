@@ -73,6 +73,34 @@ body{
     outline:none;
 }
 
+.login-box input[type="email"],
+.login-box input[type="password"]{
+    width:100%;
+    height:50px;
+    padding:0 16px;
+    margin:8px 0;
+    border:1px solid #d8e2d2;
+    border-radius:14px;
+    background:#fbfdf9;
+    color:#263b20;
+    font-size:15px;
+    outline:none;
+    box-shadow:inset 0 1px 2px rgba(36,91,33,.04);
+    transition:border-color .2s, box-shadow .2s, background .2s;
+}
+
+.login-box input[type="email"]:focus,
+.login-box input[type="password"]:focus,
+.login-box select:focus{
+    border-color:#5e9f51;
+    background:white;
+    box-shadow:0 0 0 4px rgba(94,159,81,.14);
+}
+
+.login-box input::placeholder{
+    color:#91a08d;
+}
+
 .login-box select:focus{
     border-color:#276522;
 }
@@ -108,9 +136,10 @@ body{
 
 .login-btn{
     width:100%;
-    background:#276522;
+    background:linear-gradient(135deg,#276522,#3d8332);
     color:white;
     margin-top:10px;
+    box-shadow:0 7px 16px rgba(39,101,34,.2);
 }
 
 .login-btn:hover{
@@ -121,8 +150,9 @@ body{
     width:100%;
     background:white;
     color:#333;
-    border:1px solid #ccc;
+    border:1px solid #d5ded1;
     margin-top:12px;
+    box-shadow:0 4px 12px rgba(36,91,33,.06);
 }
 
 .google-btn:hover{
@@ -1950,14 +1980,15 @@ window.loginWithEmail = async function(){
 
     try{
 
-        const profilesResponse = await fetch("http://127.0.0.1:5000/api/profiles");
+        const profilesResponse = await fetch(`${BACKEND_API}/api/profiles`, {credentials: "include"});
+        if(!profilesResponse.ok) throw new Error("Backend is unavailable. Check Flask and MySQL.");
         const profilesData = await profilesResponse.json();
         const selectedNames = {prabakaran: "Prabakaran", poongodi: "Poongodi", rajindharan: "Rajindharan", sajindharan: "Sajindharan"};
         const selectedName = selectedNames[selected];
         const selectedProfile = profilesData.profiles.find(profile => profile.name.toLowerCase() === selectedName.toLowerCase());
         const email = document.getElementById("backendEmail").value.trim();
         const password = document.getElementById("backendPassword").value;
-        const response = await fetch("http://127.0.0.1:5000/api/login", {
+        const response = await fetch(`${BACKEND_API}/api/login`, {
             method: "POST",
             credentials: "include",
             headers: {"Content-Type": "application/json"},
@@ -1993,11 +2024,12 @@ window.loginWithGoogle = async function(){
     try{
         const result = await signInWithPopup(auth, provider);
         const idToken = await result.user.getIdToken();
-        const profilesResponse = await fetch("http://127.0.0.1:5000/api/profiles");
+        const profilesResponse = await fetch(`${BACKEND_API}/api/profiles`, {credentials: "include"});
+        if(!profilesResponse.ok) throw new Error("Backend is unavailable. Check Flask and MySQL.");
         const profilesData = await profilesResponse.json();
         const selectedNames = {prabakaran: "Prabakaran", poongodi: "Poongodi", rajindharan: "Rajindharan", sajindharan: "Sajindharan"};
         const selectedProfile = profilesData.profiles.find(profile => profile.name.toLowerCase() === selectedNames[selected].toLowerCase());
-        const response = await fetch("http://127.0.0.1:5000/api/login/google", {
+        const response = await fetch(`${BACKEND_API}/api/login/google`, {
             method: "POST",
             credentials: "include",
             headers: {"Content-Type": "application/json"},
@@ -2050,7 +2082,7 @@ window.logout = async function(){
 
     try{
 
-        await fetch("http://127.0.0.1:5000/api/logout", {method: "POST", credentials: "include"});
+        await fetch(`${BACKEND_API}/api/logout`, {method: "POST", credentials: "include"});
 
         currentUser = null;
 
@@ -2118,7 +2150,7 @@ window.saveToFirebase = async function(record) {
             notes: record.notes
         };
         const backendId = record.backendId || (Number.isInteger(Number(record.id)) && String(record.id).length < 12 ? record.id : null);
-        const response = await fetch(backendId ? `http://127.0.0.1:5000/api/records/${backendId}` : "http://127.0.0.1:5000/api/records", {
+        const response = await fetch(backendId ? `${BACKEND_API}/api/records/${backendId}` : `${BACKEND_API}/api/records`, {
             method: backendId ? "PUT" : "POST",
             credentials: "include",
             headers: {"Content-Type": "application/json"},
@@ -2151,7 +2183,7 @@ window.loadFromFirebase = async function() {
 
     try {
 
-        const response = await fetch("http://127.0.0.1:5000/api/records", {credentials: "include"});
+        const response = await fetch(`${BACKEND_API}/api/records`, {credentials: "include"});
         if(!response.ok) throw new Error("Could not load backend records.");
         const records = await response.json();
         return records.map(record => ({
@@ -2199,7 +2231,7 @@ window.deleteFromFirebase = async function(recordId) {
 
     try {
 
-        const response = await fetch(`http://127.0.0.1:5000/api/records/${recordId}`, {method: "DELETE", credentials: "include"});
+        const response = await fetch(`${BACKEND_API}/api/records/${recordId}`, {method: "DELETE", credentials: "include"});
         return response.ok;
 
     } 
@@ -2221,6 +2253,10 @@ window.deleteFromFirebase = async function(recordId) {
 /* =====================================================
 GLOBAL DATA
 ===================================================== */
+
+const BACKEND_API =
+    window.BACKEND_API_URL ||
+    "http://127.0.0.1:5000";
 
 let farmData =
 JSON.parse(
