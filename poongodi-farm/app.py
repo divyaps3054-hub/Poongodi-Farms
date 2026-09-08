@@ -18,6 +18,13 @@ app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "change-this-secret-key")
 CORS(app, supports_credentials=True, origins=os.getenv("FRONTEND_ORIGIN", "http://localhost:5173").split(","))
 
 
+@app.errorhandler(mysql.connector.Error)
+def handle_database_error(error):
+    if request.path.startswith("/api/"):
+        return jsonify({"error": "Database connection failed. Update DB_PASSWORD in poongodi-farm/.env and restart Flask."}), 503
+    raise error
+
+
 def db():
     return mysql.connector.connect(
         host=os.getenv("DB_HOST", "127.0.0.1"),

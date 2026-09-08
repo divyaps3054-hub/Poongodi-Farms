@@ -1981,8 +1981,8 @@ window.loginWithEmail = async function(){
     try{
 
         const profilesResponse = await fetch(`${BACKEND_API}/api/profiles`, {credentials: "include"});
-        if(!profilesResponse.ok) throw new Error("Backend is unavailable. Check Flask and MySQL.");
-        const profilesData = await profilesResponse.json();
+        const profilesData = await profilesResponse.json().catch(() => ({}));
+        if(!profilesResponse.ok) throw new Error(profilesData.error || "Backend is unavailable. Check Flask and MySQL.");
         const selectedNames = {prabakaran: "Prabakaran", poongodi: "Poongodi", rajindharan: "Rajindharan", sajindharan: "Sajindharan"};
         const selectedName = selectedNames[selected];
         const selectedProfile = profilesData.profiles.find(profile => profile.name.toLowerCase() === selectedName.toLowerCase());
@@ -2025,8 +2025,8 @@ window.loginWithGoogle = async function(){
         const result = await signInWithPopup(auth, provider);
         const idToken = await result.user.getIdToken();
         const profilesResponse = await fetch(`${BACKEND_API}/api/profiles`, {credentials: "include"});
-        if(!profilesResponse.ok) throw new Error("Backend is unavailable. Check Flask and MySQL.");
-        const profilesData = await profilesResponse.json();
+        const profilesData = await profilesResponse.json().catch(() => ({}));
+        if(!profilesResponse.ok) throw new Error(profilesData.error || "Backend is unavailable. Check Flask and MySQL.");
         const selectedNames = {prabakaran: "Prabakaran", poongodi: "Poongodi", rajindharan: "Rajindharan", sajindharan: "Sajindharan"};
         const selectedProfile = profilesData.profiles.find(profile => profile.name.toLowerCase() === selectedNames[selected].toLowerCase());
         const response = await fetch(`${BACKEND_API}/api/login/google`, {
