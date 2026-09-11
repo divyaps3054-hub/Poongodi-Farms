@@ -1226,9 +1226,11 @@ async function apiRequest(path, options = {}){
             ...options
         });
     }catch(error){
+        if(API_BASE_URL) throw new Error("Shared farm server is unavailable. Please try again.");
         return localApiRequest(path, options);
     }
     if(!(response.headers.get("content-type") || "").includes("application/json")){
+        if(API_BASE_URL) throw new Error("Shared farm server returned an invalid response.");
         return localApiRequest(path, options);
     }
     if(!response.ok){
@@ -1381,34 +1383,29 @@ async function login(){
 /* ================= AUTO LOGIN ================= */
 
 window.onload=async function(){
+    const savedUser = localStorage.getItem("currentFarmUser");
+    const savedToken = localStorage.getItem("farmAuthToken");
+    if(!savedUser || !savedToken) return;
 
-    let savedUser=localStorage.getItem("currentFarmUser");
-
-    if(savedUser){
-
-        currentUser=savedUser;
-        canEdit = currentUser === "Poongodi";
-
+    currentUser = savedUser;
+    canEdit = currentUser === "Poongodi";
+    try{
+        await loadRecords();
         document.getElementById("loginPage").style.display="none";
-
         document.getElementById("app").style.display="block";
-
         document.getElementById("headerUserName").innerText=currentUser;
-
         document.getElementById("menuUserName").innerText=currentUser;
         applyPermissions();
         applyLanguage();
-
         loadProfile();
-
-        try{
-            await loadRecords();
-        }catch(error){
-            alert("Unable to load farm records: "+error.message);
-        }
-
+    }catch(error){
+        localStorage.removeItem("currentFarmUser");
+        localStorage.removeItem("farmAuthToken");
+        currentUser="";
+        canEdit=false;
+        document.getElementById("app").style.display="none";
+        document.getElementById("loginPage").style.display="flex";
     }
-
 };
 
 
