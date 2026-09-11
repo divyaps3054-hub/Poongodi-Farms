@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: poongodi-farms-api
+    runtime: node
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      - key: ALLOWED_ORIGIN
+        value: "https://divyaps3054-hub.github.io"

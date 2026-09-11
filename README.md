@@ -41,3 +41,16 @@ window.FARM_API_URL = "https://your-backend-host.example.com";
 ```
 
 The backend supports CORS through `ALLOWED_ORIGIN`. Set that environment variable to the GitHub Pages origin in production.
+
+### Deploying the shared backend on Render
+
+1. Open Render and choose **New > Blueprint**.
+2. Select this GitHub repository and deploy [render.yaml](./render.yaml).
+3. Copy the generated service URL.
+4. Put that URL in [backend-config.js](./backend-config.js), then commit and push:
+
+```js
+window.FARM_API_URL = "https://poongodi-farms-api.onrender.com";
+```
+
+The JSON file is shared by all devices while the service is running. For durable production storage across redeploys, replace the JSON file with a managed database or attach persistent storage in Render.
