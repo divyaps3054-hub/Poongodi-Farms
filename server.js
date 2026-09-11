@@ -78,13 +78,18 @@ const server = http.createServer(async (request, response) => {
       const body = await readBody(request);
       const email = String(body.email || "").trim();
       const password = String(body.password || "");
+      const selectedUser = String(body.user || "").trim();
+      const users = ["Poongodi", "Prabakaran", "Rajindharan", "Sajindharan"];
       if (!email || !password || !email.includes("@") || password.length < 6) {
         return sendJson(response, 401, { error: "Enter a valid email and a password with at least 6 characters" });
       }
+      if (!users.includes(selectedUser)) {
+        return sendJson(response, 401, { error: "Select a valid family member" });
+      }
       const account = accounts.find((candidate) => candidate.email === email);
       return sendJson(response, 200, {
-        user: account ? account.user : "Poongodi",
-        canEdit: account ? account.canEdit : true,
+        user: selectedUser,
+        canEdit: selectedUser === "Poongodi",
         email,
       });
     }

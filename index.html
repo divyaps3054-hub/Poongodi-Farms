@@ -57,6 +57,14 @@ body{
     justify-content:center;
     font-size:36px;
     margin-bottom:15px;
+    overflow:hidden;
+}
+
+.logo-circle img,
+.brand-icon img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
 }
 
 .login-card h1{
@@ -727,13 +735,22 @@ body{
 
     <div class="login-card">
 
-        <div class="logo-circle">🌿</div>
+        <div class="logo-circle"><img src="logo.png" alt="Poongodi Farms logo"></div>
 
         <h1>பூங்கொடி இயற்கை பண்ணை</h1>
 
         <p class="tagline">சரியானது தரமானது</p>
 
         <p class="family-text">Family Farm Management</p>
+        <div class="input-group">
+            <label>Select Family Member</label>
+            <select id="userSelect">
+                <option value="Poongodi">Poongodi</option>
+                <option value="Prabakaran">Prabakaran</option>
+                <option value="Rajindharan">Rajindharan</option>
+                <option value="Sajindharan">Sajindharan</option>
+            </select>
+        </div>
         <div class="input-group">
             <label>Email</label>
             <input type="email" id="email" placeholder="Enter email">
@@ -767,7 +784,7 @@ body{
 
     <div class="brand">
 
-        <div class="brand-icon">🌿</div>
+        <div class="brand-icon"><img src="logo.png" alt="Poongodi Farms logo"></div>
 
         <div>
             <h2>பூங்கொடி இயற்கை பண்ணை</h2>
@@ -1189,15 +1206,59 @@ let editingIndex = null;
 let records = [];
 
 async function apiRequest(path, options = {}){
-    const response = await fetch(path, {
-        headers: {"Content-Type":"application/json"},
-        ...options
-    });
+    let response;
+    try{
+        response = await fetch(path, {
+            headers: {"Content-Type":"application/json"},
+            ...options
+        });
+    }catch(error){
+        return localApiRequest(path, options);
+    }
+    if(!response.ok || !(response.headers.get("content-type") || "").includes("application/json")){
+        return localApiRequest(path, options);
+    }
     if(!response.ok){
         const error = await response.json().catch(() => ({}));
         throw new Error(error.error || "Server request failed");
     }
     return response.status === 204 ? null : response.json();
+}
+
+function localAccounts(){
+    return JSON.parse(localStorage.getItem("farmGoogleAccounts") || "[]");
+}
+
+function localApiRequest(path, options){
+    const body = options.body ? JSON.parse(options.body) : {};
+    if(path === "/api/login"){
+        const user = body.user;
+        if(!user || !body.email || !body.password) throw new Error("Please select a user and enter email/password");
+        localStorage.setItem("farmGoogleAccounts", JSON.stringify(
+            [...localAccounts().filter(account => account.email !== body.email),
+            {user, email:body.email, canEdit:user === "Poongodi"}]
+        ));
+        return Promise.resolve({user, email:body.email, canEdit:user === "Poongodi"});
+    }
+    if(path === "/api/auth/google/accounts"){
+        return Promise.resolve(localAccounts());
+    }
+    if(path === "/api/auth/google"){
+        const account = localAccounts().find(item => item.user === body.user);
+        if(!account) throw new Error("No Google account remembered on this device");
+        return Promise.resolve(account);
+    }
+    if(path.startsWith("/api/records?user=")){
+        return Promise.resolve(JSON.parse(localStorage.getItem("farmRecords_"+currentUser) || "[]"));
+    }
+    if(path === "/api/records"){
+        const record = {...body, id:crypto.randomUUID(), user:currentUser};
+        const records = JSON.parse(localStorage.getItem("farmRecords_"+currentUser) || "[]");
+        records.push(record);
+        localStorage.setItem("farmRecords_"+currentUser, JSON.stringify(records));
+        return Promise.resolve(record);
+    }
+    throw new Error("Server request failed. Start the backend with npm start.");
 }
 
 async function loadRecords(){
@@ -1235,6 +1296,7 @@ function calculateTotalSales(){
 /* ================= LOGIN ================= */
 
 async function login(){
+    const user = document.getElementById("userSelect").value;
     const email = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value;
     if(!email || !password){
@@ -1246,12 +1308,17 @@ async function login(){
         const result = await apiRequest("/api/login", {
             method:"POST",
             body:JSON.stringify({
+                user,
                 email,
                 password
             })
         });
         currentUser = result.user;
         canEdit = result.canEdit;
+        localStorage.setItem("farmGoogleAccounts", JSON.stringify(
+            [...localAccounts().filter(account => account.email !== result.email),
+            {user:result.user, email:result.email, canEdit:result.canEdit}]
+        ));
     }catch(error){
         alert(error.message === "Failed to fetch"
             ? "Backend is not running. Start the app with: npm start"
@@ -1451,7 +1518,17 @@ async function googleLogin(){
         container.style.display = "none";
         return;
     }
-    const accounts = await apiRequest("/api/auth/google/accounts");
+    let accounts = localAccounts();
+    try{
+        if(!accounts.length) accounts = await apiRequest("/api/auth/google/accounts");
+    }catch(error){
+        alert(error.message);
+        return;
+    }
+    if(!accounts.length){
+        alert("No Google accounts are remembered on this device yet. Login once with email and password first.");
+        return;
+    }
     container.innerHTML = "<strong>Choose a Google account</strong>" +
         accounts.map(account => `<button onclick="selectGoogleAccount('${account.user}')">${account.email}</button>`).join("");
     container.style.display = "block";
