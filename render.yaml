@@ -10,6 +10,8 @@ services:
         value: "20"
       - key: ALLOWED_ORIGIN
         value: "https://divyaps3054-hub.github.io"
+      - key: GOOGLE_CLIENT_ID
+        value: "141270882885-jtusd34ofr0pfpbro6udqqgol6gepfsp.apps.googleusercontent.com"
       - key: FARM_USERS
         sync: false
       - key: RESEND_API_KEY
