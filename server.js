@@ -154,6 +154,24 @@ const server = http.createServer(async (request, response) => {
       return sendJson(response, 200, { user: account.user, canEdit: account.canEdit, email: account.email, token });
     }
 
+    if (request.method === "POST" && url.pathname === "/api/auth/google/token") {
+      const body = await readBody(request);
+      if (!process.env.GOOGLE_CLIENT_ID) return sendJson(response, 503, { error: "Google login is not configured on the backend" });
+      const tokenResponse = await fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${encodeURIComponent(body.credential || "")}`);
+      if (!tokenResponse.ok) return sendJson(response, 401, { error: "Google credential could not be verified" });
+      const profile = await tokenResponse.json();
+      if (profile.aud !== process.env.GOOGLE_CLIENT_ID || profile.email_verified !== "true") {
+        return sendJson(response, 401, { error: "Google account verification failed" });
+      }
+      const account = accounts.find((candidate) =>
+        (candidate.googleEmail || candidate.email || "").toLowerCase() === String(profile.email).toLowerCase()
+      );
+      if (!account) return sendJson(response, 403, { error: "This Google account is not approved for the farm" });
+      const token = createSession(account);
+      void notifyLogin(account, request);
+      return sendJson(response, 200, { user: account.user, canEdit: account.canEdit, email: profile.email, token });
+    }
+
     if (url.pathname === "/api/records" && request.method === "GET") {
       const user = authenticatedUser(request);
       if (!user) return sendJson(response, 401, { error: "Login required" });
