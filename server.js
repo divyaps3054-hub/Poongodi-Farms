@@ -6,6 +6,8 @@ const crypto = require("node:crypto");
 const PORT = Number(process.env.PORT) || 3000;
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID ||
   "141270882885-jtusd34ofr0pfpbro6udqqgol6gepfsp.apps.googleusercontent.com";
+const FRONTEND_URL = process.env.FRONTEND_URL ||
+  "https://divyaps3054-hub.github.io/Poongodi-Farms/";
 const ROOT = __dirname;
 const DATA_DIR = path.join(ROOT, "data");
 const RECORDS_FILE = path.join(DATA_DIR, "records.json");
@@ -242,6 +244,10 @@ const server = http.createServer(async (request, response) => {
     }
 
     if (request.method === "GET") {
+      if (url.pathname === "/" && request.headers.host && request.headers.host.includes("onrender.com")) {
+        response.writeHead(302, { Location: FRONTEND_URL });
+        return response.end();
+      }
       const requestedFile = url.pathname === "/" ? "index.html" : url.pathname.slice(1);
       const filePath = path.resolve(ROOT, requestedFile);
       if (filePath.startsWith(ROOT) && fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
