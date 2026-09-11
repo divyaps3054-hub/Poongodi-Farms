@@ -31,3 +31,13 @@ The frontend uses these endpoints for login, daily data, history, dashboard, and
 - Sajindharan: `sajindharan@poongodifarms.local` / `sajindharan123`
 
 The Google button currently shows the approved local account chooser. Real Google OAuth requires adding a Google Cloud Client ID, redirect URI, and server-side OAuth verification before deploying publicly.
+
+## GitHub Pages and shared data
+
+GitHub Pages cannot run `server.js`, and browser `localStorage` is device-specific. To share the same records between a laptop and a mobile phone, deploy `server.js` to a Node hosting provider and set its URL in [backend-config.js](./backend-config.js):
+
+```js
+window.FARM_API_URL = "https://your-backend-host.example.com";
+```
+
+The backend supports CORS through `ALLOWED_ORIGIN`. Set that environment variable to the GitHub Pages origin in production.

@@ -23,6 +23,9 @@ function sendJson(response, status, body) {
   response.writeHead(status, {
     "Content-Type": "application/json; charset=utf-8",
     "Cache-Control": "no-store",
+    "Access-Control-Allow-Origin": process.env.ALLOWED_ORIGIN || "*",
+    "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
   });
   response.end(JSON.stringify(body));
 }
@@ -74,6 +77,14 @@ const server = http.createServer(async (request, response) => {
   const parts = url.pathname.split("/").filter(Boolean);
 
   try {
+    if (request.method === "OPTIONS") {
+      response.writeHead(204, {
+        "Access-Control-Allow-Origin": process.env.ALLOWED_ORIGIN || "*",
+        "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type",
+      });
+      return response.end();
+    }
     if (request.method === "POST" && url.pathname === "/api/login") {
       const body = await readBody(request);
       const email = String(body.email || "").trim();
@@ -108,7 +119,7 @@ const server = http.createServer(async (request, response) => {
     if (url.pathname === "/api/records" && request.method === "GET") {
       const user = url.searchParams.get("user");
       if (!user) return sendJson(response, 400, { error: "user is required" });
-      return sendJson(response, 200, readRecords().filter((record) => record.user === user));
+      return sendJson(response, 200, readRecords());
     }
 
     if (parts[0] === "api" && parts[1] === "records" && request.method === "POST") {
