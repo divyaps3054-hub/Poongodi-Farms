@@ -10,3 +10,11 @@ services:
         value: "20"
       - key: ALLOWED_ORIGIN
         value: "https://divyaps3054-hub.github.io"
+      - key: FARM_USERS
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: LOGIN_ALERT_TO
+        sync: false
+      - key: LOGIN_ALERT_FROM
+        sync: false

@@ -1213,15 +1213,22 @@ function apiUrl(path){
 
 async function apiRequest(path, options = {}){
     let response;
+    const headers = {
+        "Content-Type":"application/json",
+        ...(localStorage.getItem("farmAuthToken")
+            ? {"Authorization":"Bearer "+localStorage.getItem("farmAuthToken")}
+            : {}),
+        ...(options.headers || {})
+    };
     try{
         response = await fetch(apiUrl(path), {
-            headers: {"Content-Type":"application/json"},
+            headers,
             ...options
         });
     }catch(error){
         return localApiRequest(path, options);
     }
-    if(!response.ok || !(response.headers.get("content-type") || "").includes("application/json")){
+    if(!(response.headers.get("content-type") || "").includes("application/json")){
         return localApiRequest(path, options);
     }
     if(!response.ok){
@@ -1340,6 +1347,7 @@ async function login(){
         });
         currentUser = result.user;
         canEdit = result.canEdit;
+        if(result.token) localStorage.setItem("farmAuthToken", result.token);
         localStorage.setItem("farmGoogleAccounts", JSON.stringify(
             [...localAccounts().filter(account => account.email !== result.email),
             {user:result.user, email:result.email, canEdit:result.canEdit}]
@@ -1411,6 +1419,7 @@ function logout(event){
     event.stopPropagation();
 
     localStorage.removeItem("currentFarmUser");
+    localStorage.removeItem("farmAuthToken");
 
     currentUser="";
     canEdit=false;
@@ -1567,6 +1576,7 @@ async function selectGoogleAccount(user){
         });
         currentUser = result.user;
         canEdit = result.canEdit;
+        if(result.token) localStorage.setItem("farmAuthToken", result.token);
         localStorage.setItem("currentFarmUser", currentUser);
         document.getElementById("loginPage").style.display="none";
         document.getElementById("app").style.display="block";

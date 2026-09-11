@@ -54,3 +54,22 @@ window.FARM_API_URL = "https://poongodi-farms-api.onrender.com";
 ```
 
 The JSON file is shared by all devices while the service is running. For durable production storage across redeploys, replace the JSON file with a managed database or attach persistent storage in Render.
+
+### Secure authentication and login alerts
+
+Set `FARM_USERS` in Render as a JSON array. Passwords must be scrypt hashes, never plain text:
+
+```json
+[
+  {"user":"Poongodi","email":"your-real-email@example.com","passwordHash":"SALT:HASH","canEdit":true},
+  {"user":"Prabakaran","email":"viewer@example.com","passwordHash":"SALT:HASH","canEdit":false}
+]
+```
+
+Create a password hash locally:
+
+```bash
+node -e "const c=require('crypto');const p=process.argv[1];const s=c.randomBytes(16).toString('hex');console.log(s+':'+c.scryptSync(p,s,64).toString('hex'))" "your strong password"
+```
+
+The server checks the selected family member and exact email together, issues a session token, and protects records API calls. Optional login alerts can be enabled with Resend by setting `RESEND_API_KEY`, `LOGIN_ALERT_TO`, and `LOGIN_ALERT_FROM`. Passwords are never included in notifications.

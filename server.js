@@ -1,7 +1,7 @@
 const http = require("node:http");
 const fs = require("node:fs");
 const path = require("node:path");
-const { randomUUID } = require("node:crypto");
+const crypto = require("node:crypto");
 
 const PORT = Number(process.env.PORT) || 3000;
 const ROOT = __dirname;
@@ -61,12 +61,49 @@ function validateRecord(record) {
   return null;
 }
 
-const accounts = [
-  { user: "Poongodi", email: "poongodi@poongodifarms.local", password: "poongodi123", canEdit: true },
-  { user: "Prabakaran", email: "prabakaran@poongodifarms.local", password: "prabakaran123", canEdit: false },
-  { user: "Rajindharan", email: "rajindharan@poongodifarms.local", password: "rajindharan123", canEdit: false },
-  { user: "Sajindharan", email: "sajindharan@poongodifarms.local", password: "sajindharan123", canEdit: false },
-];
+const accounts = JSON.parse(process.env.FARM_USERS || "[]");
+const sessions = new Map();
+
+function hashPassword(password, salt = crypto.randomBytes(16).toString("hex")) {
+  const hash = crypto.scryptSync(password, salt, 64).toString("hex");
+  return `${salt}:${hash}`;
+}
+
+function verifyPassword(password, storedHash) {
+  if (!storedHash || !storedHash.includes(":")) return false;
+  const [salt, expected] = storedHash.split(":");
+  const actual = crypto.scryptSync(password, salt, 64).toString("hex");
+  return crypto.timingSafeEqual(Buffer.from(actual, "hex"), Buffer.from(expected, "hex"));
+}
+
+function createSession(account) {
+  const token = crypto.randomBytes(32).toString("hex");
+  sessions.set(token, account.user);
+  return token;
+}
+
+function authenticatedUser(request) {
+  const header = request.headers.authorization || "";
+  return header.startsWith("Bearer ") ? sessions.get(header.slice(7)) : null;
+}
+
+async function notifyLogin(account, request) {
+  if (!process.env.RESEND_API_KEY || !process.env.LOGIN_ALERT_TO) return;
+  const response = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      from: process.env.LOGIN_ALERT_FROM || "Poongodi Farms <onboarding@resend.dev>",
+      to: [process.env.LOGIN_ALERT_TO],
+      subject: `Farm login: ${account.user}`,
+      text: `${account.user} signed in with ${account.email} from ${request.headers["user-agent"] || "unknown device"}.`,
+    }),
+  });
+  if (!response.ok) console.error("Login notification failed:", await response.text());
+}
 
 function accountFor(user) {
   return accounts.find((account) => account.user === user);
@@ -90,18 +127,17 @@ const server = http.createServer(async (request, response) => {
       const email = String(body.email || "").trim();
       const password = String(body.password || "");
       const selectedUser = String(body.user || "").trim();
-      const users = ["Poongodi", "Prabakaran", "Rajindharan", "Sajindharan"];
-      if (!email || !password || !email.includes("@") || password.length < 6) {
-        return sendJson(response, 401, { error: "Enter a valid email and a password with at least 6 characters" });
+      const account = accounts.find((candidate) => candidate.user === selectedUser && candidate.email.toLowerCase() === email.toLowerCase());
+      if (!account || !verifyPassword(password, account.passwordHash)) {
+        return sendJson(response, 401, { error: "Invalid user, email, or password" });
       }
-      if (!users.includes(selectedUser)) {
-        return sendJson(response, 401, { error: "Select a valid family member" });
-      }
-      const account = accounts.find((candidate) => candidate.email === email);
+      const token = createSession(account);
+      void notifyLogin(account, request);
       return sendJson(response, 200, {
         user: selectedUser,
-        canEdit: selectedUser === "Poongodi",
+        canEdit: Boolean(account.canEdit),
         email,
+        token,
       });
     }
 
@@ -113,20 +149,24 @@ const server = http.createServer(async (request, response) => {
       const body = await readBody(request);
       const account = accountFor(body.user);
       if (!account) return sendJson(response, 401, { error: "Google account is not approved for this farm" });
-      return sendJson(response, 200, { user: account.user, canEdit: account.canEdit, email: account.email });
+      const token = createSession(account);
+      void notifyLogin(account, request);
+      return sendJson(response, 200, { user: account.user, canEdit: account.canEdit, email: account.email, token });
     }
 
     if (url.pathname === "/api/records" && request.method === "GET") {
-      const user = url.searchParams.get("user");
-      if (!user) return sendJson(response, 400, { error: "user is required" });
+      const user = authenticatedUser(request);
+      if (!user) return sendJson(response, 401, { error: "Login required" });
       return sendJson(response, 200, readRecords());
     }
 
     if (parts[0] === "api" && parts[1] === "records" && request.method === "POST") {
       const body = await readBody(request);
+      const user = authenticatedUser(request);
+      if (user !== "Poongodi") return sendJson(response, 403, { error: "Only Poongodi can add farm data" });
+      if (body.user !== user) return sendJson(response, 403, { error: "User identity mismatch" });
       const validationError = validateRecord(body);
       if (validationError) return sendJson(response, 400, { error: validationError });
-      if (body.user !== "Poongodi") return sendJson(response, 403, { error: "Only Poongodi can add farm data" });
       const records = readRecords();
       const record = { ...body, id: randomUUID(), createdAt: new Date().toISOString() };
       records.push(record);
@@ -136,7 +176,7 @@ const server = http.createServer(async (request, response) => {
 
     if (parts[0] === "api" && parts[1] === "records" && parts[2] && request.method === "PUT") {
       const body = await readBody(request);
-      if (body.user !== "Poongodi") return sendJson(response, 403, { error: "Only Poongodi can edit farm data" });
+      if (authenticatedUser(request) !== "Poongodi") return sendJson(response, 403, { error: "Only Poongodi can edit farm data" });
       const records = readRecords();
       const index = records.findIndex((record) => record.id === parts[2] && record.user === body.user);
       if (index < 0) return sendJson(response, 404, { error: "Record not found" });
@@ -147,7 +187,7 @@ const server = http.createServer(async (request, response) => {
 
     if (parts[0] === "api" && parts[1] === "records" && parts[2] && request.method === "DELETE") {
       const user = url.searchParams.get("user");
-      if (user !== "Poongodi") return sendJson(response, 403, { error: "Only Poongodi can delete farm data" });
+      if (authenticatedUser(request) !== "Poongodi") return sendJson(response, 403, { error: "Only Poongodi can delete farm data" });
       const records = readRecords();
       const nextRecords = records.filter((record) => !(record.id === parts[2] && record.user === user));
       if (nextRecords.length === records.length) return sendJson(response, 404, { error: "Record not found" });
