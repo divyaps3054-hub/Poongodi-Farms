@@ -1549,7 +1549,31 @@ function applyLanguage(){
 
 async function googleLogin(){
     if(!window.google || !window.google.accounts){
-        alert("Google sign-in is still loading. Please try again.");
+        const button = document.querySelector(".google-btn");
+        if(button) {
+            button.disabled = true;
+            button.innerText = "Loading Google sign-in...";
+        }
+        let attempts = 0;
+        const waitForGoogle = setInterval(() => {
+            attempts++;
+            if(window.google && window.google.accounts){
+                clearInterval(waitForGoogle);
+                if(button) {
+                    button.disabled = false;
+                    button.innerText = "Sign in with Google";
+                }
+                initializeGoogleLogin();
+                googleLogin();
+            } else if(attempts >= 20) {
+                clearInterval(waitForGoogle);
+                if(button) {
+                    button.disabled = false;
+                    button.innerText = "Sign in with Google";
+                }
+                alert("Google sign-in could not load. Check your internet connection and try again.");
+            }
+        }, 500);
         return;
     }
     if(!document.getElementById("userSelect").value){
@@ -1597,6 +1621,7 @@ async function handleGoogleCredential(response){
 
 function initializeGoogleLogin(){
     if(!window.google || !window.GOOGLE_CLIENT_ID) return;
+    if(window.googleFarmInitialized) return;
     window.google.accounts.id.initialize({
         client_id:window.GOOGLE_CLIENT_ID,
         callback:handleGoogleCredential,
@@ -1604,6 +1629,7 @@ function initializeGoogleLogin(){
         cancel_on_tap_outside:true,
         context:"signin"
     });
+    window.googleFarmInitialized = true;
     const googleButton = document.getElementById("googleSignInButton");
     if(googleButton){
         window.google.accounts.id.renderButton(googleButton, {
