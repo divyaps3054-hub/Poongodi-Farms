@@ -1547,65 +1547,56 @@ function applyLanguage(){
 }
 
 async function googleLogin(){
-    if(window.google && window.google.accounts){
-        window.google.accounts.id.prompt();
+    if(!window.google || !window.google.accounts){
+        alert("Google sign-in is still loading. Please try again.");
         return;
     }
-    const container = document.getElementById("googleAccounts");
-    if(container.style.display === "block"){
-        container.style.display = "none";
+    if(!document.getElementById("userSelect").value){
+        alert("Please select a family member first.");
         return;
     }
-
-    async function handleGoogleCredential(response){
-        try{
-            const result = await apiRequest("/api/auth/google/token", {
-                method:"POST",
-                body:JSON.stringify({
-                    credential:response.credential,
-                    user:document.getElementById("userSelect").value
-                })
-            });
-            currentUser = result.user;
-            canEdit = result.canEdit;
-            localStorage.setItem("currentFarmUser", currentUser);
-            if(result.token) localStorage.setItem("farmAuthToken", result.token);
-            document.getElementById("loginPage").style.display="none";
-            document.getElementById("app").style.display="block";
-            document.getElementById("headerUserName").innerText=currentUser;
-            document.getElementById("menuUserName").innerText=currentUser;
-            applyPermissions();
-            applyLanguage();
-            loadProfile();
-            await loadRecords();
-        }catch(error){
-            alert(error.message);
+    window.google.accounts.id.prompt((notification) => {
+        if(notification.isNotDisplayed() || notification.isSkippedMoment()){
+            alert("Google account chooser could not open. Check OAuth origin settings.");
         }
-    }
+    });
+}
 
-    function initializeGoogleLogin(){
-        if(!window.google || !window.GOOGLE_CLIENT_ID) return;
-        window.google.accounts.id.initialize({
-            client_id:window.GOOGLE_CLIENT_ID,
-            callback:handleGoogleCredential,
-            auto_select:false,
-            cancel_on_tap_outside:true
-        });
-    }
-    let accounts = localAccounts();
+async function handleGoogleCredential(response){
     try{
-        if(!accounts.length) accounts = await apiRequest("/api/auth/google/accounts");
+        const result = await apiRequest("/api/auth/google/token", {
+            method:"POST",
+            body:JSON.stringify({
+                credential:response.credential,
+                user:document.getElementById("userSelect").value
+            })
+        });
+        currentUser = result.user;
+        canEdit = result.canEdit;
+        localStorage.setItem("currentFarmUser", currentUser);
+        if(result.token) localStorage.setItem("farmAuthToken", result.token);
+        document.getElementById("loginPage").style.display="none";
+        document.getElementById("app").style.display="block";
+        document.getElementById("headerUserName").innerText=currentUser;
+        document.getElementById("menuUserName").innerText=currentUser;
+        applyPermissions();
+        applyLanguage();
+        loadProfile();
+        await loadRecords();
     }catch(error){
         alert(error.message);
-        return;
     }
-    if(!accounts.length){
-        alert("No Google accounts are remembered on this device yet. Login once with email and password first.");
-        return;
-    }
-    container.innerHTML = "<strong>Choose a Google account</strong>" +
-        accounts.map(account => `<button onclick="selectGoogleAccount('${account.user}')">${account.email}</button>`).join("");
-    container.style.display = "block";
+}
+
+function initializeGoogleLogin(){
+    if(!window.google || !window.GOOGLE_CLIENT_ID) return;
+    window.google.accounts.id.initialize({
+        client_id:window.GOOGLE_CLIENT_ID,
+        callback:handleGoogleCredential,
+        auto_select:false,
+        cancel_on_tap_outside:true,
+        context:"signin"
+    });
 }
 
 async function selectGoogleAccount(user){
