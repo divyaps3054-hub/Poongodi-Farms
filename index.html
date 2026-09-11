@@ -1,12 +1,12 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>பூங்கொடி இயற்கை பண்ணை</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Noto+Sans+Tamil:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 
@@ -14,571 +14,560 @@
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:Arial,sans-serif;
+    font-family:'Poppins','Noto Sans Tamil',sans-serif;
 }
 
 body{
-    background:#f3f7ed;
-    color:#263b20;
+    background:#f4f7ef;
+    color:#263d2b;
 }
 
-/* ================= LOGIN ================= */
+/* ================= LOGIN PAGE ================= */
 
-#loginPage{
+.login-page{
     min-height:100vh;
     display:flex;
-    justify-content:center;
     align-items:center;
+    justify-content:center;
     padding:20px;
-    background:linear-gradient(135deg,#dceecb,#fffbe8);
+    background:
+        radial-gradient(circle at top left,#dbe9d2 0%,transparent 35%),
+        radial-gradient(circle at bottom right,#d7e8d8 0%,transparent 35%),
+        #f5f7f1;
 }
 
-.login-box{
+.login-card{
     width:100%;
-    max-width:430px;
-    background:white;
-    padding:30px;
+    max-width:450px;
+    background:#ffffff;
     border-radius:25px;
-    box-shadow:0 10px 35px rgba(0,0,0,.15);
+    padding:40px;
+    box-shadow:0 15px 45px rgba(33,70,42,0.12);
     text-align:center;
 }
 
-.login-logo{
-    width:190px;
-    height:190px;
-    object-fit:contain;
-    display:block;
-    margin:0 auto 15px;
-    border-radius:20px;
-}
-
-.login-box h1{
-    color:#245b21;
-    margin-bottom:6px;
-    font-size:25px;
-}
-
-.login-box p{
-    color:#777;
-    margin-bottom:20px;
-}
-
-.login-box select{
-    width:100%;
-    padding:14px;
-    margin:8px 0;
-    border:1px solid #ccc;
-    border-radius:10px;
-    font-size:15px;
-    outline:none;
-}
-
-.login-box input[type="email"],
-.login-box input[type="password"]{
-    width:100%;
-    height:50px;
-    padding:0 16px;
-    margin:8px 0;
-    border:1px solid #d8e2d2;
-    border-radius:14px;
-    background:#fbfdf9;
-    color:#263b20;
-    font-size:15px;
-    outline:none;
-    box-shadow:inset 0 1px 2px rgba(36,91,33,.04);
-    transition:border-color .2s, box-shadow .2s, background .2s;
-}
-
-.login-box input[type="email"]:focus,
-.login-box input[type="password"]:focus,
-.login-box select:focus{
-    border-color:#5e9f51;
-    background:white;
-    box-shadow:0 0 0 4px rgba(94,159,81,.14);
-}
-
-.login-box input::placeholder{
-    color:#91a08d;
-}
-
-.login-box select:focus{
-    border-color:#276522;
-}
-
-.login-language{
+.logo-circle{
+    width:80px;
+    height:80px;
+    border-radius:50%;
+    background:#315c3a;
+    margin:auto;
     display:flex;
-    gap:8px;
-    justify-content:flex-end;
+    align-items:center;
+    justify-content:center;
+    font-size:36px;
+    margin-bottom:15px;
+}
+
+.login-card h1{
+    font-size:24px;
+    color:#214c2b;
+    margin-bottom:5px;
+}
+
+.tagline{
+    font-size:13px;
+    color:#7b8b7d;
     margin-bottom:8px;
 }
 
-.login-language button{
-    border:1px solid #ccc;
-    background:white;
-    border-radius:8px;
-    padding:7px 12px;
-    cursor:pointer;
-}
-
-.login-language button.active{
-    background:#276522;
-    color:white;
-}
-
-.btn{
-    border:none;
-    padding:13px 20px;
-    border-radius:10px;
-    cursor:pointer;
-    font-weight:bold;
+.family-text{
+    color:#315c3a;
     font-size:15px;
+    font-weight:600;
+    margin-bottom:25px;
+}
+
+.input-group{
+    text-align:left;
+    margin-bottom:16px;
+}
+
+.input-group label{
+    display:block;
+    font-size:13px;
+    font-weight:600;
+    margin-bottom:7px;
+    color:#425847;
+}
+
+.input-group input,
+.input-group select,
+.form-group input,
+.form-group textarea{
+    width:100%;
+    border:1px solid #dce5d8;
+    background:#f9fbf7;
+    padding:13px 15px;
+    border-radius:12px;
+    outline:none;
+    font-size:14px;
+}
+
+.input-group input:focus,
+.input-group select:focus,
+.form-group input:focus,
+.form-group textarea:focus{
+    border-color:#4e8056;
 }
 
 .login-btn{
     width:100%;
-    background:linear-gradient(135deg,#276522,#3d8332);
+    border:none;
+    background:#315c3a;
     color:white;
-    margin-top:10px;
-    box-shadow:0 7px 16px rgba(39,101,34,.2);
-}
-
-.login-btn:hover{
-    background:#194d16;
+    padding:14px;
+    border-radius:12px;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+    margin-top:5px;
 }
 
 .google-btn{
     width:100%;
+    border:1px solid #dce5d8;
     background:white;
-    color:#333;
-    border:1px solid #d5ded1;
+    color:#555;
+    padding:13px;
+    border-radius:12px;
+    font-size:14px;
+    cursor:pointer;
     margin-top:12px;
-    box-shadow:0 4px 12px rgba(36,91,33,.06);
 }
 
-.google-btn:hover{
-    background:#f5f5f5;
+.language-btn{
+    border:1px solid #dce5d8;
+    background:#ffffff;
+    color:#315c3a;
+    padding:8px 12px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:600;
 }
 
-.error{
-    color:#d22;
-    margin-top:10px;
+.login-card .language-btn{
+    margin-bottom:15px;
 }
 
-/* ================= APP ================= */
+.google-accounts{
+    margin-top:12px;
+    padding:12px;
+    border:1px solid #dce5d8;
+    border-radius:12px;
+    text-align:left;
+}
 
-#app{
+.google-accounts strong{
+    display:block;
+    margin-bottom:8px;
+}
+
+.google-accounts button{
+    display:block;
+    width:100%;
+    margin-top:6px;
+    border:1px solid #dce5d8;
+    background:#f9fbf7;
+    border-radius:8px;
+    padding:9px;
+    cursor:pointer;
+    text-align:left;
+}
+
+.login-btn:hover{
+    background:#24492c;
+}
+
+/* ================= MAIN APP ================= */
+
+.app{
     display:none;
 }
 
-/* ================= HEADER ================= */
-
-header{
-    background:#1f551d;
+.top-header{
+    background:#244b2d;
     color:white;
-    padding:15px 5%;
+    padding:18px 5%;
     display:flex;
     justify-content:space-between;
     align-items:center;
-    gap:15px;
 }
 
 .brand{
     display:flex;
     align-items:center;
-    gap:15px;
+    gap:13px;
 }
 
-.brand img{
-    width:80px;
-    height:80px;
-    object-fit:contain;
-    background:white;
-    border-radius:15px;
-    padding:4px;
-}
-
-.brand h2{
-    font-size:22px;
-}
-
-.brand small{
-    color:#d8edcf;
-}
-
-/* ================= USER ================= */
-
-.user-area{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    position:relative;
-}
-
-.user-circle{
+.brand-icon{
     width:48px;
     height:48px;
     border-radius:50%;
-    background:#f4c542;
-    color:#234c1e;
+    background:#426e4b;
     display:flex;
     justify-content:center;
     align-items:center;
-    font-weight:bold;
-    cursor:pointer;
-    border:2px solid white;
-    font-size:18px;
-    overflow:hidden;
+    font-size:23px;
 }
 
-.user-circle img{
+.brand h2{
+    font-size:19px;
+}
+
+.brand p{
+    font-size:11px;
+    color:#cfe0d0;
+    margin-top:3px;
+}
+
+.profile-area{
+    position:relative;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    cursor:pointer;
+}
+
+.profile-img{
+    width:43px;
+    height:43px;
+    border-radius:50%;
+    background:#dbe9d6;
+    color:#244b2d;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow:hidden;
+    font-weight:bold;
+    border:2px solid #91b394;
+}
+
+.profile-img img{
     width:100%;
     height:100%;
     object-fit:cover;
 }
 
-.user-name{
-    font-weight:bold;
+.profile-name{
+    font-size:14px;
+    font-weight:500;
 }
 
-/* ================= PROFILE MENU ================= */
+/* PROFILE MENU */
 
 .profile-menu{
     display:none;
     position:absolute;
-    right:0;
     top:60px;
-    width:290px;
+    right:0;
+    width:250px;
     background:white;
     color:#333;
     border-radius:16px;
-    box-shadow:0 8px 25px rgba(0,0,0,.18);
-    padding:18px;
-    z-index:1000;
+    box-shadow:0 12px 35px rgba(0,0,0,0.16);
+    overflow:hidden;
+    z-index:100;
 }
 
-.profile-menu.show{
+.profile-menu.active{
     display:block;
 }
 
-.profile-header{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    padding-bottom:15px;
-    border-bottom:1px solid #eee;
+.profile-menu-header{
+    padding:18px;
+    background:#f4f8f1;
+    border-bottom:1px solid #e5ece2;
 }
 
-.profile-big-circle{
-    width:55px;
-    height:55px;
-    background:#f4c542;
-    color:#234c1e;
-    border-radius:50%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-weight:bold;
-    font-size:20px;
-    overflow:hidden;
+.profile-menu-header h4{
+    color:#315c3a;
 }
 
-.profile-big-circle img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-}
-
-.profile-header h3{
-    color:#245b21;
-}
-
-.profile-header small{
+.profile-menu-header p{
+    font-size:11px;
     color:#777;
+    margin-top:3px;
 }
 
-.profile-menu button{
-    width:100%;
-    border:none;
-    background:#f1f6ed;
-    padding:12px;
-    margin-top:10px;
-    border-radius:9px;
-    text-align:left;
+.menu-item{
+    padding:14px 18px;
     cursor:pointer;
-    font-weight:bold;
-    color:#245b21;
+    font-size:14px;
 }
 
-.profile-menu button:hover{
-    background:#dfeeda;
+.menu-item:hover{
+    background:#f4f8f1;
 }
 
-.profile-menu .profile-logout{
-    background:#ffe4e4;
-    color:#a00000;
+.logout-item{
+    color:#c44747;
 }
 
-/* ================= NAV ================= */
+/* ================= NAVIGATION ================= */
 
-nav{
+.navigation{
+    padding:20px 5%;
     background:white;
-    padding:10px 5%;
-    box-shadow:0 2px 10px rgba(0,0,0,.08);
+    border-bottom:1px solid #edf0eb;
     display:flex;
-    gap:10px;
+    gap:12px;
     flex-wrap:wrap;
 }
 
-nav button{
-    background:#edf5e8;
-    color:#245b21;
+.nav-btn{
     border:none;
-    padding:11px 18px;
-    border-radius:22px;
+    background:#edf3e9;
+    color:#426348;
+    padding:11px 20px;
+    border-radius:25px;
     cursor:pointer;
-    font-weight:bold;
+    font-size:14px;
+    font-weight:500;
 }
 
-nav button.active,
-nav button:hover{
-    background:#276522;
+.nav-btn.active{
+    background:#315c3a;
     color:white;
 }
 
-/* ================= MAIN ================= */
+/* ================= CONTENT ================= */
 
-main{
-    width:90%;
-    max-width:1200px;
-    margin:25px auto;
+.container{
+    padding:30px 5%;
+    max-width:1500px;
+    margin:auto;
 }
 
-.section{
+.page{
     display:none;
 }
 
-.section.active{
+.page.active{
     display:block;
 }
 
-.welcome{
-    margin-bottom:20px;
+.page-title{
+    margin-bottom:25px;
 }
 
-.welcome h1{
-    color:#245b21;
+.page-title h1{
+    font-size:25px;
+    color:#294d31;
 }
 
-.date-text{
-    color:#777;
+.page-title p{
+    color:#7c8b7d;
+    font-size:13px;
     margin-top:5px;
 }
 
 /* ================= DASHBOARD ================= */
 
-.cards{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:18px;
-    margin:20px 0;
+.date-box{
+    background:white;
+    padding:16px 20px;
+    border-radius:16px;
+    margin-bottom:25px;
+    box-shadow:0 4px 15px rgba(0,0,0,0.04);
 }
 
-.card{
+.cards-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:20px;
+    margin-bottom:30px;
+}
+
+.stat-card{
     background:white;
     padding:22px;
     border-radius:18px;
-    box-shadow:0 4px 15px rgba(0,0,0,.08);
+    box-shadow:0 5px 18px rgba(32,67,39,0.07);
+    border:1px solid #edf1ea;
 }
 
-.card .icon{
-    font-size:30px;
+.stat-card .icon{
+    font-size:27px;
+    margin-bottom:15px;
 }
 
-.card h3{
-    margin:10px 0;
-    font-size:15px;
-    color:#777;
+.stat-card p{
+    color:#7b8a7d;
+    font-size:13px;
 }
 
-.card strong{
+.stat-card h2{
+    color:#294d31;
     font-size:28px;
-    color:#245b21;
+    margin-top:8px;
+}
+
+.section-title{
+    margin:25px 0 16px;
+    font-size:20px;
+    color:#315c3a;
 }
 
 /* ================= FORM ================= */
 
-.form-box{
+.form-card{
     background:white;
-    padding:25px;
     border-radius:20px;
-    box-shadow:0 4px 15px rgba(0,0,0,.08);
-    margin-bottom:25px;
-}
-
-.form-box h2{
-    margin-bottom:20px;
-    color:#245b21;
+    padding:30px;
+    box-shadow:0 6px 22px rgba(32,67,39,0.07);
 }
 
 .form-grid{
     display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:15px;
+    grid-template-columns:repeat(2,1fr);
+    gap:20px;
 }
 
-.field label{
+.form-group label{
     display:block;
-    margin-bottom:6px;
-    font-weight:bold;
-    color:#555;
+    font-size:13px;
+    font-weight:600;
+    color:#4b604f;
+    margin-bottom:8px;
 }
 
-.field input,
-.field textarea{
-    width:100%;
-    padding:12px;
-    border:1px solid #ccc;
-    border-radius:9px;
-    outline:none;
-}
-
-.field input:focus,
-.field textarea:focus{
-    border-color:#276522;
-}
-
-.field textarea{
-    min-height:100px;
-    resize:vertical;
-}
-
-.full{
+.form-group.full{
     grid-column:1/-1;
 }
 
-.save-btn{
-    background:#276522;
-    color:white;
+.form-group textarea{
+    height:110px;
+    resize:none;
 }
 
-.cancel-btn{
-    background:#ddd;
-    margin-left:8px;
+.form-actions{
+    margin-top:25px;
+    display:flex;
+    gap:12px;
+}
+
+.save-btn{
+    border:none;
+    background:#315c3a;
+    color:white;
+    padding:13px 25px;
+    border-radius:12px;
+    cursor:pointer;
+    font-weight:600;
+}
+
+.clear-btn{
+    border:none;
+    background:#edf3e9;
+    color:#315c3a;
+    padding:13px 25px;
+    border-radius:12px;
+    cursor:pointer;
 }
 
 /* ================= HISTORY ================= */
 
-.history-item{
+.history-list{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+}
+
+.history-card{
     background:white;
-    padding:20px;
-    margin:12px 0;
-    border-radius:15px;
-    box-shadow:0 3px 12px rgba(0,0,0,.08);
+    border-radius:18px;
+    padding:22px;
+    box-shadow:0 5px 18px rgba(32,67,39,0.06);
 }
 
 .history-top{
     display:flex;
     justify-content:space-between;
-    align-items:center;
+    margin-bottom:18px;
+    flex-wrap:wrap;
     gap:10px;
-    margin-bottom:12px;
 }
 
-.history-top h3{
-    color:#245b21;
+.history-date{
+    color:#315c3a;
+    font-weight:700;
 }
 
 .history-grid{
     display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:10px;
+    grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    gap:15px;
 }
 
-.history-value{
-    background:#f1f6ed;
+.history-data{
+    background:#f5f8f2;
     padding:12px;
     border-radius:10px;
 }
 
-.history-value span{
-    display:block;
-    font-size:12px;
-    color:#777;
+.history-data small{
+    color:#7d897f;
 }
 
-.history-value b{
-    font-size:18px;
+.history-data h4{
+    margin-top:5px;
+    color:#315c3a;
+}
+
+.history-actions{
+    margin-top:18px;
+    display:flex;
+    gap:10px;
 }
 
 .edit-btn{
-    background:#e5f0dc;
-    color:#245b21;
+    background:#edf3e9;
+    color:#315c3a;
+    border:none;
+    padding:9px 15px;
+    border-radius:9px;
+    cursor:pointer;
 }
 
 .delete-btn{
-    background:#ffe1e1;
-    color:#a00;
-}
-
-/* ================= TABLE ================= */
-
-.table-box{
-    background:white;
-    padding:20px;
-    border-radius:20px;
-    overflow-x:auto;
-}
-
-table{
-    width:100%;
-    border-collapse:collapse;
-}
-
-th,
-td{
-    padding:13px;
-    text-align:left;
-    border-bottom:1px solid #eee;
-}
-
-th{
-    background:#eaf3e4;
-    color:#245b21;
+    background:#fff0f0;
+    color:#c74747;
+    border:none;
+    padding:9px 15px;
+    border-radius:9px;
+    cursor:pointer;
 }
 
 /* ================= REPORT ================= */
 
-.summary{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:20px;
-}
-
-.summary-card{
-    background:#245b21;
+.report-card{
+    background:#315c3a;
     color:white;
-    padding:25px;
-    border-radius:18px;
 }
 
-.summary-card h3{
-    font-size:14px;
-    opacity:.8;
-    margin-bottom:8px;
+.report-card h2{
+    color:white;
 }
 
-.summary-card strong{
-    font-size:30px;
+.report-card p{
+    color:#d7e6d7;
+}
+
+.expense-card{
+    background:#ffffff;
 }
 
 .profit-card{
-    background:#eaf5e5;
-    color:#245b21;
+    background:#e8f4e6;
 }
 
 .loss-card{
     background:#fff0f0;
-    color:#a00000;
+}
+
+.loss-card h2{
+    color:#c44747;
 }
 
 /* ================= MODAL ================= */
@@ -587,232 +576,143 @@ th{
     display:none;
     position:fixed;
     inset:0;
-    background:rgba(0,0,0,.55);
-    z-index:2000;
-    justify-content:center;
+    background:rgba(0,0,0,0.4);
+    z-index:200;
     align-items:center;
+    justify-content:center;
     padding:20px;
 }
 
-.modal.show{
+.modal.active{
     display:flex;
 }
 
 .modal-box{
+    background:white;
     width:100%;
     max-width:450px;
-    background:white;
-    border-radius:20px;
-    padding:25px;
-    box-shadow:0 10px 40px rgba(0,0,0,.25);
-    max-height:90vh;
-    overflow-y:auto;
+    border-radius:22px;
+    padding:30px;
+    text-align:center;
 }
 
-.modal-box h2{
-    color:#245b21;
-    margin-bottom:20px;
-}
-
-.modal-box label{
-    display:block;
-    font-weight:bold;
-    margin-top:12px;
-    margin-bottom:5px;
-}
-
-.modal-box input,
-.modal-box select{
-    width:100%;
-    padding:12px;
-    border:1px solid #ccc;
-    border-radius:9px;
-}
-
-.modal-buttons{
-    display:flex;
-    gap:10px;
-    margin-top:20px;
-}
-
-.modal-buttons button{
-    flex:1;
-}
-
-.change-btn{
-    background:#276522;
-    color:white;
-}
-
-.close-btn{
-    background:#ddd;
-    color:#333;
-}
-
-.success-message{
-    background:#e1f4dc;
-    color:#24601e;
-    padding:12px;
-    border-radius:10px;
-    margin-top:10px;
-    display:none;
-}
-
-.modal-error{
-    color:#c00;
-    margin-top:8px;
-    font-size:14px;
-}
-
-/* ================= PROFILE PHOTO ================= */
-
-.profile-photo-preview{
+.big-profile{
     width:110px;
     height:110px;
     border-radius:50%;
-    margin:10px auto 15px;
-    background:#f4c542;
-    color:#234c1e;
+    background:#dcebd8;
+    margin:auto;
     display:flex;
     align-items:center;
     justify-content:center;
-    font-size:40px;
-    font-weight:bold;
     overflow:hidden;
+    font-size:35px;
+    color:#315c3a;
 }
 
-.profile-photo-preview img{
+.big-profile img{
     width:100%;
     height:100%;
     object-fit:cover;
 }
 
-.photo-buttons{
-    display:flex;
-    gap:10px;
-    margin-bottom:20px;
+.modal-box h2{
+    margin-top:15px;
+    color:#315c3a;
 }
 
-.photo-buttons button{
-    flex:1;
+.modal-box p{
+    color:#777;
+    font-size:13px;
+    margin-top:5px;
 }
 
-/* ================= LANGUAGE ================= */
+.upload-btn{
+    display:inline-block;
+    background:#315c3a;
+    color:white;
+    padding:11px 18px;
+    border-radius:10px;
+    margin-top:20px;
+    cursor:pointer;
+    font-size:13px;
+}
 
-.language-box{
-    background:#f1f6ed;
+.remove-btn{
+    border:none;
+    background:#fff0f0;
+    color:#c44747;
+    padding:11px 18px;
+    border-radius:10px;
+    margin:10px 5px;
+    cursor:pointer;
+}
+
+.close-btn{
+    border:none;
+    background:#edf3e9;
+    color:#315c3a;
+    padding:11px 18px;
+    border-radius:10px;
+    margin:10px 5px;
+    cursor:pointer;
+}
+
+.account-details{
+    text-align:left;
+    background:#f5f8f2;
+    margin-top:15px;
     padding:15px;
     border-radius:12px;
-    margin-top:15px;
+    font-size:13px;
 }
 
-.language-buttons{
-    display:flex;
-    gap:10px;
-    margin-top:10px;
+.account-details p{
+    margin:8px 0;
+    color:#555;
 }
 
-.language-buttons button{
-    flex:1;
-    border:none;
-    padding:11px;
-    border-radius:9px;
-    cursor:pointer;
-    font-weight:bold;
-}
+/* ================= RESPONSIVE ================= */
 
-.language-buttons button.active{
-    background:#276522;
-    color:white;
-}
+@media(max-width:700px){
 
-/* ================= MOBILE ================= */
-
-@media(max-width:900px){
-
-    .cards{
-        grid-template-columns:repeat(2,1fr);
-    }
-
-    .form-grid{
-        grid-template-columns:repeat(2,1fr);
-    }
-
-    .history-grid{
-        grid-template-columns:repeat(2,1fr);
-    }
-}
-
-@media(max-width:600px){
-
-    header{
-        flex-direction:column;
-        align-items:flex-start;
-    }
-
-    .cards,
-    .form-grid,
-    .summary,
-    .history-grid{
-        grid-template-columns:1fr;
-    }
-
-    nav{
-        padding:10px;
-    }
-
-    nav button{
-        flex:1;
-        min-width:120px;
-    }
-
-    main{
-        width:94%;
-    }
-
-    .brand h2{
-        font-size:18px;
-    }
-
-    .brand img{
-        width:65px;
-        height:65px;
-    }
-
-    .history-top{
-        flex-direction:column;
-        align-items:flex-start;
-    }
-
-    .user-area{
-        width:100%;
-    }
-
-    .profile-menu{
-        right:auto;
-        left:0;
-    }
-
-    .photo-buttons,
-    .language-buttons{
-        flex-direction:column;
-    }
-
-    .form-box,
-    .table-box{
+    .top-header{
         padding:15px;
     }
 
-    .history-top > div{
-        display:flex;
-        width:100%;
+    .brand h2{
+        font-size:15px;
     }
 
-    .history-top .btn{
-        flex:1;
-        padding:10px 8px;
-        font-size:13px;
+    .profile-name{
+        display:none;
     }
+
+    .navigation{
+        padding:15px;
+    }
+
+    .nav-btn{
+        flex:1;
+        min-width:130px;
+    }
+
+    .container{
+        padding:20px 15px;
+    }
+
+    .form-grid{
+        grid-template-columns:1fr;
+    }
+
+    .form-group.full{
+        grid-column:auto;
+    }
+
+    .login-card{
+        padding:30px 22px;
+    }
+
 }
 
 </style>
@@ -820,1978 +720,1138 @@ th{
 
 <body>
 
-<!-- =====================================================
-LOGIN
-===================================================== -->
 
-<div id="loginPage">
+<!-- ================= LOGIN PAGE ================= -->
 
-<div class="login-box">
+<div class="login-page" id="loginPage">
 
-<img
-src="logo.png"
-class="login-logo"
-alt="Farm Logo">
+    <div class="login-card">
 
-<h1 id="loginTitle">
-பூங்கொடி இயற்கை பண்ணை
-</h1>
+        <div class="logo-circle">🌿</div>
 
-<p id="loginSubtitle">
-<span data-i18n="loginSubtitle">Family Farm Management</span>
-</p>
+        <h1>பூங்கொடி இயற்கை பண்ணை</h1>
 
-<select id="username">
+        <p class="tagline">சரியானது தரமானது</p>
 
-<option value="prabakaran">👨‍🌾 Prabakaran</option>
+        <p class="family-text">Family Farm Management</p>
+        <div class="input-group">
+            <label>Email</label>
+            <input type="email" id="email" placeholder="Enter email">
+        </div>
 
-<option value="poongodi">👩‍🌾 Poongodi</option>
+        <div class="input-group">
+            <label>Password</label>
+            <input type="password" id="password" placeholder="Enter password">
+        </div>
 
-<option value="rajindharan">👨‍🌾 Rajindharan</option>
+        <button class="login-btn" onclick="login()">
+            Login
+        </button>
 
-<option value="sajindharan">👨‍🌾 Sajindharan</option>
+        <button class="google-btn" onclick="googleLogin()">
+            Sign in with Google
+        </button>
+        <div id="googleAccounts" class="google-accounts" style="display:none"></div>
 
-</select>
-
-<input
-type="email"
-id="backendEmail"
-placeholder="Email address"
-autocomplete="email"
-value="family@poongodifarm.local">
-
-<input
-type="password"
-id="backendPassword"
-placeholder="Family password"
-autocomplete="current-password">
-
-<!-- PASSWORD REMOVED -->
-
-<button
-class="btn login-btn"
-onclick="loginWithEmail()">
-
-✉️ Login with Email
-
-</button>
-
-<button
-class="btn google-btn"
-onclick="loginWithGoogle()"
-data-i18n="googleLogin">
-
-🔵 Continue with Google
-
-</button>
-
-<div id="loginError" class="error"></div>
-
-<p style="margin-top:18px;font-size:12px;" id="authorizedText">
-<span data-i18n="authorized">🔒 Authorized Persons Only</span>
-</p>
-
-</div>
-</div>
-
-
-<!-- =====================================================
-APP
-===================================================== -->
-
-<div id="app">
-
-<header>
-
-<div class="brand">
-
-<img src="logo.png" alt="Farm Logo">
-
-<div>
-
-<h2 id="farmTitle">
-பூங்கொடி இயற்கை பண்ணை
-</h2>
-
-<small id="farmTagline">
-சரியானது தரமானது
-</small>
-
-</div>
+    </div>
 
 </div>
 
 
-<div class="user-area">
+<!-- ================= MAIN APP ================= -->
 
-<div
-class="user-circle"
-id="userInitial"
-onclick="toggleProfile()">
-
-P
-
-</div>
-
-<span
-class="user-name"
-id="userName">
-
-User
-
-</span>
+<div class="app" id="app">
 
 
-<div
-class="profile-menu"
-id="profileMenu">
+<header class="top-header">
 
-<div class="profile-header">
+    <div class="brand">
 
-<div
-class="profile-big-circle"
-id="profileInitial">
+        <div class="brand-icon">🌿</div>
 
-P
+        <div>
+            <h2>பூங்கொடி இயற்கை பண்ணை</h2>
+            <p>சரியானது தரமானது</p>
+        </div>
 
-</div>
+    </div>
 
-<div>
 
-<h3 id="profileName">
-User
-</h3>
+    <div class="profile-area" onclick="toggleProfileMenu()">
 
-<small id="familyMemberText">
-குடும்ப உறுப்பினர்
-</small>
+        <div class="profile-img" id="headerProfile">
+            U
+        </div>
+        <button class="language-btn" id="languageButton" onclick="toggleLanguage()">தமிழ்</button>
 
-</div>
+        <span class="profile-name" id="headerUserName">
+            User
+        </span>
 
-</div>
+        <div class="profile-menu" id="profileMenu">
 
-<button onclick="showAccountDetails()">
-👤 <span data-i18n="accountDetails">Account Details</span>
-</button>
+            <div class="profile-menu-header">
+                <h4 id="menuUserName">User</h4>
+                <p>Authorized Family Member</p>
+            </div>
 
-<button onclick="openChangePassword()">
-🔐 <span data-i18n="changePassword">Change Password</span>
-</button>
+            <div class="menu-item" onclick="openProfile(event)">
+                👤 Profile
+            </div>
 
-<button onclick="openLanguageSettings()">
-🌐 <span data-i18n="language">Language</span>
-</button>
+            <div class="menu-item">
+                📋 Account Details
+            </div>
 
-<button
-class="profile-logout"
-onclick="logout()">
+            <div class="menu-item">
+                🔒 Change Password
+            </div>
 
-🚪 <span data-i18n="logout">Logout</span>
+            <div class="menu-item">
+                🌐 Language
+            </div>
 
-</button>
+            <div class="menu-item logout-item" onclick="logout(event)">
+                🚪 Logout
+            </div>
 
-</div>
+        </div>
 
-</div>
+    </div>
 
 </header>
 
 
 <!-- NAVIGATION -->
 
-<nav>
+<div class="navigation">
 
-<button
-class="active"
-onclick="showSection('dashboard',this)"
-data-i18n="dashboard">
+    <button class="nav-btn active" onclick="showPage('dashboard',this)">
+        Dashboard
+    </button>
 
-🏠 Dashboard
+    <button class="nav-btn" onclick="showPage('dailyData',this)">
+        Add Daily Data
+    </button>
 
-</button>
+    <button class="nav-btn" onclick="showPage('history',this)">
+        History
+    </button>
 
-<button
-onclick="showSection('addData',this)"
-data-i18n="addDailyData">
-
-➕ Add Daily Data
-
-</button>
-
-<button
-onclick="showSection('history',this)"
-data-i18n="history">
-
-📅 History
-
-</button>
-
-<button
-onclick="showSection('report',this)"
-data-i18n="reports">
-
-📊 Reports
-
-</button>
-
-</nav>
-
-
-<main>
-
-<!-- =====================================================
-DASHBOARD
-===================================================== -->
-
-<section
-id="dashboard"
-class="section active">
-
-<div class="welcome">
-
-<h1 data-i18n="todayDashboard">
-🌿 Today's Farm Dashboard
-</h1>
-
-<div
-class="date-text"
-id="todayDate">
-</div>
+    <button class="nav-btn" onclick="showPage('reports',this)">
+        Reports
+    </button>
 
 </div>
 
 
-<div class="cards">
-
-<div class="card">
-
-<div class="icon">🥚</div>
-
-<h3 data-i18n="quailEggsSold">
-Quail Eggs Sold
-</h3>
-
-<strong id="dashQuail">0</strong>
-
-</div>
+<div class="container">
 
 
-<div class="card">
+<!-- ================= DASHBOARD ================= -->
 
-<div class="icon">🥚</div>
+<div class="page active" id="dashboard">
 
-<h3 data-i18n="nattuEggsSold">
-Nattu Koli Eggs Sold
-</h3>
-
-<strong id="dashNattu">0</strong>
-
-</div>
+    <div class="page-title">
+        <h1>Dashboard</h1>
+        <p>Welcome to your farm management dashboard</p>
+    </div>
 
 
-<div
-class="card"
-onclick="openQuailMeatEntry()"
-style="cursor:pointer;"
-title="Click to enter Quail Meat sales">
-
-<div class="icon">🥩</div>
-
-<h3 data-i18n="quailMeatSold">
-Quail Meat Sold
-</h3>
-
-<strong id="dashQuailMeat">0</strong>
-
-</div>
+    <div class="date-box">
+        📅 Today: <b id="todayDate"></b>
+    </div>
 
 
-<div class="card">
+    <div class="cards-grid">
 
-<div class="icon">💰</div>
+        <div class="stat-card">
+            <div class="icon">🥚</div>
+            <p>Quail Eggs Sold</p>
+            <h2 id="dashQuailEggs">0</h2>
+        </div>
 
-<h3 data-i18n="todaysSales">
-Today's Sales
-</h3>
+        <div class="stat-card">
+            <div class="icon">🥚</div>
+            <p>Nattu Koli Eggs Sold</p>
+            <h2 id="dashNattuEggs">0</h2>
+        </div>
 
-<strong id="dashSales">₹0</strong>
+        <div class="stat-card">
+            <div class="icon">🍗</div>
+            <p data-i18n="quailMeatSold">Quail Birds Sold</p>
+            <h2 id="dashQuailMeat">0</h2>
+        </div>
 
-</div>
+        <div class="stat-card">
+            <div class="icon">₹</div>
+            <p>Today's Sales</p>
+            <h2 id="dashSales">₹0</h2>
+        </div>
 
-</div>
+    </div>
 
 
-<div class="form-box">
+    <h2 class="section-title">📦 Current Stock</h2>
 
-<h2 data-i18n="todaysStock">
-📦 Today's Stock
-</h2>
 
-<div class="cards">
+    <div class="cards-grid">
 
-<div class="card">
+        <div class="stat-card">
+            <div class="icon">🥚</div>
+            <p>Quail Eggs Remaining</p>
+            <h2 id="stockQuailEggs">0</h2>
+        </div>
 
-<h3 data-i18n="quailEggsRemaining">
-Quail Eggs Remaining
-</h3>
+        <div class="stat-card">
+            <div class="icon">🥚</div>
+            <p>Nattu Koli Eggs Remaining</p>
+            <h2 id="stockNattuEggs">0</h2>
+        </div>
 
-<strong id="stockQuail">0</strong>
+        <div class="stat-card">
+            <div class="icon">🍗</div>
+            <p data-i18n="quailMeatRemaining">Quail Birds Remaining</p>
+            <h2 id="stockQuailMeat">0</h2>
+        </div>
+
+    </div>
 
 </div>
 
 
-<div class="card">
+<!-- ================= ADD DAILY DATA ================= -->
 
-<h3 data-i18n="nattuEggsRemaining">
-Nattu Koli Eggs Remaining
-</h3>
+<div class="page" id="dailyData">
 
-<strong id="stockNattu">0</strong>
-
-</div>
-
-
-<div class="card">
-
-<h3 data-i18n="quailMeatRemaining">
-Quail Meat Remaining
-</h3>
-
-<strong id="stockQuailMeat">0</strong>
-
-</div>
-
-</div>
-
-</div>
-
-</section>
+    <div class="page-title">
+        <h1>➕ Add / Update Daily Farm Details</h1>
+        <p>Enter today's farm production and sales details</p>
+    </div>
 
 
-<!-- =====================================================
-ADD DATA
-===================================================== -->
+    <div class="form-card">
 
-<section id="addData" class="section">
-
-<div class="form-box">
-
-<h2 data-i18n="addUpdateDaily">
-➕ Add / Update Daily Farm Details
-</h2>
-
-<div class="form-grid">
-
-<div class="field">
-
-<label data-i18n="date">📅 Date</label>
-
-<input type="date" id="dataDate">
-
-</div>
+        <div class="form-grid">
 
 
-<div class="field">
-
-<label data-i18n="quailProduced">
-🐦 Quail Produced
-</label>
-
-<input
-type="number"
-id="quailProduced"
-min="0">
-
-</div>
+            <div class="form-group">
+                <label>📅 Date</label>
+                <input type="date" id="date">
+            </div>
 
 
-<div class="field">
-
-<label data-i18n="quailSold">
-🥚 Quail Eggs Sold
-</label>
-
-<input
-type="number"
-id="quailSold"
-min="0">
-
-</div>
+            <div class="form-group">
+                <label>🐦 Quail Produced</label>
+                <input type="number" id="quailProduced" placeholder="Enter quantity">
+            </div>
 
 
-<div class="field">
-
-<label>🥚 Quail Egg Rate (₹ each)</label>
-
-<input
-type="number"
-id="quailRate"
-min="0"
-step="0.01"
-placeholder="Example: 4">
-
-</div>
+            <div class="form-group">
+                <label>🥚 Quail Eggs Sold</label>
+                <input type="number" id="quailEggsSold" placeholder="Enter quantity">
+            </div>
 
 
-<div class="field">
-
-<label data-i18n="nattuProduced">
-🥚 Nattu Koli Eggs Produced
-</label>
-
-<input
-type="number"
-id="nattuProduced"
-min="0">
-
-</div>
+            <div class="form-group">
+                <label>₹ Quail Egg Rate</label>
+                <input type="number" id="quailEggRate" placeholder="Rate per egg">
+            </div>
 
 
-<div class="field">
-
-<label data-i18n="nattuSold">
-🥚 Nattu Koli Eggs Sold
-</label>
-
-<input
-type="number"
-id="nattuSold"
-min="0">
-
-</div>
+            <div class="form-group">
+                <label>🥚 Nattu Koli Eggs Produced</label>
+                <input type="number" id="nattuProduced" placeholder="Enter quantity">
+            </div>
 
 
-<div class="field">
+            <div class="form-group">
+                <label>🥚 Nattu Koli Eggs Sold</label>
+                <input type="number" id="nattuSold" placeholder="Enter quantity">
+            </div>
 
-<label>🥚 Nattu Koli Egg Rate (₹ each)</label>
 
-<input
-type="number"
-id="nattuRate"
-min="0"
-step="0.01"
-placeholder="Example: 5">
+            <div class="form-group">
+                <label>₹ Nattu Koli Egg Rate</label>
+                <input type="number" id="nattuRate" placeholder="Rate per egg">
+            </div>
+
+
+            <div class="form-group">
+                <label>⚠️ Quail Mortality</label>
+                <input type="number" id="quailMortality" placeholder="Enter quantity">
+            </div>
+
+
+            <div class="form-group">
+                <label data-i18n="quailAvailable">🍗 Quail Birds Available</label>
+                <input type="number" id="quailMeatAvailable" placeholder="Enter count">
+            </div>
+
+
+            <div class="form-group">
+                <label data-i18n="quailSold">🍗 Quail Birds Sold</label>
+                <input type="number" id="quailMeatSold" placeholder="Enter count">
+            </div>
+
+
+            <div class="form-group">
+                <label data-i18n="quailRate">₹ Quail Bird Rate</label>
+                <input type="number" id="quailMeatRate" placeholder="Rate per bird">
+            </div>
+
+
+            <div class="form-group">
+                <label>💊 Medicine ₹</label>
+                <input type="number" id="medicine" placeholder="Enter amount">
+            </div>
+
+
+            <div class="form-group">
+                <label>🏷️ Tray Stickers ₹</label>
+                <input type="number" id="trayStickers" placeholder="Enter amount">
+            </div>
+
+
+            <div class="form-group">
+                <label data-i18n="totalSales">💰 Total Sales ₹ (Auto)</label>
+                <input type="number" id="totalSales" placeholder="Auto calculated" readonly>
+            </div>
+
+
+            <div class="form-group">
+                <label>💸 Other Expenses ₹</label>
+                <input type="number" id="otherExpenses" placeholder="Enter amount">
+            </div>
+
+
+            <div class="form-group full">
+                <label>📝 Farm Notes</label>
+                <textarea id="farmNotes" placeholder="Enter farm notes"></textarea>
+            </div>
+
+
+        </div>
+
+
+        <div class="form-actions">
+
+            <button class="save-btn" onclick="saveRecord()">
+                💾 Save Daily Data
+            </button>
+
+            <button class="clear-btn" onclick="clearForm()">
+                Clear
+            </button>
+
+        </div>
+
+    </div>
 
 </div>
 
 
-<div class="field">
+<!-- ================= HISTORY ================= -->
 
-<label data-i18n="quailMortality">
-🐦 Quail Mortality
-</label>
+<div class="page" id="history">
 
-<input
-type="number"
-id="quailMortality"
-min="0">
+    <div class="page-title">
+        <h1>📅 Farm History</h1>
+        <p>Previous daily farm records</p>
+    </div>
 
-</div>
+    <div class="history-list" id="historyList">
 
-
-<div class="field">
-
-<label data-i18n="quailMeatAvailable">
-🥩 Quail Meat Available
-</label>
-
-<input
-type="number"
-id="quailMeatAvailable"
-min="0">
+    </div>
 
 </div>
 
 
-<div class="field">
+<!-- ================= REPORTS ================= -->
 
-<label data-i18n="quailMeatSold">
-🥩 Quail Meat Sold
-</label>
+<div class="page" id="reports">
 
-<input
-type="number"
-id="quailMeatSold"
-min="0">
-
-</div>
+    <div class="page-title">
+        <h1>📊 Farm Reports</h1>
+        <p>Complete farm business overview</p>
+    </div>
 
 
-<div class="field">
+    <div class="cards-grid">
 
-<label>🥩 Quail Meat Rate (₹ / kg)</label>
-
-<input
-type="number"
-id="quailMeatRate"
-min="0"
-step="0.01"
-placeholder="Example: 300">
-
-</div>
+        <div class="stat-card report-card">
+            <p>Total Quail Eggs Sold</p>
+            <h2 id="reportQuailEggs">0</h2>
+        </div>
 
 
-<div class="field">
-
-<label data-i18n="medicine">
-💊 Medicine
-</label>
-
-<input
-type="number"
-id="medicine"
-min="0"
-placeholder="₹">
-
-</div>
+        <div class="stat-card report-card">
+            <p>Total Nattu Koli Eggs Sold</p>
+            <h2 id="reportNattuEggs">0</h2>
+        </div>
 
 
-<div class="field">
-
-<label data-i18n="trayStickers">
-🏷️ Tray Stickers
-</label>
-
-<input
-type="number"
-id="trayStickers"
-min="0"
-placeholder="₹">
-
-</div>
+        <div class="stat-card report-card">
+            <p>Total Quail Meat Sold</p>
+            <h2 id="reportQuailMeat">0</h2>
+        </div>
 
 
-<div class="field">
+        <div class="stat-card report-card">
+            <p>Total Sales</p>
+            <h2 id="reportSales">₹0</h2>
+        </div>
 
-<label data-i18n="sales">
-💰 Total Sales ₹
-</label>
 
-<input
-type="number"
-id="sales"
-min="0"
-readonly
-placeholder="Calculated automatically">
+        <div class="stat-card expense-card">
+            <p>Total Expenses</p>
+            <h2 id="reportExpenses">₹0</h2>
+        </div>
+
+
+        <div class="stat-card profit-card">
+            <p>Profit</p>
+            <h2 id="reportProfit">₹0</h2>
+        </div>
+
+
+        <div class="stat-card loss-card">
+            <p>Loss</p>
+            <h2 id="reportLoss">₹0</h2>
+        </div>
+
+    </div>
 
 </div>
 
 
-<div class="field">
-
-<label data-i18n="expenses">
-💸 Other Expenses ₹
-</label>
-
-<input
-type="number"
-id="expenses"
-min="0">
-
 </div>
 
 
-<div class="field full">
+<!-- ================= PROFILE MODAL ================= -->
 
-<label data-i18n="notes">
-📝 Farm Notes
-</label>
+<div class="modal" id="profileModal">
 
-<textarea
-id="notes"
-placeholder="Today's farm details..."></textarea>
+    <div class="modal-box">
 
-</div>
+        <div class="big-profile" id="bigProfile">
+            U
+        </div>
 
-</div>
+        <h2 id="profileModalName">User</h2>
 
-<br>
-
-<button
-class="btn save-btn"
-onclick="saveData()"
-data-i18n="saveData">
-
-💾 SAVE DATA
-
-</button>
-
-<button
-class="btn cancel-btn"
-onclick="clearForm()"
-data-i18n="clear">
-
-CLEAR
-
-</button>
-
-<input
-type="hidden"
-id="editId">
-
-</div>
-
-</section>
+        <p>Family Farm Member</p>
 
 
-<!-- =====================================================
-HISTORY
-===================================================== -->
+        <label class="upload-btn">
+            📷 Add Profile Photo
+            <input type="file" accept="image/*" hidden onchange="uploadProfile(event)">
+        </label>
 
-<section id="history" class="section">
 
-<div class="welcome">
+        <br>
 
-<h1 data-i18n="farmHistory">
-📅 Farm History
-</h1>
 
-<p
-class="date-text"
-data-i18n="previousRecords">
+        <button class="remove-btn" onclick="removeProfilePhoto()">
+            Remove Photo
+        </button>
 
-Previous daily records
 
-</p>
+        <div class="account-details">
+
+            <p><b>Name:</b> <span id="detailName"></span></p>
+
+            <p><b>Login Method:</b> Local Login</p>
+
+            <p><b>Account Type:</b> Authorized Family Member</p>
+
+        </div>
+
+
+        <button class="close-btn" onclick="closeProfile()">
+            Close
+        </button>
+
+    </div>
 
 </div>
-
-<div id="historyList"></div>
-
-</section>
-
-
-<!-- =====================================================
-REPORT
-===================================================== -->
-
-<section id="report" class="section">
-
-<div class="welcome">
-
-<h1 data-i18n="farmReports">
-📊 Farm Reports
-</h1>
-
-<p
-class="date-text"
-data-i18n="completeSummary">
-
-Complete farm sales summary
-
-</p>
-
-</div>
-
-
-<div class="summary">
-
-<div class="summary-card">
-
-<h3 data-i18n="totalQuail">
-Total Quail Eggs Sold
-</h3>
-
-<strong id="totalQuail">0</strong>
-
-</div>
-
-
-<div class="summary-card">
-
-<h3 data-i18n="totalNattu">
-Total Nattu Koli Eggs Sold
-</h3>
-
-<strong id="totalNattu">0</strong>
-
-</div>
-
-
-<div class="summary-card">
-
-<h3 data-i18n="totalQuailMeat">
-Total Quail Meat Sold
-</h3>
-
-<strong id="totalQuailMeat">0</strong>
-
-</div>
-
-
-<div class="summary-card">
-
-<h3 data-i18n="totalSales">
-Total Sales
-</h3>
-
-<strong id="totalSales">₹0</strong>
-
-</div>
-
-
-<div class="summary-card">
-
-<h3 data-i18n="totalExpenses">
-Total Expenses
-</h3>
-
-<strong id="totalExpenses">₹0</strong>
-
-</div>
-
-
-<div class="summary-card profit-card">
-
-<h3 data-i18n="profit">
-Profit
-</h3>
-
-<strong id="profitAmount">₹0</strong>
-
-</div>
-
-
-<div class="summary-card loss-card">
-
-<h3 data-i18n="loss">
-Loss
-</h3>
-
-<strong id="lossAmount">₹0</strong>
-
-</div>
-
-</div>
-
-
-<br><br>
-
-<div class="table-box">
-
-<h2 data-i18n="dailySummary">
-📋 Daily Summary
-</h2>
-
-<br>
-
-<table>
-
-<thead>
-
-<tr>
-
-<th data-i18n="date">Date</th>
-<th data-i18n="quailSold">Quail Sold</th>
-<th data-i18n="nattuSold">Nattu Sold</th>
-<th data-i18n="quailMortality">Mortality</th>
-<th data-i18n="quailMeat">Quail Meat</th>
-<th data-i18n="sales">Sales</th>
-<th data-i18n="expenses">Expenses</th>
-
-</tr>
-
-</thead>
-
-<tbody id="reportTable"></tbody>
-
-</table>
-
-</div>
-
-</section>
-
-</main>
-
-</div>
-
-
-<!-- =====================================================
-ACCOUNT DETAILS
-===================================================== -->
-
-<div
-class="modal"
-id="accountModal">
-
-<div class="modal-box">
-
-<h2 data-i18n="accountDetails">
-👤 Account Details
-</h2>
-
-<div
-class="profile-photo-preview"
-id="accountPhotoPreview">
-
-P
-
-</div>
-
-<div class="photo-buttons">
-
-<button
-class="btn change-btn"
-onclick="selectProfilePhoto()">
-
-📷 Add Profile
-
-</button>
-
-<button
-class="btn close-btn"
-onclick="closeModal('accountModal')">
-
-Close
-
-</button>
-
-</div>
-
-<input
-type="file"
-id="profilePhotoInput"
-accept="image/*"
-style="display:none;"
-onchange="changeProfilePhoto(event)">
-
-<label data-i18n="name">Name</label>
-
-<input
-type="text"
-id="accountName"
-readonly>
-
-<label data-i18n="loginMethod">Login Method</label>
-
-<input
-type="text"
-value="Google Account"
-readonly>
-
-<label data-i18n="selectedFamilyMember">Selected Family Member</label>
-
-<input
-type="text"
-id="accountSelectedUser"
-readonly>
-
-</div>
-
-</div>
-
-
-<!-- =====================================================
-CHANGE PASSWORD
-===================================================== -->
-
-<div
-class="modal"
-id="passwordModal">
-
-<div class="modal-box">
-
-<h2>
-🔐 Change Password
-</h2>
-
-<p style="color:#777;line-height:1.5;">
-Google login use pannuvathala password Firebase/Google account-la manage pannappadum.
-</p>
-
-<br>
-
-<p style="color:#245b21;font-weight:bold;">
-Password change panna Google Account settings use pannunga.
-</p>
-
-<div class="modal-buttons">
-
-<button
-class="btn close-btn"
-onclick="closeModal('passwordModal')">
-
-Close
-
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-
-<!-- =====================================================
-LANGUAGE
-===================================================== -->
-
-<div
-class="modal"
-id="languageModal">
-
-<div class="modal-box">
-
-<h2 data-i18n="languageTitle">
-🌐 Language
-</h2>
-
-<div class="language-box">
-
-<p data-i18n="selectLanguage">Select Language</p>
-
-<div class="language-buttons">
-
-<button
-id="englishBtn"
-data-language="en"
-class="active"
-onclick="setLanguage('en')">
-
-English
-
-</button>
-
-<button
-id="tamilBtn"
-data-language="ta"
-onclick="setLanguage('ta')">
-
-தமிழ்
-
-</button>
-
-</div>
-
-</div>
-
-<br>
-
-<button
-class="btn close-btn"
-style="width:100%;"
-onclick="closeModal('languageModal')">
-
-Close
-
-</button>
-
-</div>
-
-</div>
-
-
-<!-- =====================================================
-QUAIL MEAT ENTRY
-===================================================== -->
-
-<div
-class="modal"
-id="quailMeatModal">
-
-<div class="modal-box">
-
-<h2 data-i18n="quailMeatEntry">
-🥩 Quail Meat Entry
-</h2>
-
-<label>
-Quail Meat Available
-</label>
-
-<input
-type="number"
-id="meatAvailablePopup"
-min="0">
-
-<label>
-Quail Meat Sold
-</label>
-
-<input
-type="number"
-id="meatSoldPopup"
-min="0">
-
-<div class="modal-buttons">
-
-<button
-class="btn change-btn"
-onclick="saveQuailMeatEntry()">
-
-Save
-
-</button>
-
-<button
-class="btn close-btn"
-onclick="closeModal('quailMeatModal')">
-
-Close
-
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-
-<!-- =====================================================
-FIREBASE
-===================================================== -->
-
-<script type="module">
-
-import { initializeApp }
-from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
-
-import {
-    getAuth,
-    GoogleAuthProvider,
-    signInWithPopup,
-    signInWithRedirect,
-    onAuthStateChanged,
-    signOut
-}
-from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
-
-import {
-    getDatabase,
-    ref,
-    set,
-    get,
-    remove
-}
-from "https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
-
-
-/*
-==========================================================
-PASTE YOUR FIREBASE CONFIG HERE
-==========================================================
-
-Firebase Console
-→ Project Settings
-→ Your Apps
-→ Web App
-→ Firebase SDK setup
-→ Config
-*/
-
-const firebaseConfig = {
-
-    apiKey: "AIzaSyBxYGWRz3l1ustoNyFeBxsDfSTnMYrbgIg",
-
-    authDomain: "prs-farms.firebaseapp.com",
-
-    projectId: "prs-farms",
-
-    storageBucket: "prs-farms.firebasestorage.app",
-
-    messagingSenderId: "944134718763",
-
-    appId: "1:944134718763:web:99e3ef679f20f28f74716e",
-
-    measurementId: "G-B1R4S2Y7EC",
-    
-    databaseURL: "https://prs-farms-default-rtdb.firebaseio.com"
-
-};
-
-
-const app = initializeApp(firebaseConfig);
-
-const auth = getAuth(app);
-
-const database = getDatabase(app);
-
-const provider = new GoogleAuthProvider();
-provider.setCustomParameters({prompt:"select_account"});
-
-let currentUser = null;
-
-async function completeLogin(user){
-
-    currentUser = user;
-
-    const selected = localStorage.getItem("selectedFamilyUser") || "prabakaran";
-
-    localStorage.setItem("googleEmail", user.email || "");
-    localStorage.setItem("googleName", user.displayName || "");
-    localStorage.setItem("googleUID", user.uid || "");
-    localStorage.setItem("familyProfileName", getDisplayName(selected));
-
-    sessionStorage.removeItem("loginInProgress");
-    showApplication();
-
-    const profile = await resolveFamilyProfile(user, selected);
-    selectedUser = profile.key;
-    updateUser();
-}
-
-async function resolveFamilyProfile(user, requestedProfile){
-
-    const fallback = {
-        key: requestedProfile,
-        name: getDisplayName(requestedProfile)
-    };
-
-    let profile = fallback;
-    try{
-        const profileRef = ref(database, `accountProfiles/${user.uid}`);
-        const snapshot = await get(profileRef);
-        profile = snapshot.exists() ? snapshot.val() : fallback;
-
-        if(!snapshot.exists()) await set(profileRef, profile);
-    }
-    catch(error){
-        console.error("Profile assignment error:", error);
-    }
-
-    localStorage.setItem("selectedFamilyUser", profile.key);
-    localStorage.setItem("familyProfileName", profile.name);
-    window.activeFamilyProfile = profile;
-    return profile;
-}
-
-
-/*
-==========================================================
-GOOGLE LOGIN
-==========================================================
-*/
-
-window.loginWithEmail = async function(){
-
-    const selected =
-        document.getElementById("username").value;
-
-    localStorage.setItem(
-        "selectedFamilyUser",
-        selected
-    );
-
-    const errorBox =
-        document.getElementById("loginError");
-
-    errorBox.innerText = "";
-
-    try{
-
-        const profilesResponse = await fetch(`${BACKEND_API}/api/profiles`, {credentials: "include"});
-        const profilesData = await profilesResponse.json().catch(() => ({}));
-        if(!profilesResponse.ok) throw new Error(profilesData.error || "Backend is unavailable. Check Flask and MySQL.");
-        const selectedNames = {prabakaran: "Prabakaran", poongodi: "Poongodi", rajindharan: "Rajindharan", sajindharan: "Sajindharan"};
-        const selectedName = selectedNames[selected];
-        const selectedProfile = profilesData.profiles.find(profile => profile.name.toLowerCase() === selectedName.toLowerCase());
-        const email = document.getElementById("backendEmail").value.trim();
-        const password = document.getElementById("backendPassword").value;
-        const response = await fetch(`${BACKEND_API}/api/login`, {
-            method: "POST",
-            credentials: "include",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({
-                email,
-                password,
-                profile_id: selectedProfile ? selectedProfile.id : null
-            })
-        });
-        const data = await response.json();
-        if(!response.ok) throw new Error(data.error || "Backend login failed.");
-        localStorage.setItem("backendUser", JSON.stringify(data.user));
-        await completeBackendLogin(data.user);
-
-    }
-    catch(error){
-
-        console.error(error);
-
-        errorBox.innerText = error.message || "Backend login failed. Please check Flask and MySQL.";
-
-    }
-
-};
-
-window.loginWithGoogle = async function(){
-
-    const selected = document.getElementById("username").value;
-    const errorBox = document.getElementById("loginError");
-    errorBox.innerText = "";
-    localStorage.setItem("selectedFamilyUser", selected);
-
-    try{
-        const result = await signInWithPopup(auth, provider);
-        const idToken = await result.user.getIdToken();
-        const profilesResponse = await fetch(`${BACKEND_API}/api/profiles`, {credentials: "include"});
-        const profilesData = await profilesResponse.json().catch(() => ({}));
-        if(!profilesResponse.ok) throw new Error(profilesData.error || "Backend is unavailable. Check Flask and MySQL.");
-        const selectedNames = {prabakaran: "Prabakaran", poongodi: "Poongodi", rajindharan: "Rajindharan", sajindharan: "Sajindharan"};
-        const selectedProfile = profilesData.profiles.find(profile => profile.name.toLowerCase() === selectedNames[selected].toLowerCase());
-        const response = await fetch(`${BACKEND_API}/api/login/google`, {
-            method: "POST",
-            credentials: "include",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({id_token: idToken, profile_id: selectedProfile ? selectedProfile.id : null})
-        });
-        const data = await response.json();
-        if(!response.ok) throw new Error(data.error || "Google login failed.");
-        localStorage.setItem("backendUser", JSON.stringify(data.user));
-        await completeBackendLogin(data.user);
-    }
-    catch(error){
-        console.error(error);
-        const email = document.getElementById("backendEmail").value.trim();
-        const password = document.getElementById("backendPassword").value;
-        if(email && password){
-            await window.loginWithEmail();
-        } else {
-            errorBox.innerText = error.message || "Google login failed.";
-        }
-    }
-
-};
-
-async function completeBackendLogin(user){
-
-    currentUser = user;
-    selectedUser = Object.keys({prabakaran: 1, poongodi: 1, rajindharan: 1, sajindharan: 1})
-        .find(key => getDisplayName(key).toLowerCase() === user.name.toLowerCase()) || selectedUser;
-    localStorage.setItem("selectedFamilyUser", selectedUser);
-    localStorage.setItem("familyProfileName", user.name);
-    showApplication();
-
-}
-
-
-/*
-==========================================================
-AUTH STATE
-==========================================================
-*/
-
-onAuthStateChanged(auth,()=>{});
-
-
-/*
-==========================================================
-LOGOUT
-==========================================================
-*/
-
-window.logout = async function(){
-
-    try{
-
-        await fetch(`${BACKEND_API}/api/logout`, {method: "POST", credentials: "include"});
-
-        currentUser = null;
-
-        localStorage.removeItem(
-            "selectedFamilyUser"
-        );
-
-        localStorage.removeItem(
-            "googleEmail"
-        );
-
-        localStorage.removeItem(
-            "googleName"
-        );
-
-
-        localStorage.removeItem(
-            "googleUID"
-        );
-
-        localStorage.removeItem("backendUser");
-
-        document.getElementById("app").style.display =
-            "none";
-
-        document.getElementById("loginPage").style.display =
-            "flex";
-
-    }
-    catch(error){
-
-        console.error(error);
-
-    }
-
-};
-
-/*
-==========================================================
-SAVE DATA TO FIREBASE
-==========================================================
-*/
-
-window.saveToFirebase = async function(record) {
-
-    if (!currentUser) return {success: false};
-
-    try {
-
-        const payload = {
-            record_date: record.date,
-            quail_available: record.quailProduced,
-            quail_price: record.quailRate,
-            quail_sold: record.quailSold,
-            nattu_available: record.nattuProduced,
-            nattu_price: record.nattuRate,
-            nattu_sold: record.nattuSold,
-            meat_available: record.quailMeatAvailable,
-            meat_price: record.quailMeatRate,
-            meat_sold: record.quailMeatSold,
-            mortality: record.quailMortality,
-            medicine: record.medicine,
-            tray_stickers: record.trayStickers,
-            expenses: record.expenses,
-            notes: record.notes
-        };
-        const backendId = record.backendId || (Number.isInteger(Number(record.id)) && String(record.id).length < 12 ? record.id : null);
-        const response = await fetch(backendId ? `${BACKEND_API}/api/records/${backendId}` : `${BACKEND_API}/api/records`, {
-            method: backendId ? "PUT" : "POST",
-            credentials: "include",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify(payload)
-        });
-        const data = await response.json();
-        if(!response.ok) throw new Error(data.error || "Could not save record.");
-        return {success: true, id: data.id || backendId};
-
-    } 
-    catch (error) {
-
-        console.error("Backend save error:", error);
-
-        return {success: false, error: error.message};
-
-    }
-
-};
-
-/*
-==========================================================
-LOAD DATA FROM FIREBASE
-==========================================================
-*/
-
-window.loadFromFirebase = async function() {
-
-    if (!currentUser) return [];
-
-    try {
-
-        const response = await fetch(`${BACKEND_API}/api/records`, {credentials: "include"});
-        if(!response.ok) throw new Error("Could not load backend records.");
-        const records = await response.json();
-        return records.map(record => ({
-            id: String(record.id),
-            backendId: record.id,
-            date: record.record_date,
-            quailProduced: Number(record.quail_available),
-            quailRate: Number(record.quail_price),
-            quailSold: Number(record.quail_sold),
-            nattuProduced: Number(record.nattu_available),
-            nattuRate: Number(record.nattu_price),
-            nattuSold: Number(record.nattu_sold),
-            quailMeatAvailable: Number(record.meat_available),
-            quailMeatRate: Number(record.meat_price),
-            quailMeatSold: Number(record.meat_sold),
-            sales:
-                Number(record.quail_sales || 0) +
-                Number(record.nattu_sales || 0) +
-                Number(record.meat_sales || 0),
-            quailMortality: Number(record.mortality),
-            medicine: Number(record.medicine),
-            trayStickers: Number(record.tray_stickers),
-            expenses: Number(record.expenses),
-            notes: record.notes || "",
-            updatedBy: record.updated_by_name || "-",
-            updatedAt: record.updated_at || ""
-        }));
-
-    } 
-    catch (error) {
-
-        console.error("Backend load error:", error);
-
-        return [];
-
-    }
-
-};
-
-/*
-==========================================================
-DELETE FROM FIREBASE
-==========================================================
-*/
-
-window.deleteFromFirebase = async function(recordId) {
-
-    if (!currentUser) return false;
-
-    try {
-
-        const response = await fetch(`${BACKEND_API}/api/records/${recordId}`, {method: "DELETE", credentials: "include"});
-        return response.ok;
-
-    } 
-    catch (error) {
-
-        console.error("Backend delete error:", error);
-
-        return false;
-
-    }
-
-};
-
-</script>
 
 
 <script>
 
-/* =====================================================
-GLOBAL DATA
-===================================================== */
+/* ================= VARIABLES ================= */
 
-const BACKEND_API =
-    window.BACKEND_API_URL ||
-    "http://127.0.0.1:5000";
+let currentUser = "";
+let canEdit = false;
+let language = localStorage.getItem("farmLanguage") || "en";
+let editingIndex = null;
 
-let farmData =
-JSON.parse(
-    localStorage.getItem("farmData") || "[]"
-);
+let records = [];
 
-let selectedUser =
-localStorage.getItem("selectedFamilyUser") ||
-"prabakaran";
+async function apiRequest(path, options = {}){
+    const response = await fetch(path, {
+        headers: {"Content-Type":"application/json"},
+        ...options
+    });
+    if(!response.ok){
+        const error = await response.json().catch(() => ({}));
+        throw new Error(error.error || "Server request failed");
+    }
+    return response.status === 204 ? null : response.json();
+}
 
-
-/* =====================================================
-SHOW APPLICATION
-===================================================== */
-
-function showApplication(){
-
-    selectedUser =
-        localStorage.getItem("selectedFamilyUser") ||
-        "prabakaran";
-
-    document.getElementById("loginPage")
-        .style.display = "none";
-
-    document.getElementById("app")
-        .style.display = "block";
-
-    setLanguage(localStorage.getItem("language") || "en");
-
-    updateUser();
-
-    setTodayDate();
-
-    loadData();
-
+async function loadRecords(){
+    if(!currentUser) return;
+    records = await apiRequest(
+        "/api/records?user="+encodeURIComponent(currentUser)
+    );
     updateDashboard();
-
+    renderHistory();
     updateReports();
-
+    applyLanguage();
 }
 
 
-/* =====================================================
-USER NAME
-===================================================== */
+/* ================= TODAY DATE ================= */
 
-function getDisplayName(value){
+document.getElementById("todayDate").innerText =
+new Date().toDateString();
 
-    const names = {
+["quailEggsSold","quailEggRate","nattuSold","nattuRate","quailMeatSold","quailMeatRate"]
+    .forEach(id => document.getElementById(id).addEventListener("input", calculateTotalSales));
 
-        prabakaran:"Prabakaran",
-
-        poongodi:"Poongodi",
-
-        rajindharan:"Rajindharan",
-
-        sajindharan:"Sajindharan"
-
-    };
-
-    return names[value] || "User";
-
+function calculateTotalSales(){
+    const value =
+        (Number(document.getElementById("quailEggsSold").value) || 0) *
+        (Number(document.getElementById("quailEggRate").value) || 0) +
+        (Number(document.getElementById("nattuSold").value) || 0) *
+        (Number(document.getElementById("nattuRate").value) || 0) +
+        (Number(document.getElementById("quailMeatSold").value) || 0) *
+        (Number(document.getElementById("quailMeatRate").value) || 0);
+    document.getElementById("totalSales").value = value;
 }
 
-function getCurrentProfileKey(){
 
-    const identity =
-        selectedUser ||
-        localStorage.getItem("selectedFamilyUser") ||
-        "guest";
+/* ================= LOGIN ================= */
 
-    return `profile_${identity}`;
-
-}
-
-function getCurrentProfile(){
+async function login(){
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+    if(!email || !password){
+        alert("Please enter your email and password");
+        return;
+    }
 
     try{
+        const result = await apiRequest("/api/login", {
+            method:"POST",
+            body:JSON.stringify({
+                email,
+                password
+            })
+        });
+        currentUser = result.user;
+        canEdit = result.canEdit;
+    }catch(error){
+        alert(error.message === "Failed to fetch"
+            ? "Backend is not running. Start the app with: npm start"
+            : error.message);
+        return;
+    }
 
-        return JSON.parse(
-            localStorage.getItem(getCurrentProfileKey()) || "null"
-        ) || {};
+    localStorage.setItem("currentFarmUser",currentUser);
+
+    document.getElementById("loginPage").style.display="none";
+
+    document.getElementById("app").style.display="block";
+
+    document.getElementById("headerUserName").innerText=currentUser;
+
+    document.getElementById("menuUserName").innerText=currentUser;
+    applyPermissions();
+    applyLanguage();
+
+    loadProfile();
+
+    await loadRecords();
+
+}
+
+
+/* ================= AUTO LOGIN ================= */
+
+window.onload=async function(){
+
+    let savedUser=localStorage.getItem("currentFarmUser");
+
+    if(savedUser){
+
+        currentUser=savedUser;
+        canEdit = currentUser === "Poongodi";
+
+        document.getElementById("loginPage").style.display="none";
+
+        document.getElementById("app").style.display="block";
+
+        document.getElementById("headerUserName").innerText=currentUser;
+
+        document.getElementById("menuUserName").innerText=currentUser;
+        applyPermissions();
+        applyLanguage();
+
+        loadProfile();
+
+        try{
+            await loadRecords();
+        }catch(error){
+            alert("Unable to load farm records: "+error.message);
+        }
 
     }
-    catch(error){
 
-        return {};
+};
 
+
+/* ================= LOGOUT ================= */
+
+function logout(event){
+
+    event.stopPropagation();
+
+    localStorage.removeItem("currentFarmUser");
+
+    currentUser="";
+    canEdit=false;
+
+    document.getElementById("app").style.display="none";
+
+    document.getElementById("loginPage").style.display="flex";
+    document.getElementById("email").value="";
+    document.getElementById("password").value="";
+
+}
+
+function applyPermissions(){
+    const dailyButton = document.querySelector(".nav-btn[onclick*=\"dailyData\"]");
+    if(dailyButton) dailyButton.style.display = canEdit ? "" : "none";
+}
+
+function toggleLanguage(){
+    language = language === "en" ? "ta" : "en";
+    localStorage.setItem("farmLanguage", language);
+    applyLanguage();
+}
+
+const translations = {
+    en: {
+        login: "Login", selectMember: "Select Family Member", email: "Email", password: "Password",
+        dashboard: "Dashboard", addData: "Add Daily Data", history: "History", reports: "Reports",
+        quailMeatSold: "Quail Birds Sold", quailMeatRemaining: "Quail Birds Remaining",
+        quailAvailable: "🍗 Quail Birds Available", quailSold: "🍗 Quail Birds Sold",
+        quailRate: "₹ Quail Bird Rate", totalSales: "💰 Total Sales ₹ (Auto)",
+        readOnly: "View only access", editAccess: "Edit access", language: "தமிழ்"
+    },
+    ta: {
+        login: "உள்நுழைவு", selectMember: "குடும்ப உறுப்பினரை தேர்வு செய்யவும்", email: "மின்னஞ்சல்",
+        password: "கடவுச்சொல்", dashboard: "முகப்பு", addData: "தினசரி தகவல் சேர்க்கவும்",
+        history: "வரலாறு", reports: "அறிக்கைகள்", quailMeatSold: "காடை விற்பனை எண்ணிக்கை",
+        quailMeatRemaining: "மீதமுள்ள காடை எண்ணிக்கை", quailAvailable: "🍗 கிடைக்கும் காடை எண்ணிக்கை",
+        quailSold: "🍗 விற்ற காடை எண்ணிக்கை", quailRate: "₹ ஒரு காடைக்கான விலை",
+        totalSales: "💰 மொத்த விற்பனை ₹ (தானியங்கி)", readOnly: "பார்வை மட்டும்",
+        editAccess: "திருத்த அனுமதி", language: "English"
     }
+};
 
-}
-
-function renderCurrentProfile(){
-
-    const name = getDisplayName(selectedUser);
-    const profile = getCurrentProfile();
-    const initial = name.charAt(0).toUpperCase();
-    const image = profile.profileImage;
-
-    document.getElementById("userInitial").innerHTML =
-        image ? `<img src="${image}" alt="Profile">` : initial;
-
-    document.getElementById("profileInitial").innerHTML =
-        image ? `<img src="${image}" alt="Profile">` : initial;
-
-    document.getElementById("accountPhotoPreview").innerHTML =
-        image ? `<img src="${image}" alt="Profile">` : initial;
-
-}
-
-
-function updateUser(){
-
-    const name =
-        getDisplayName(selectedUser);
-
-    document.getElementById("userName")
-        .innerText = name;
-
-    document.getElementById("profileName")
-        .innerText = name;
-
-    document.getElementById("accountName")
-        .value = name;
-
-    document.getElementById("accountSelectedUser")
-        .value = name;
-
-    document.getElementById("familyMemberText")
-        .innerText = localStorage.getItem("language") === "ta"
-            ? "குடும்ப உறுப்பினர்"
-            : "Family Member";
-
-    renderCurrentProfile();
-
-}
-
-
-/* =====================================================
-TODAY DATE
-===================================================== */
-
-function setTodayDate(){
-
-    const today =
-        new Date();
-
-    document.getElementById("todayDate")
-        .innerText =
-        today.toLocaleDateString(
-            "en-IN",
-            {
-                weekday:"long",
-                year:"numeric",
-                month:"long",
-                day:"numeric"
-            }
-        );
-
-    document.getElementById("dataDate")
-        .value =
-        today.toISOString().split("T")[0];
-
-}
-
-
-/* =====================================================
-NAVIGATION
-===================================================== */
-
-window.showSection =
-function(sectionId,button){
-
-    document.querySelectorAll(".section")
-        .forEach(section=>{
-            section.classList.remove("active");
+function applyLanguage(){
+    const t = translations[language];
+    const selectors = {
+        ".nav-btn:nth-child(1)": "dashboard",
+        ".nav-btn:nth-child(2)": "addData", ".nav-btn:nth-child(3)": "history",
+        ".nav-btn:nth-child(4)": "reports", "[data-i18n='quailMeatSold']": "quailMeatSold",
+        "[data-i18n='quailMeatRemaining']": "quailMeatRemaining",
+        "[data-i18n='quailAvailable']": "quailAvailable", "[data-i18n='quailSold']": "quailSold",
+        "[data-i18n='quailRate']": "quailRate", "[data-i18n='totalSales']": "totalSales",
+        "#languageButton": "language"
+    };
+    Object.entries(selectors).forEach(([selector, key]) => {
+        if(key && document.querySelector(selector)) document.querySelector(selector).innerText = t[key];
+    });
+    const textPairs = [
+        ["Family Farm Management", "குடும்ப பண்ணை மேலாண்மை"],
+        ["Sign in with Google", "Google மூலம் உள்நுழைக"],
+        ["Dashboard", "முகப்பு"],
+        ["Add Daily Data", "தினசரி தகவல் சேர்க்கவும்"],
+        ["History", "வரலாறு"],
+        ["Reports", "அறிக்கைகள்"],
+        ["Welcome to your farm management dashboard", "உங்கள் பண்ணை மேலாண்மை முகப்புக்கு வரவேற்கிறோம்"],
+        ["Today:", "இன்று:"],
+        ["Quail Eggs Sold", "விற்ற காடை முட்டைகள்"],
+        ["Nattu Koli Eggs Sold", "விற்ற நாட்டுக்கோழி முட்டைகள்"],
+        ["Today's Sales", "இன்றைய விற்பனை"],
+        ["Current Stock", "தற்போதைய இருப்பு"],
+        ["Quail Eggs Remaining", "மீதமுள்ள காடை முட்டைகள்"],
+        ["Nattu Koli Eggs Remaining", "மீதமுள்ள நாட்டுக்கோழி முட்டைகள்"],
+        ["Add / Update Daily Farm Details", "தினசரி பண்ணை தகவலை சேர்க்க / புதுப்பிக்க"],
+        ["Enter today's farm production and sales details", "இன்றைய உற்பத்தி மற்றும் விற்பனை தகவல்களை உள்ளிடவும்"],
+        ["📅 Date", "📅 தேதி"],
+        ["🐦 Quail Produced", "🐦 உற்பத்தி செய்யப்பட்ட காடைகள்"],
+        ["🥚 Quail Eggs Sold", "🥚 விற்ற காடை முட்டைகள்"],
+        ["₹ Quail Egg Rate", "₹ காடை முட்டை விலை"],
+        ["🥚 Nattu Koli Eggs Produced", "🥚 உற்பத்தி செய்யப்பட்ட நாட்டுக்கோழி முட்டைகள்"],
+        ["₹ Nattu Koli Egg Rate", "₹ நாட்டுக்கோழி முட்டை விலை"],
+        ["⚠️ Quail Mortality", "⚠️ காடை இறப்பு"],
+        ["💊 Medicine ₹", "💊 மருந்து ₹"],
+        ["🏷️ Tray Stickers ₹", "🏷️ ட்ரே ஸ்டிக்கர்கள் ₹"],
+        ["💸 Other Expenses ₹", "💸 மற்ற செலவுகள் ₹"],
+        ["📝 Farm Notes", "📝 பண்ணை குறிப்புகள்"],
+        ["💾 Save Daily Data", "💾 தினசரி தகவலை சேமிக்கவும்"],
+        ["Farm History", "பண்ணை வரலாறு"],
+        ["Previous daily farm records", "முந்தைய தினசரி பண்ணை பதிவுகள்"],
+        ["Farm Reports", "பண்ணை அறிக்கைகள்"],
+        ["Complete farm business overview", "முழுமையான பண்ணை வணிக சுருக்கம்"],
+        ["Total Quail Eggs Sold", "மொத்த விற்ற காடை முட்டைகள்"],
+        ["Total Nattu Koli Eggs Sold", "மொத்த விற்ற நாட்டுக்கோழி முட்டைகள்"],
+        ["Total Sales", "மொத்த விற்பனை"],
+        ["Total Expenses", "மொத்த செலவுகள்"],
+        ["Profit", "லாபம்"],
+        ["Loss", "நஷ்டம்"],
+        ["No farm records available.", "பண்ணை பதிவுகள் எதுவும் இல்லை."],
+        ["Expenses", "செலவுகள்"],
+        ["Profit / Loss", "லாபம் / நஷ்டம்"],
+        ["Updated by", "புதுப்பித்தவர்"],
+        ["Edit", "திருத்து"],
+        ["Delete", "நீக்கு"],
+        ["Clear", "அழி"],
+        ["Farm Notes", "பண்ணை குறிப்புகள்"],
+        ["Medicine ₹", "மருந்து ₹"],
+        ["Tray Stickers ₹", "ட்ரே ஸ்டிக்கர்கள் ₹"],
+        ["Other Expenses ₹", "மற்ற செலவுகள் ₹"],
+        ["Authorized Family Member", "அங்கீகரிக்கப்பட்ட குடும்ப உறுப்பினர்"],
+        ["Profile", "சுயவிவரம்"],
+        ["Account Details", "கணக்கு விவரங்கள்"],
+        ["Change Password", "கடவுச்சொல்லை மாற்று"],
+        ["Language", "மொழி"],
+        ["Logout", "வெளியேறு"]
+    ];
+    document.querySelectorAll(".app *").forEach(element => {
+        element.childNodes.forEach(node => {
+            if(node.nodeType !== Node.TEXT_NODE) return;
+            const value = node.nodeValue.trim();
+            const pair = textPairs.find(item => item.includes(value));
+            if(!pair) return;
+            const translated = language === "ta" ? pair[1] : pair[0];
+            node.nodeValue = node.nodeValue.replace(value, translated);
         });
+    });
+}
 
-    document.getElementById(sectionId)
-        .classList.add("active");
+async function googleLogin(){
+    const container = document.getElementById("googleAccounts");
+    if(container.style.display === "block"){
+        container.style.display = "none";
+        return;
+    }
+    const accounts = await apiRequest("/api/auth/google/accounts");
+    container.innerHTML = "<strong>Choose a Google account</strong>" +
+        accounts.map(account => `<button onclick="selectGoogleAccount('${account.user}')">${account.email}</button>`).join("");
+    container.style.display = "block";
+}
 
-    document.querySelectorAll("nav button")
-        .forEach(btn=>{
-            btn.classList.remove("active");
+async function selectGoogleAccount(user){
+    try{
+        const result = await apiRequest("/api/auth/google", {
+            method:"POST", body:JSON.stringify({user})
         });
+        currentUser = result.user;
+        canEdit = result.canEdit;
+        localStorage.setItem("currentFarmUser", currentUser);
+        document.getElementById("loginPage").style.display="none";
+        document.getElementById("app").style.display="block";
+        document.getElementById("headerUserName").innerText=currentUser;
+        document.getElementById("menuUserName").innerText=currentUser;
+        applyPermissions();
+        applyLanguage();
+        loadProfile();
+        await loadRecords();
+    }catch(error){
+        alert(error.message);
+    }
+}
+
+
+/* ================= NAVIGATION ================= */
+
+function showPage(pageId,button){
+
+    document.querySelectorAll(".page").forEach(page=>{
+        page.classList.remove("active");
+    });
+
+    document.getElementById(pageId).classList.add("active");
+
+
+    document.querySelectorAll(".nav-btn").forEach(btn=>{
+        btn.classList.remove("active");
+    });
 
     button.classList.add("active");
 
-    if(sectionId === "history"){
-        loadHistory();
+
+    if(pageId==="history"){
+        renderHistory();
     }
 
-    if(sectionId === "report"){
+    if(pageId==="reports"){
         updateReports();
     }
 
-};
+}
 
 
-/* =====================================================
-SAVE DATA
-===================================================== */
+/* ================= PROFILE MENU ================= */
 
-window.saveData =
-async function(){
+function toggleProfileMenu(){
 
-    calculateTotalSales();
-
-    const record = {
-
-        id:
-        document.getElementById("editId").value ||
-        Date.now().toString(),
-
-        date:
-        document.getElementById("dataDate").value,
-
-        quailProduced:
-        Number(document.getElementById("quailProduced").value) || 0,
-
-        quailSold:
-        Number(document.getElementById("quailSold").value) || 0,
-
-        quailRate:
-        Number(document.getElementById("quailRate").value) || 0,
-
-        nattuProduced:
-        Number(document.getElementById("nattuProduced").value) || 0,
-
-        nattuSold:
-        Number(document.getElementById("nattuSold").value) || 0,
-
-        nattuRate:
-        Number(document.getElementById("nattuRate").value) || 0,
-
-        quailMortality:
-        Number(document.getElementById("quailMortality").value) || 0,
-
-        quailMeatAvailable:
-        Number(document.getElementById("quailMeatAvailable").value) || 0,
-
-        quailMeatSold:
-        Number(document.getElementById("quailMeatSold").value) || 0,
-
-        quailMeatRate:
-        Number(document.getElementById("quailMeatRate").value) || 0,
-
-        medicine:
-        Number(document.getElementById("medicine").value) || 0,
-
-        trayStickers:
-        Number(document.getElementById("trayStickers").value) || 0,
-
-        sales:
-        Number(document.getElementById("sales").value) || 0,
-
-        expenses:
-        Number(document.getElementById("expenses").value) || 0,
-
-        notes:
-        document.getElementById("notes").value,
-
-        updatedBy:
-        localStorage.getItem("familyProfileName") ||
-        getDisplayName(localStorage.getItem("selectedFamilyUser")),
-
-        updatedAt:
-        new Date().toLocaleString("en-IN")
-
-    };
-
-    const localRecordId = record.id;
-    const success = await saveToFirebase(record);
-
-    if(success.success) {
-
-        if(success.id){
-            record.backendId = success.id;
-            record.id = String(success.id);
-        }
-
-        const existingIndex = farmData.findIndex(item => item.id === localRecordId);
-        if(existingIndex >= 0) farmData[existingIndex] = record;
-        else farmData.push(record);
-        localStorage.setItem("farmData", JSON.stringify(farmData));
-
-        alert(
-            "Daily farm data saved successfully!"
-        );
-
-    } else {
-
-        alert(
-            success.error || "Data could not be saved to the backend."
-        );
-
-    }
-
-    clearForm();
-
-    updateDashboard();
-
-    updateReports();
-
-    loadData();
-
-};
-
-
-/* =====================================================
-CLEAR FORM
-===================================================== */
-
-function calculateTotalSales(){
-
-    const quailSales =
-        (Number(document.getElementById("quailSold").value) || 0) *
-        (Number(document.getElementById("quailRate").value) || 0);
-
-    const nattuSales =
-        (Number(document.getElementById("nattuSold").value) || 0) *
-        (Number(document.getElementById("nattuRate").value) || 0);
-
-    const meatSales =
-        (Number(document.getElementById("quailMeatSold").value) || 0) *
-        (Number(document.getElementById("quailMeatRate").value) || 0);
-
-    document.getElementById("sales").value =
-        (quailSales + nattuSales + meatSales).toFixed(2);
+    document.getElementById("profileMenu")
+    .classList.toggle("active");
 
 }
 
-window.clearForm =
-function(){
 
-    document.getElementById("editId").value = "";
+function openProfile(event){
 
-    document.getElementById("dataDate").value =
-        new Date().toISOString().split("T")[0];
+    event.stopPropagation();
 
-    const fields = [
+    document.getElementById("profileMenu")
+    .classList.remove("active");
 
-        "quailProduced",
-        "quailSold",
-        "quailRate",
-        "nattuProduced",
-        "nattuSold",
-        "nattuRate",
-        "quailMortality",
-        "quailMeatAvailable",
-        "quailMeatSold",
-        "quailMeatRate",
-        "medicine",
-        "trayStickers",
-        "sales",
-        "expenses",
-        "notes"
+    document.getElementById("profileModal")
+    .classList.add("active");
 
-    ];
+    document.getElementById("profileModalName")
+    .innerText=currentUser;
 
-    fields.forEach(id=>{
-        document.getElementById(id).value = "";
-    });
+    document.getElementById("detailName")
+    .innerText=currentUser;
 
-};
+    loadProfile();
 
-[
-    "quailSold",
-    "quailRate",
-    "nattuSold",
-    "nattuRate",
-    "quailMeatSold",
-    "quailMeatRate"
-].forEach(id => {
-    document.getElementById(id).addEventListener("input", calculateTotalSales);
-});
+}
 
 
-/* =====================================================
-LOAD HISTORY
-===================================================== */
+function closeProfile(){
 
-function loadHistory(){
+    document.getElementById("profileModal")
+    .classList.remove("active");
 
-    const list =
-        document.getElementById("historyList");
+}
 
-    if(!list) return;
 
-    list.innerHTML = "";
+/* ================= PROFILE PHOTO ================= */
 
-    if(farmData.length === 0){
+function uploadProfile(event){
 
-        list.innerHTML =
-            `<div class="history-item">
-                No records available.
-            </div>`;
+    let file=event.target.files[0];
+
+    if(!file) return;
+
+    let reader=new FileReader();
+
+    reader.onload=function(e){
+
+        let image=e.target.result;
+
+        localStorage.setItem(
+            "profile_"+currentUser,
+            image
+        );
+
+        loadProfile();
+
+    };
+
+    reader.readAsDataURL(file);
+
+}
+
+
+function loadProfile(){
+
+    let image=localStorage.getItem(
+        "profile_"+currentUser
+    );
+
+    let initial=currentUser.charAt(0).toUpperCase();
+
+
+    let header=document.getElementById("headerProfile");
+
+    let big=document.getElementById("bigProfile");
+
+
+    if(image){
+
+        header.innerHTML="<img src='"+image+"'>";
+
+        big.innerHTML="<img src='"+image+"'>";
+
+    }
+
+    else{
+
+        header.innerText=initial;
+
+        big.innerText=initial;
+
+    }
+
+}
+
+
+function removeProfilePhoto(){
+
+    localStorage.removeItem(
+        "profile_"+currentUser
+    );
+
+    loadProfile();
+
+}
+
+
+/* ================= SAVE RECORD ================= */
+
+async function saveRecord(){
+
+    if(!canEdit){
+        alert("You have view-only access.");
+        return;
+    }
+
+    calculateTotalSales();
+
+    let record={
+
+        date:document.getElementById("date").value,
+
+        quailProduced:Number(
+            document.getElementById("quailProduced").value
+        ) || 0,
+
+        quailEggsSold:Number(
+            document.getElementById("quailEggsSold").value
+        ) || 0,
+
+        quailEggRate:Number(
+            document.getElementById("quailEggRate").value
+        ) || 0,
+
+        nattuProduced:Number(
+            document.getElementById("nattuProduced").value
+        ) || 0,
+
+        nattuSold:Number(
+            document.getElementById("nattuSold").value
+        ) || 0,
+
+        nattuRate:Number(
+            document.getElementById("nattuRate").value
+        ) || 0,
+
+        quailMortality:Number(
+            document.getElementById("quailMortality").value
+        ) || 0,
+
+        quailMeatAvailable:Number(
+            document.getElementById("quailMeatAvailable").value
+        ) || 0,
+
+        quailMeatSold:Number(
+            document.getElementById("quailMeatSold").value
+        ) || 0,
+
+        quailMeatRate:Number(
+            document.getElementById("quailMeatRate").value
+        ) || 0,
+
+        medicine:Number(
+            document.getElementById("medicine").value
+        ) || 0,
+
+        trayStickers:Number(
+            document.getElementById("trayStickers").value
+        ) || 0,
+
+        totalSales:Number(
+            document.getElementById("totalSales").value
+        ) || 0,
+
+        otherExpenses:Number(
+            document.getElementById("otherExpenses").value
+        ) || 0,
+
+        farmNotes:
+        document.getElementById("farmNotes").value,
+
+        user:currentUser,
+
+        updatedBy:currentUser,
+
+        updatedAt:new Date().toLocaleString()
+
+    };
+
+
+    if(!record.date){
+
+        alert("Please select date");
 
         return;
 
     }
 
 
-    const sorted =
-        [...farmData].sort(
-            (a,b)=>
-                new Date(b.date) -
-                new Date(a.date)
-        );
+    try{
+        if(editingIndex!==null){
+            await apiRequest("/api/records/"+records[editingIndex].id, {
+                method:"PUT",
+                body:JSON.stringify(record)
+            });
+            editingIndex=null;
+            alert("Record Updated Successfully!");
+        }else{
+            await apiRequest("/api/records", {
+                method:"POST",
+                body:JSON.stringify(record)
+            });
+            alert("Daily Data Saved Successfully!");
+        }
+        clearForm();
+        await loadRecords();
+    }catch(error){
+        alert("Unable to save daily data: "+error.message);
+    }
+
+}
 
 
-    sorted.forEach(record=>{
+/* ================= CLEAR FORM ================= */
 
-        const item =
-            document.createElement("div");
+function clearForm(){
 
-        item.className =
-            "history-item";
+    document.querySelectorAll(
+        "#dailyData input"
+    ).forEach(input=>{
+        input.value="";
+    });
 
-        const tamil = localStorage.getItem("language") === "ta";
-        const labels = tamil
-            ? {edit:"திருத்து", delete:"நீக்கு", quail:"காடை விற்பனை", nattu:"நாட்டு கோழி விற்பனை", meat:"காடை இறைச்சி", sales:"விற்பனை", expenses:"செலவுகள்", mortality:"இறப்பு", updatedBy:"மாற்றியவர்", updatedAt:"மாற்றிய நேரம்"}
-            : {edit:"Edit", delete:"Delete", quail:"Quail Sold", nattu:"Nattu Sold", meat:"Quail Meat", sales:"Sales", expenses:"Expenses", mortality:"Mortality", updatedBy:"Updated By", updatedAt:"Updated At"};
+    document.getElementById("farmNotes").value="";
 
-        item.innerHTML = `
-
-        <div class="history-top">
-
-            <h3>📅 ${record.date}</h3>
-
-            <div>
-
-                <button
-                class="btn edit-btn"
-                onclick="editData('${record.id}')">
-
-                ✏️ ${labels.edit}
-
-                </button>
-
-                <button
-                class="btn delete-btn"
-                onclick="deleteData('${record.id}')">
-
-                🗑️ ${labels.delete}
-
-                </button>
-
-            </div>
-
-        </div>
+}
 
 
-        <div class="history-grid">
+/* ================= HISTORY ================= */
 
-            <div class="history-value">
+function renderHistory(){
 
-                <span>${labels.quail}</span>
+    let history=document.getElementById(
+        "historyList"
+    );
 
-                <b>${record.quailSold}</b>
-
-            </div>
-
-
-            <div class="history-value">
-
-                <span>${labels.nattu}</span>
-
-                <b>${record.nattuSold}</b>
-
-            </div>
+    history.innerHTML="";
 
 
-            <div class="history-value">
+    if(records.length===0){
 
-                <span>${labels.meat}</span>
+        history.innerHTML=
+        "<div class='history-card'>No farm records available.</div>";
 
-                <b>${record.quailMeatSold}</b>
+        return;
 
-            </div>
-
-
-            <div class="history-value">
-
-                <span>${labels.sales}</span>
-
-                <b>₹${record.sales}</b>
-
-            </div>
+    }
 
 
-            <div class="history-value">
+    records
+    .slice()
+    .reverse()
+    .forEach((record,reverseIndex)=>{
 
-                <span>${labels.expenses}</span>
+        let index=
+        records.length-1-reverseIndex;
 
-                <b>₹${(
-                    Number(record.expenses || 0) +
-                    Number(record.medicine || 0) +
-                    Number(record.trayStickers || 0)
-                ).toFixed(2)}</b>
+
+        let expenses=
+
+        record.medicine+
+        record.trayStickers+
+        record.otherExpenses;
+
+
+        let profit=
+        record.totalSales-expenses;
+
+
+        history.innerHTML+=`
+
+        <div class="history-card">
+
+            <div class="history-top">
+
+                <div class="history-date">
+                    📅 ${record.date}
+                </div>
+
+                <small>
+                    Updated by ${record.updatedBy}
+                </small>
 
             </div>
 
 
-            <div class="history-value">
+            <div class="history-grid">
 
-                <span>${labels.mortality}</span>
+                <div class="history-data">
+                    <small>Quail Eggs Sold</small>
+                    <h4>${record.quailEggsSold}</h4>
+                </div>
 
-                <b>${record.quailMortality}</b>
+
+                <div class="history-data">
+                    <small>Nattu Koli Eggs Sold</small>
+                    <h4>${record.nattuSold}</h4>
+                </div>
+
+
+                <div class="history-data">
+                    <small>Quail Meat Sold</small>
+                    <h4>${record.quailMeatSold}</h4>
+                </div>
+
+
+                <div class="history-data">
+                    <small>Total Sales</small>
+                    <h4>₹${record.totalSales}</h4>
+                </div>
+
+
+                <div class="history-data">
+                    <small>Expenses</small>
+                    <h4>₹${expenses}</h4>
+                </div>
+
+
+                <div class="history-data">
+                    <small>Profit / Loss</small>
+                    <h4>₹${profit}</h4>
+                </div>
 
             </div>
 
 
-            <div class="history-value">
+            <div class="history-actions">
 
-                <span>${labels.updatedBy}</span>
-
-                <b>${record.updatedBy || "-"}</b>
-
-            </div>
-
-
-            <div class="history-value">
-
-                <span>${labels.updatedAt}</span>
-
-                <b style="font-size:12px;">
-                    ${record.updatedAt || "-"}
-                </b>
+                ${canEdit ? `<button class="edit-btn" onclick="editRecord(${index})">✏️ Edit</button>
+                <button class="delete-btn" onclick="deleteRecord(${index})">🗑️ Delete</button>` : ""}
 
             </div>
 
@@ -2799,597 +1859,202 @@ function loadHistory(){
 
         `;
 
-        list.appendChild(item);
-
     });
 
 }
 
 
-/* =====================================================
-EDIT DATA
-===================================================== */
+/* ================= EDIT ================= */
 
-window.editData =
-function(id){
+function editRecord(index){
 
-    const record =
-        farmData.find(
-            item => item.id === id
-        );
+    let r=records[index];
 
-    if(!record) return;
+    editingIndex=index;
 
 
-    document.getElementById("editId").value =
-        record.id;
+    document.getElementById("date").value=r.date;
 
-    document.getElementById("dataDate").value =
-        record.date;
+    document.getElementById("quailProduced").value=r.quailProduced;
 
-    document.getElementById("quailProduced").value =
-        record.quailProduced;
+    document.getElementById("quailEggsSold").value=r.quailEggsSold;
 
-    document.getElementById("quailSold").value =
-        record.quailSold;
+    document.getElementById("quailEggRate").value=r.quailEggRate;
 
-    document.getElementById("quailRate").value =
-        record.quailRate || "";
+    document.getElementById("nattuProduced").value=r.nattuProduced;
 
-    document.getElementById("nattuProduced").value =
-        record.nattuProduced;
+    document.getElementById("nattuSold").value=r.nattuSold;
 
-    document.getElementById("nattuSold").value =
-        record.nattuSold;
+    document.getElementById("nattuRate").value=r.nattuRate;
 
-    document.getElementById("nattuRate").value =
-        record.nattuRate || "";
+    document.getElementById("quailMortality").value=r.quailMortality;
 
-    document.getElementById("quailMortality").value =
-        record.quailMortality;
+    document.getElementById("quailMeatAvailable").value=r.quailMeatAvailable;
 
-    document.getElementById("quailMeatAvailable").value =
-        record.quailMeatAvailable;
+    document.getElementById("quailMeatSold").value=r.quailMeatSold;
 
-    document.getElementById("quailMeatSold").value =
-        record.quailMeatSold;
+    document.getElementById("quailMeatRate").value=r.quailMeatRate;
 
-    document.getElementById("quailMeatRate").value =
-        record.quailMeatRate || "";
+    document.getElementById("medicine").value=r.medicine;
 
-    document.getElementById("medicine").value =
-        record.medicine;
+    document.getElementById("trayStickers").value=r.trayStickers;
 
-    document.getElementById("trayStickers").value =
-        record.trayStickers;
+    document.getElementById("totalSales").value=r.totalSales;
 
-    document.getElementById("sales").value =
-        record.sales;
+    document.getElementById("otherExpenses").value=r.otherExpenses;
 
-    calculateTotalSales();
-
-    document.getElementById("expenses").value =
-        record.expenses;
-
-    document.getElementById("notes").value =
-        record.notes;
-
-    showSection(
-        "addData",
-        document.querySelectorAll("nav button")[1]
-    );
-
-};
+    document.getElementById("farmNotes").value=r.farmNotes;
 
 
-/* =====================================================
-DELETE DATA
-===================================================== */
-
-window.deleteData =
-function(id){
-
-    if(
-        !confirm(
-            "Are you sure you want to delete this record?"
-        )
-    ) return;
-
-    farmData =
-        farmData.filter(
-            item => item.id !== id
-        );
-
-    localStorage.setItem(
-        "farmData",
-        JSON.stringify(farmData)
-    );
-
-    // Delete from Firebase
-    deleteFromFirebase(id).then(success => {
-
-        if(success) {
-
-            console.log("Record deleted from Firebase");
-
-        }
-
+    document.querySelectorAll(".page").forEach(page=>{
+        page.classList.remove("active");
     });
 
-    loadHistory();
 
-    updateDashboard();
+    document.getElementById("dailyData")
+    .classList.add("active");
 
-    updateReports();
-
-};
+}
 
 
-/* =====================================================
-DASHBOARD
-===================================================== */
+/* ================= DELETE ================= */
+
+async function deleteRecord(index){
+
+    if(confirm("Are you sure you want to delete this record?")){
+
+        try{
+            await apiRequest(
+                "/api/records/"+records[index].id+"?user="+encodeURIComponent(currentUser),
+                {method:"DELETE"}
+            );
+            await loadRecords();
+        }catch(error){
+            alert("Unable to delete record: "+error.message);
+        }
+
+    }
+
+}
+
+
+/* ================= DASHBOARD ================= */
 
 function updateDashboard(){
 
-    const today =
-        new Date()
-        .toISOString()
-        .split("T")[0];
+    let latest=records[records.length-1];
 
 
-    const todayRecords =
-        farmData.filter(
-            item => item.date === today
-        );
+    if(!latest){
+        document.getElementById("dashQuailEggs").innerText="0";
+        document.getElementById("dashNattuEggs").innerText="0";
+        document.getElementById("dashQuailMeat").innerText="0";
+        document.getElementById("dashSales").innerText="₹0";
+        document.getElementById("stockQuailEggs").innerText="0";
+        document.getElementById("stockNattuEggs").innerText="0";
+        document.getElementById("stockQuailMeat").innerText="0";
+        return;
+
+    }
 
 
-    let quail = 0;
-
-    let nattu = 0;
-
-    let meat = 0;
-
-    let sales = 0;
-
-    let quailProduced = 0;
-
-    let nattuProduced = 0;
-
-    let meatAvailable = 0;
+    document.getElementById("dashQuailEggs")
+    .innerText=latest.quailEggsSold;
 
 
-    todayRecords.forEach(record=>{
+    document.getElementById("dashNattuEggs")
+    .innerText=latest.nattuSold;
 
-        quail += Number(record.quailSold) || 0;
-
-        nattu += Number(record.nattuSold) || 0;
-
-        meat += Number(record.quailMeatSold) || 0;
-
-        sales += Number(record.sales) || 0;
-
-        quailProduced +=
-            Number(record.quailProduced) || 0;
-
-        nattuProduced +=
-            Number(record.nattuProduced) || 0;
-
-        meatAvailable +=
-            Number(record.quailMeatAvailable) || 0;
-
-    });
-
-
-    document.getElementById("dashQuail")
-        .innerText = quail;
-
-    document.getElementById("dashNattu")
-        .innerText = nattu;
 
     document.getElementById("dashQuailMeat")
-        .innerText = meat;
+    .innerText=latest.quailMeatSold;
+
 
     document.getElementById("dashSales")
-        .innerText = "₹" + sales;
+    .innerText="₹"+latest.totalSales;
 
 
-    document.getElementById("stockQuail")
-        .innerText =
-        Math.max(
-            0,
-            quailProduced - quail
-        );
+    document.getElementById("stockQuailEggs")
+    .innerText=
+    latest.quailProduced-latest.quailEggsSold;
 
-    document.getElementById("stockNattu")
-        .innerText =
-        Math.max(
-            0,
-            nattuProduced - nattu
-        );
+
+    document.getElementById("stockNattuEggs")
+    .innerText=
+    latest.nattuProduced-latest.nattuSold;
+
 
     document.getElementById("stockQuailMeat")
-        .innerText =
-        Math.max(
-            0,
-            meatAvailable - meat
-        );
+    .innerText=
+    latest.quailMeatAvailable-latest.quailMeatSold;
 
 }
 
 
-/* =====================================================
-REPORTS
-===================================================== */
+/* ================= REPORTS ================= */
 
 function updateReports(){
 
-    let totalQuail = 0;
+    let quailEggs=0;
 
-    let totalNattu = 0;
+    let nattuEggs=0;
 
-    let totalMeat = 0;
+    let quailMeat=0;
 
-    let totalSales = 0;
+    let sales=0;
 
-    let totalExpenses = 0;
+    let expenses=0;
 
 
-    farmData.forEach(record=>{
+    records.forEach(r=>{
 
-        totalQuail +=
-            Number(record.quailSold) || 0;
+        quailEggs+=r.quailEggsSold;
 
-        totalNattu +=
-            Number(record.nattuSold) || 0;
+        nattuEggs+=r.nattuSold;
 
-        totalMeat +=
-            Number(record.quailMeatSold) || 0;
+        quailMeat+=r.quailMeatSold;
 
-        totalSales +=
-            Number(record.sales) || 0;
+        sales+=r.totalSales;
 
-        totalExpenses +=
-            (Number(record.expenses) || 0) +
-            (Number(record.medicine) || 0) +
-            (Number(record.trayStickers) || 0);
+        expenses+=
+        r.medicine+
+        r.trayStickers+
+        r.otherExpenses;
 
     });
 
 
-    const difference =
-        totalSales - totalExpenses;
+    let result=sales-expenses;
 
 
-    document.getElementById("totalQuail")
-        .innerText = totalQuail;
-
-    document.getElementById("totalNattu")
-        .innerText = totalNattu;
-
-    document.getElementById("totalQuailMeat")
-        .innerText = totalMeat;
-
-    document.getElementById("totalSales")
-        .innerText = "₹" + totalSales;
-
-    document.getElementById("totalExpenses")
-        .innerText = "₹" + totalExpenses;
+    document.getElementById("reportQuailEggs")
+    .innerText=quailEggs;
 
 
-    if(difference >= 0){
-
-        document.getElementById("profitAmount")
-            .innerText = "₹" + difference;
-
-        document.getElementById("lossAmount")
-            .innerText = "₹0";
-
-    }
-    else{
-
-        document.getElementById("profitAmount")
-            .innerText = "₹0";
-
-        document.getElementById("lossAmount")
-            .innerText =
-            "₹" + Math.abs(difference);
-
-    }
+    document.getElementById("reportNattuEggs")
+    .innerText=nattuEggs;
 
 
-    const table =
-        document.getElementById("reportTable");
-
-    table.innerHTML = "";
+    document.getElementById("reportQuailMeat")
+    .innerText=quailMeat;
 
 
-    const sorted =
-        [...farmData].sort(
-            (a,b)=>
-                new Date(b.date) -
-                new Date(a.date)
-        );
+    document.getElementById("reportSales")
+    .innerText="₹"+sales;
 
 
-    sorted.forEach(record=>{
+    document.getElementById("reportExpenses")
+    .innerText="₹"+expenses;
 
-        const row =
-            document.createElement("tr");
 
-        row.innerHTML = `
+    document.getElementById("reportProfit")
+    .innerText=result>0?"₹"+result:"₹0";
 
-        <td>${record.date}</td>
 
-        <td>${record.quailSold}</td>
-
-        <td>${record.nattuSold}</td>
-
-        <td>${record.quailMortality}</td>
-
-        <td>${record.quailMeatSold}</td>
-
-        <td>₹${Number(record.sales || 0).toFixed(2)}</td>
-
-        <td>₹${(
-            Number(record.expenses || 0) +
-            Number(record.medicine || 0) +
-            Number(record.trayStickers || 0)
-        ).toFixed(2)}</td>
-
-        `;
-
-        table.appendChild(row);
-
-    });
+    document.getElementById("reportLoss")
+    .innerText=result<0?"₹"+Math.abs(result):"₹0";
 
 }
-
-
-/* =====================================================
-PROFILE
-===================================================== */
-
-window.toggleProfile =
-function(){
-
-    document.getElementById("profileMenu")
-        .classList.toggle("show");
-
-};
-
-
-window.showAccountDetails =
-function(){
-
-    document.getElementById("profileMenu")
-        .classList.remove("show");
-
-    document.getElementById("accountModal")
-        .classList.add("show");
-
-};
-
-
-window.openChangePassword =
-function(){
-
-    document.getElementById("profileMenu")
-        .classList.remove("show");
-
-    document.getElementById("passwordModal")
-        .classList.add("show");
-
-};
-
-
-window.openLanguageSettings =
-function(){
-
-    document.getElementById("profileMenu")
-        .classList.remove("show");
-
-    document.getElementById("languageModal")
-        .classList.add("show");
-
-};
-
-
-window.closeModal =
-function(id){
-
-    document.getElementById(id)
-        .classList.remove("show");
-
-};
-
-
-/* =====================================================
-PROFILE PHOTO
-===================================================== */
-
-window.selectProfilePhoto =
-function(){
-
-    document.getElementById("profilePhotoInput")
-        .click();
-
-};
-
-
-window.changeProfilePhoto =
-function(event){
-
-    const file =
-        event.target.files[0];
-
-    if(!file) return;
-
-
-    const reader =
-        new FileReader();
-
-
-    reader.onload =
-    function(e){
-
-        const image =
-            e.target.result;
-
-        const profile = getCurrentProfile();
-
-        profile.name = getDisplayName(selectedUser);
-        profile.profileImage = image;
-
-        localStorage.setItem(
-            getCurrentProfileKey(),
-            JSON.stringify(profile)
-        );
-
-        renderCurrentProfile();
-
-    };
-
-
-    reader.readAsDataURL(file);
-
-};
-
-
-/* =====================================================
-QUAIL MEAT
-===================================================== */
-
-window.openQuailMeatEntry =
-function(){
-
-    document.getElementById("quailMeatModal")
-        .classList.add("show");
-
-};
-
-
-window.saveQuailMeatEntry =
-function(){
-
-    document.getElementById("quailMeatAvailable")
-        .value =
-        document.getElementById("meatAvailablePopup")
-        .value;
-
-    document.getElementById("quailMeatSold")
-        .value =
-        document.getElementById("meatSoldPopup")
-        .value;
-
-    closeModal("quailMeatModal");
-
-};
-
-
-/* =====================================================
-LANGUAGE
-===================================================== */
-
-window.setLanguage =
-function(language){
-
-    const translations = {
-        en: {
-            loginSubtitle:"Family Farm Management", googleLogin:"🔵 Continue with Google", authorized:"🔒 Authorized Persons Only",
-            accountDetails:"Account Details", changePassword:"Change Password", language:"Language", logout:"Logout", name:"Name", loginMethod:"Login Method", selectedFamilyMember:"Selected Family Member", languageTitle:"🌐 Language", selectLanguage:"Select Language", quailMeatEntry:"🥩 Quail Meat Entry",
-            dashboard:"🏠 Dashboard", addDailyData:"➕ Add Daily Data", history:"📅 History", reports:"📊 Reports",
-            todayDashboard:"🌿 Today's Farm Dashboard", quailEggsSold:"Quail Eggs Sold", nattuEggsSold:"Nattu Koli Eggs Sold",
-            quailMeatSold:"Quail Meat Sold", todaysSales:"Today's Sales", todaysStock:"📦 Today's Stock", quailEggsRemaining:"Quail Eggs Remaining",
-            nattuEggsRemaining:"Nattu Koli Eggs Remaining", quailMeatRemaining:"Quail Meat Remaining", addUpdateDaily:"➕ Add / Update Daily Farm Details",
-            date:"📅 Date", quailProduced:"🐦 Quail Produced", quailSold:"🥚 Quail Eggs Sold", nattuProduced:"🥚 Nattu Koli Eggs Produced",
-            nattuSold:"🥚 Nattu Koli Eggs Sold", quailMortality:"🐦 Quail Mortality", quailMeatAvailable:"🥩 Quail Meat Available",
-            medicine:"💊 Medicine", trayStickers:"🏷️ Tray Stickers", sales:"💰 Total Sales ₹", expenses:"💸 Other Expenses ₹", notes:"📝 Farm Notes",
-            saveData:"💾 SAVE DATA", clear:"CLEAR", farmHistory:"📅 Farm History", previousRecords:"Previous daily records",
-            farmReports:"📊 Farm Reports", completeSummary:"Complete farm sales summary", totalQuail:"Total Quail Eggs Sold", totalNattu:"Total Nattu Koli Eggs Sold",
-            totalQuailMeat:"Total Quail Meat Sold", totalSales:"Total Sales", totalExpenses:"Total Expenses", profit:"Profit", loss:"Loss", dailySummary:"📋 Daily Summary"
-        },
-        ta: {
-            loginSubtitle:"குடும்ப பண்ணை மேலாண்மை", googleLogin:"🔵 Google மூலம் தொடரவும்", authorized:"🔒 அனுமதிக்கப்பட்டவர்கள் மட்டும்",
-            accountDetails:"கணக்கு விவரங்கள்", changePassword:"கடவுச்சொல்லை மாற்று", language:"மொழி", logout:"வெளியேறு", name:"பெயர்", loginMethod:"உள்நுழைவு முறை", selectedFamilyMember:"தேர்ந்தெடுத்த குடும்ப உறுப்பினர்", languageTitle:"🌐 மொழி", selectLanguage:"மொழியைத் தேர்ந்தெடுக்கவும்", quailMeatEntry:"🥩 காடை இறைச்சி பதிவு",
-            dashboard:"🏠 முகப்பு", addDailyData:"➕ தினசரி தகவல்", history:"📅 வரலாறு", reports:"📊 அறிக்கைகள்",
-            todayDashboard:"🌿 இன்றைய பண்ணை விவரங்கள்", quailEggsSold:"காடை முட்டைகள் விற்பனை", nattuEggsSold:"நாட்டு கோழி முட்டைகள் விற்பனை",
-            quailMeatSold:"காடை இறைச்சி விற்பனை", todaysSales:"இன்றைய விற்பனை", todaysStock:"📦 இன்றைய இருப்பு", quailEggsRemaining:"மீதமுள்ள காடை முட்டைகள்",
-            nattuEggsRemaining:"மீதமுள்ள நாட்டு கோழி முட்டைகள்", quailMeatRemaining:"மீதமுள்ள காடை இறைச்சி", addUpdateDaily:"➕ தினசரி பண்ணை விவரங்களை சேர் / மாற்று",
-            date:"📅 தேதி", quailProduced:"🐦 உற்பத்தி செய்யப்பட்ட காடைகள்", quailSold:"🥚 விற்ற காடை முட்டைகள்", nattuProduced:"🥚 உற்பத்தி செய்யப்பட்ட நாட்டு கோழி முட்டைகள்",
-            nattuSold:"🥚 விற்ற நாட்டு கோழி முட்டைகள்", quailMortality:"🐦 காடை இறப்பு", quailMeatAvailable:"🥩 கிடைக்கும் காடை இறைச்சி",
-            medicine:"💊 மருந்து", trayStickers:"🏷️ தட்டு ஸ்டிக்கர்கள்", sales:"💰 மொத்த விற்பனை ₹", expenses:"💸 பிற செலவுகள் ₹", notes:"📝 பண்ணை குறிப்புகள்",
-            saveData:"💾 தகவலை சேமி", clear:"அழி", farmHistory:"📅 பண்ணை வரலாறு", previousRecords:"முந்தைய தினசரி பதிவுகள்",
-            farmReports:"📊 பண்ணை அறிக்கைகள்", completeSummary:"முழுமையான பண்ணை விற்பனை சுருக்கம்", totalQuail:"மொத்த காடை முட்டைகள் விற்பனை", totalNattu:"மொத்த நாட்டு கோழி முட்டைகள் விற்பனை",
-            totalQuailMeat:"மொத்த காடை இறைச்சி விற்பனை", totalSales:"மொத்த விற்பனை", totalExpenses:"மொத்த செலவுகள்", profit:"லாபம்", loss:"நஷ்டம்", dailySummary:"📋 தினசரி சுருக்கம்"
-        }
-    };
-
-    const selectedTranslations = translations[language] || translations.en;
-    document.documentElement.lang = language === "ta" ? "ta" : "en";
-    localStorage.setItem("language", language);
-
-    document.querySelectorAll("[data-i18n]").forEach(element=>{
-        const key = element.dataset.i18n;
-        if(selectedTranslations[key]) element.innerHTML = selectedTranslations[key];
-    });
-
-    const options = {
-        prabakaran: language === "ta" ? "👨‍🌾 பிரபாகரன்" : "👨‍🌾 Prabakaran",
-        poongodi: language === "ta" ? "👩‍🌾 பூங்கொடி" : "👩‍🌾 Poongodi",
-        rajindharan: language === "ta" ? "👨‍🌾 ராஜிந்தரன்" : "👨‍🌾 Rajindharan",
-        sajindharan: language === "ta" ? "👨‍🌾 சஜிந்தரன்" : "👨‍🌾 Sajindharan"
-    };
-    Object.keys(options).forEach(key=>{
-        const option = document.querySelector(`#username option[value="${key}"]`);
-        if(option) option.textContent = options[key];
-    });
-
-    document.querySelectorAll('[data-language="en"]').forEach(button=>{
-        button.classList.toggle("active", language === "en");
-    });
-    document.querySelectorAll('[data-language="ta"]').forEach(button=>{
-        button.classList.toggle("active", language === "ta");
-    });
-    loadHistory();
-
-};
-
-
-/* =====================================================
-LOAD LOCAL DATA
-===================================================== */
-
-function loadData(){
-
-    renderCurrentProfile();
-
-    // Load from Firebase
-    loadFromFirebase().then(firebaseData => {
-
-        farmData = firebaseData;
-        localStorage.setItem("farmData", JSON.stringify(farmData));
-
-        loadHistory();
-        updateDashboard();
-        updateReports();
-
-    });
-
-}
-
-
-/* =====================================================
-INITIAL PAGE
-===================================================== */
-
-document.addEventListener(
-    "DOMContentLoaded",
-    function(){
-
-        setTodayDate();
-
-    }
-);
 
 </script>
 

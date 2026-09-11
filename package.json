@@ -1,0 +1,14 @@
+{
+  "name": "poongodi-farms",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Poongodi Natural Farm management application",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
