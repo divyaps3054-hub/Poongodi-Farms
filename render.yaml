@@ -5,6 +5,10 @@ services:
     buildCommand: npm install
     startCommand: npm start
     healthCheckPath: /
+    disk:
+      name: poongodi-farm-data
+      mountPath: /opt/render/project/src/data
+      sizeGB: 1
     envVars:
       - key: NODE_VERSION
         value: "20"

@@ -768,6 +768,7 @@ body{
         <button class="google-btn" onclick="googleLogin()">
             Sign in with Google
         </button>
+        <div id="googleSignInButton" style="display:none; margin-top:12px;"></div>
         <div id="googleAccounts" class="google-accounts" style="display:none"></div>
 
     </div>
@@ -1552,9 +1553,15 @@ async function googleLogin(){
         alert("Please select a family member first.");
         return;
     }
+    const googleButton = document.getElementById("googleSignInButton");
+    if(googleButton && googleButton.childElementCount){
+        googleButton.style.display = "block";
+        googleButton.scrollIntoView({behavior:"smooth", block:"center"});
+        return;
+    }
     window.google.accounts.id.prompt((notification) => {
         if(notification.isNotDisplayed() || notification.isSkippedMoment()){
-            alert("Google account chooser could not open. Check OAuth origin settings.");
+            if(googleButton) googleButton.style.display = "block";
         }
     });
 }
@@ -1594,6 +1601,17 @@ function initializeGoogleLogin(){
         cancel_on_tap_outside:true,
         context:"signin"
     });
+    const googleButton = document.getElementById("googleSignInButton");
+    if(googleButton){
+        window.google.accounts.id.renderButton(googleButton, {
+            type:"standard",
+            theme:"outline",
+            size:"large",
+            text:"signin_with",
+            shape:"rectangular",
+            width:360
+        });
+    }
 }
 
 async function selectGoogleAccount(user){

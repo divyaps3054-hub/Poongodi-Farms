@@ -130,7 +130,7 @@ const server = http.createServer(async (request, response) => {
       response.writeHead(204, {
         "Access-Control-Allow-Origin": process.env.ALLOWED_ORIGIN || "*",
         "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
       });
       return response.end();
     }
