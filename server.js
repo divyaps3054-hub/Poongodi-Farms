@@ -4,6 +4,8 @@ const path = require("node:path");
 const crypto = require("node:crypto");
 
 const PORT = Number(process.env.PORT) || 3000;
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID ||
+  "141270882885-jtusd34ofr0pfpbro6udqqgol6gepfsp.apps.googleusercontent.com";
 const ROOT = __dirname;
 const DATA_DIR = path.join(ROOT, "data");
 const RECORDS_FILE = path.join(DATA_DIR, "records.json");
@@ -172,11 +174,10 @@ const server = http.createServer(async (request, response) => {
 
     if (request.method === "POST" && url.pathname === "/api/auth/google/token") {
       const body = await readBody(request);
-      if (!process.env.GOOGLE_CLIENT_ID) return sendJson(response, 503, { error: "Google login is not configured on the backend" });
       const tokenResponse = await fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${encodeURIComponent(body.credential || "")}`);
       if (!tokenResponse.ok) return sendJson(response, 401, { error: "Google credential could not be verified" });
       const profile = await tokenResponse.json();
-      if (profile.aud !== process.env.GOOGLE_CLIENT_ID || profile.email_verified !== "true") {
+      if (profile.aud !== GOOGLE_CLIENT_ID || profile.email_verified !== "true") {
         return sendJson(response, 401, { error: "Google account verification failed" });
       }
       const selectedUser = String(body.user || "").trim();
