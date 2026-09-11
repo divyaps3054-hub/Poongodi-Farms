@@ -73,3 +73,5 @@ node -e "const c=require('crypto');const p=process.argv[1];const s=c.randomBytes
 ```
 
 The server checks the selected family member and exact email together, issues a session token, and protects records API calls. Optional login alerts can be enabled with Resend by setting `RESEND_API_KEY`, `LOGIN_ALERT_TO`, and `LOGIN_ALERT_FROM`. Passwords are never included in notifications.
+
+If `FARM_USERS` is empty, the first valid login for each selected family member creates that account with a securely hashed password. Later logins require the same email and password. The service must have a persistent disk for these dynamically created accounts and records to survive redeploys.

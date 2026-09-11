@@ -7,9 +7,13 @@ const PORT = Number(process.env.PORT) || 3000;
 const ROOT = __dirname;
 const DATA_DIR = path.join(ROOT, "data");
 const RECORDS_FILE = path.join(DATA_DIR, "records.json");
+const ACCOUNTS_FILE = path.join(DATA_DIR, "accounts.json");
 
 fs.mkdirSync(DATA_DIR, { recursive: true });
 if (!fs.existsSync(RECORDS_FILE)) fs.writeFileSync(RECORDS_FILE, "[]", "utf8");
+if (!fs.existsSync(ACCOUNTS_FILE)) {
+  fs.writeFileSync(ACCOUNTS_FILE, process.env.FARM_USERS || "[]", "utf8");
+}
 
 function readRecords() {
   return JSON.parse(fs.readFileSync(RECORDS_FILE, "utf8"));
@@ -61,7 +65,7 @@ function validateRecord(record) {
   return null;
 }
 
-const accounts = JSON.parse(process.env.FARM_USERS || "[]");
+let accounts = JSON.parse(fs.readFileSync(ACCOUNTS_FILE, "utf8"));
 const sessions = new Map();
 
 function hashPassword(password, salt = crypto.randomBytes(16).toString("hex")) {
@@ -88,7 +92,7 @@ function authenticatedUser(request) {
 }
 
 async function notifyLogin(account, request) {
-  if (!process.env.RESEND_API_KEY || !process.env.LOGIN_ALERT_TO) return;
+  if (!process.env.RESEND_API_KEY || !account.email) return;
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
@@ -97,7 +101,7 @@ async function notifyLogin(account, request) {
     },
     body: JSON.stringify({
       from: process.env.LOGIN_ALERT_FROM || "Poongodi Farms <onboarding@resend.dev>",
-      to: [process.env.LOGIN_ALERT_TO],
+      to: [account.email],
       subject: `Farm login: ${account.user}`,
       text: `${account.user} signed in with ${account.email} from ${request.headers["user-agent"] || "unknown device"}.`,
     }),
@@ -107,6 +111,10 @@ async function notifyLogin(account, request) {
 
 function accountFor(user) {
   return accounts.find((account) => account.user === user);
+}
+
+function saveAccounts() {
+  fs.writeFileSync(ACCOUNTS_FILE, JSON.stringify(accounts, null, 2), "utf8");
 }
 
 const server = http.createServer(async (request, response) => {
@@ -127,8 +135,16 @@ const server = http.createServer(async (request, response) => {
       const email = String(body.email || "").trim();
       const password = String(body.password || "");
       const selectedUser = String(body.user || "").trim();
-      const account = accounts.find((candidate) => candidate.user === selectedUser && candidate.email.toLowerCase() === email.toLowerCase());
-      if (!account || !verifyPassword(password, account.passwordHash)) {
+      if (!selectedUser || !email.includes("@") || password.length < 8) {
+        return sendJson(response, 400, { error: "Select a user, enter a valid email, and use an 8-character password" });
+      }
+      let account = accounts.find((candidate) => candidate.user === selectedUser);
+      if (!account) {
+        account = { user: selectedUser, email, passwordHash: hashPassword(password), canEdit: selectedUser === "Poongodi" };
+        accounts.push(account);
+        saveAccounts();
+      }
+      if (account.email.toLowerCase() !== email.toLowerCase() || !verifyPassword(password, account.passwordHash)) {
         return sendJson(response, 401, { error: "Invalid user, email, or password" });
       }
       const token = createSession(account);
@@ -163,10 +179,21 @@ const server = http.createServer(async (request, response) => {
       if (profile.aud !== process.env.GOOGLE_CLIENT_ID || profile.email_verified !== "true") {
         return sendJson(response, 401, { error: "Google account verification failed" });
       }
-      const account = accounts.find((candidate) =>
+      const selectedUser = String(body.user || "").trim();
+      let account = accounts.find((candidate) =>
         (candidate.googleEmail || candidate.email || "").toLowerCase() === String(profile.email).toLowerCase()
       );
-      if (!account) return sendJson(response, 403, { error: "This Google account is not approved for the farm" });
+      if (!account && selectedUser) {
+        account = {
+          user: selectedUser,
+          email: profile.email,
+          googleEmail: profile.email,
+          canEdit: selectedUser === "Poongodi",
+        };
+        accounts.push(account);
+        saveAccounts();
+      }
+      if (!account) return sendJson(response, 403, { error: "Select a family member before Google login" });
       const token = createSession(account);
       void notifyLogin(account, request);
       return sendJson(response, 200, { user: account.user, canEdit: account.canEdit, email: profile.email, token });
