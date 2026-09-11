@@ -1,0 +1,25 @@
+[
+  {
+    "date": "2026-09-11",
+    "quailProduced": 150,
+    "quailEggsSold": 50,
+    "quailEggRate": 4,
+    "nattuProduced": 300,
+    "nattuSold": 100,
+    "nattuRate": 15,
+    "quailMortality": 500,
+    "quailMeatAvailable": 200,
+    "quailMeatSold": 75,
+    "quailMeatRate": 70,
+    "medicine": 2000,
+    "trayStickers": 500,
+    "totalSales": 6950,
+    "otherExpenses": 997,
+    "farmNotes": "",
+    "user": "Poongodi",
+    "updatedBy": "Poongodi",
+    "updatedAt": "9/11/2026, 7:16:23 PM",
+    "id": "466059a9-5659-4b10-81e5-edead9b5a029",
+    "createdAt": "2026-09-11T13:46:23.964Z"
+  }
+]
