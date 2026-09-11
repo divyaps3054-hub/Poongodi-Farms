@@ -1269,7 +1269,10 @@ function localApiRequest(path, options){
     }
     if(path === "/api/records"){
         if(currentUser !== "Poongodi") throw new Error("Only Poongodi can add farm data");
-        const record = {...body, id:crypto.randomUUID(), user:currentUser};
+        const recordId = window.crypto && typeof window.crypto.randomUUID === "function"
+            ? window.crypto.randomUUID()
+            : "record-" + Date.now() + "-" + Math.random().toString(16).slice(2);
+        const record = {...body, id:recordId, user:currentUser};
         const records = JSON.parse(localStorage.getItem("farmRecords_Poongodi") || "[]");
         records.push(record);
         localStorage.setItem("farmRecords_Poongodi", JSON.stringify(records));
