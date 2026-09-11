@@ -216,7 +216,10 @@ const server = http.createServer(async (request, response) => {
       const validationError = validateRecord(body);
       if (validationError) return sendJson(response, 400, { error: validationError });
       const records = readRecords();
-      const record = { ...body, id: randomUUID(), createdAt: new Date().toISOString() };
+      const recordId = typeof crypto.randomUUID === "function"
+        ? crypto.randomUUID()
+        : `record-${Date.now()}-${crypto.randomBytes(8).toString("hex")}`;
+      const record = { ...body, id: recordId, createdAt: new Date().toISOString() };
       records.push(record);
       writeRecords(records);
       return sendJson(response, 201, record);
