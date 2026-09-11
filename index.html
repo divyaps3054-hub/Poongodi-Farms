@@ -1252,11 +1252,30 @@ function localApiRequest(path, options){
         return Promise.resolve(JSON.parse(localStorage.getItem("farmRecords_"+currentUser) || "[]"));
     }
     if(path === "/api/records"){
+        if(currentUser !== "Poongodi") throw new Error("Only Poongodi can add farm data");
         const record = {...body, id:crypto.randomUUID(), user:currentUser};
         const records = JSON.parse(localStorage.getItem("farmRecords_"+currentUser) || "[]");
         records.push(record);
         localStorage.setItem("farmRecords_"+currentUser, JSON.stringify(records));
         return Promise.resolve(record);
+    }
+    if(path.startsWith("/api/records/")){
+        const pathParts = path.split("/");
+        const recordId = pathParts[3].split("?")[0];
+        const records = JSON.parse(localStorage.getItem("farmRecords_"+currentUser) || "[]");
+        if(currentUser !== "Poongodi") throw new Error("Only Poongodi can change farm data");
+        if(options.method === "PUT"){
+            const index = records.findIndex(record => record.id === recordId);
+            if(index < 0) throw new Error("Record not found");
+            records[index] = {...records[index], ...body, id:recordId, user:currentUser};
+            localStorage.setItem("farmRecords_"+currentUser, JSON.stringify(records));
+            return Promise.resolve(records[index]);
+        }
+        if(options.method === "DELETE"){
+            const nextRecords = records.filter(record => record.id !== recordId);
+            localStorage.setItem("farmRecords_"+currentUser, JSON.stringify(nextRecords));
+            return Promise.resolve(null);
+        }
     }
     throw new Error("Server request failed. Start the backend with npm start.");
 }
@@ -1536,7 +1555,8 @@ async function googleLogin(){
 
 async function selectGoogleAccount(user){
     try{
-        const result = await apiRequest("/api/auth/google", {
+        const remembered = localAccounts().find(account => account.user === user);
+        const result = remembered || await apiRequest("/api/auth/google", {
             method:"POST", body:JSON.stringify({user})
         });
         currentUser = result.user;
