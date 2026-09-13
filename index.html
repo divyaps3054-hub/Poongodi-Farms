@@ -960,8 +960,8 @@ body{
 
 
             <div class="form-group">
-                <label>🐦 Quail Produced</label>
-                <input type="number" id="quailProduced" placeholder="Enter quantity">
+                <label>🐦 Quail Egg Produced</label>
+                <input type="number" id="quailEggProduced" placeholder="Enter quantity">
             </div>
 
 
@@ -1008,14 +1008,23 @@ body{
 
 
             <div class="form-group">
-                <label data-i18n="quailSold">🍗 Quail Birds Sold</label>
-                <input type="number" id="quailMeatSold" placeholder="Enter count">
+                <label data-i18n="quailSoldClean">🍗 Quail Birds Sold (With Clean)</label>
+                <input type="number" id="quailMeatSoldClean" placeholder="Enter count">
             </div>
 
+            <div class="form-group">
+                <label data-i18n="quailRateClean">₹ Quail Bird Rate (With Clean)</label>
+                <input type="number" id="quailMeatRateClean" placeholder="Rate per bird">
+            </div>
 
             <div class="form-group">
-                <label data-i18n="quailRate">₹ Quail Bird Rate</label>
-                <input type="number" id="quailMeatRate" placeholder="Rate per bird">
+                <label data-i18n="quailSoldWithoutClean">🍗 Quail Birds Sold (Without Clean)</label>
+                <input type="number" id="quailMeatSoldWithoutClean" placeholder="Enter count">
+            </div>
+
+            <div class="form-group">
+                <label data-i18n="quailRateWithoutClean">₹ Quail Bird Rate (Without Clean)</label>
+                <input type="number" id="quailMeatRateWithoutClean" placeholder="Rate per bird">
             </div>
 
 
@@ -1252,9 +1261,9 @@ function localApiRequest(path, options){
         if(!user || !body.email || !body.password) throw new Error("Please select a user and enter email/password");
         localStorage.setItem("farmGoogleAccounts", JSON.stringify(
             [...localAccounts().filter(account => account.email !== body.email),
-            {user, email:body.email, canEdit:user === "Poongodi"}]
+            {user, email:body.email, canEdit:["Poongodi", "Sajindharan"].includes(user)}]
         ));
-        return Promise.resolve({user, email:body.email, canEdit:user === "Poongodi"});
+        return Promise.resolve({user, email:body.email, canEdit:["Poongodi", "Sajindharan"].includes(user)});
     }
     if(path === "/api/auth/google/accounts"){
         return Promise.resolve(localAccounts());
@@ -1268,7 +1277,7 @@ function localApiRequest(path, options){
         return Promise.resolve(JSON.parse(localStorage.getItem("farmRecords_Poongodi") || "[]"));
     }
     if(path === "/api/records"){
-        if(currentUser !== "Poongodi") throw new Error("Only Poongodi can add farm data");
+        if(!["Poongodi", "Sajindharan"].includes(currentUser)) throw new Error("Only Poongodi or Sajindharan can add farm data");
         const recordId = window.crypto && typeof window.crypto.randomUUID === "function"
             ? window.crypto.randomUUID()
             : "record-" + Date.now() + "-" + Math.random().toString(16).slice(2);
@@ -1282,7 +1291,7 @@ function localApiRequest(path, options){
         const pathParts = path.split("/");
         const recordId = pathParts[3].split("?")[0];
         const records = JSON.parse(localStorage.getItem("farmRecords_"+currentUser) || "[]");
-        if(currentUser !== "Poongodi") throw new Error("Only Poongodi can change farm data");
+        if(!["Poongodi", "Sajindharan"].includes(currentUser)) throw new Error("Only Poongodi or Sajindharan can change farm data");
         if(options.method === "PUT"){
             const index = records.findIndex(record => record.id === recordId);
             if(index < 0) throw new Error("Record not found");
@@ -1316,7 +1325,7 @@ async function loadRecords(){
 document.getElementById("todayDate").innerText =
 new Date().toDateString();
 
-["quailEggsSold","quailEggRate","nattuSold","nattuRate","quailMeatSold","quailMeatRate"]
+["quailEggsSold","quailEggRate","nattuSold","nattuRate","quailMeatSoldClean","quailMeatRateClean","quailMeatSoldWithoutClean","quailMeatRateWithoutClean"]
     .forEach(id => document.getElementById(id).addEventListener("input", calculateTotalSales));
 
 function calculateTotalSales(){
@@ -1325,8 +1334,10 @@ function calculateTotalSales(){
         (Number(document.getElementById("quailEggRate").value) || 0) +
         (Number(document.getElementById("nattuSold").value) || 0) *
         (Number(document.getElementById("nattuRate").value) || 0) +
-        (Number(document.getElementById("quailMeatSold").value) || 0) *
-        (Number(document.getElementById("quailMeatRate").value) || 0);
+        (Number(document.getElementById("quailMeatSoldClean").value) || 0) *
+        (Number(document.getElementById("quailMeatRateClean").value) || 0) +
+        (Number(document.getElementById("quailMeatSoldWithoutClean").value) || 0) *
+        (Number(document.getElementById("quailMeatRateWithoutClean").value) || 0);
     document.getElementById("totalSales").value = value;
 }
 
@@ -1392,7 +1403,7 @@ window.onload=async function(){
     if(!savedUser || !savedToken) return;
 
     currentUser = savedUser;
-    canEdit = currentUser === "Poongodi";
+    canEdit = ["Poongodi", "Sajindharan"].includes(currentUser);
     try{
         await loadRecords();
         document.getElementById("loginPage").style.display="none";
@@ -1449,8 +1460,11 @@ const translations = {
         login: "Login", selectMember: "Select Family Member", email: "Email", password: "Password",
         dashboard: "Dashboard", addData: "Add Daily Data", history: "History", reports: "Reports",
         quailMeatSold: "Quail Birds Sold", quailMeatRemaining: "Quail Birds Remaining",
-        quailAvailable: "🍗 Quail Birds Available", quailSold: "🍗 Quail Birds Sold",
-        quailRate: "₹ Quail Bird Rate", totalSales: "💰 Total Sales ₹ (Auto)",
+        quailAvailable: "🍗 Quail Birds Available", quailSoldClean: "🍗 Quail Birds Sold (With Clean)",
+        quailRateClean: "₹ Quail Bird Rate (With Clean)",
+        quailSoldWithoutClean: "🍗 Quail Birds Sold (Without Clean)",
+        quailRateWithoutClean: "₹ Quail Bird Rate (Without Clean)",
+        totalSales: "💰 Total Sales ₹ (Auto)",
         readOnly: "View only access", editAccess: "Edit access", language: "தமிழ்"
     },
     ta: {
@@ -1458,7 +1472,10 @@ const translations = {
         password: "கடவுச்சொல்", dashboard: "முகப்பு", addData: "தினசரி தகவல் சேர்க்கவும்",
         history: "வரலாறு", reports: "அறிக்கைகள்", quailMeatSold: "காடை விற்பனை எண்ணிக்கை",
         quailMeatRemaining: "மீதமுள்ள காடை எண்ணிக்கை", quailAvailable: "🍗 கிடைக்கும் காடை எண்ணிக்கை",
-        quailSold: "🍗 விற்ற காடை எண்ணிக்கை", quailRate: "₹ ஒரு காடைக்கான விலை",
+        quailSoldClean: "🍗 சுத்தம் செய்த விற்ற காடைகள்",
+        quailRateClean: "₹ சுத்தம் செய்த ஒரு காடைக்கான விலை",
+        quailSoldWithoutClean: "🍗 சுத்தம் செய்யாத விற்ற காடைகள்",
+        quailRateWithoutClean: "₹ சுத்தம் செய்யாத ஒரு காடைக்கான விலை",
         totalSales: "💰 மொத்த விற்பனை ₹ (தானியங்கி)", readOnly: "பார்வை மட்டும்",
         editAccess: "திருத்த அனுமதி", language: "English"
     }
@@ -1471,8 +1488,12 @@ function applyLanguage(){
         ".nav-btn:nth-child(2)": "addData", ".nav-btn:nth-child(3)": "history",
         ".nav-btn:nth-child(4)": "reports", "[data-i18n='quailMeatSold']": "quailMeatSold",
         "[data-i18n='quailMeatRemaining']": "quailMeatRemaining",
-        "[data-i18n='quailAvailable']": "quailAvailable", "[data-i18n='quailSold']": "quailSold",
-        "[data-i18n='quailRate']": "quailRate", "[data-i18n='totalSales']": "totalSales",
+        "[data-i18n='quailAvailable']": "quailAvailable",
+        "[data-i18n='quailSoldClean']": "quailSoldClean",
+        "[data-i18n='quailRateClean']": "quailRateClean",
+        "[data-i18n='quailSoldWithoutClean']": "quailSoldWithoutClean",
+        "[data-i18n='quailRateWithoutClean']": "quailRateWithoutClean",
+        "[data-i18n='totalSales']": "totalSales",
         "#languageButton": "language"
     };
     Object.entries(selectors).forEach(([selector, key]) => {
@@ -1822,8 +1843,8 @@ async function saveRecord(){
 
         date:document.getElementById("date").value,
 
-        quailProduced:Number(
-            document.getElementById("quailProduced").value
+        quailEggProduced:Number(
+            document.getElementById("quailEggProduced").value
         ) || 0,
 
         quailEggsSold:Number(
@@ -1854,12 +1875,20 @@ async function saveRecord(){
             document.getElementById("quailMeatAvailable").value
         ) || 0,
 
-        quailMeatSold:Number(
-            document.getElementById("quailMeatSold").value
+        quailMeatSoldClean:Number(
+            document.getElementById("quailMeatSoldClean").value
         ) || 0,
 
-        quailMeatRate:Number(
-            document.getElementById("quailMeatRate").value
+        quailMeatRateClean:Number(
+            document.getElementById("quailMeatRateClean").value
+        ) || 0,
+
+        quailMeatSoldWithoutClean:Number(
+            document.getElementById("quailMeatSoldWithoutClean").value
+        ) || 0,
+
+        quailMeatRateWithoutClean:Number(
+            document.getElementById("quailMeatRateWithoutClean").value
         ) || 0,
 
         medicine:Number(
@@ -2012,7 +2041,7 @@ function renderHistory(){
 
                 <div class="history-data">
                     <small>Quail Meat Sold</small>
-                    <h4>${record.quailMeatSold}</h4>
+                    <h4>${(record.quailMeatSoldClean || 0) + (record.quailMeatSoldWithoutClean || 0) || record.quailMeatSold || 0}</h4>
                 </div>
 
 
@@ -2063,7 +2092,7 @@ function editRecord(index){
 
     document.getElementById("date").value=r.date;
 
-    document.getElementById("quailProduced").value=r.quailProduced;
+    document.getElementById("quailEggProduced").value=r.quailEggProduced || r.quailProduced || 0;
 
     document.getElementById("quailEggsSold").value=r.quailEggsSold;
 
@@ -2079,9 +2108,11 @@ function editRecord(index){
 
     document.getElementById("quailMeatAvailable").value=r.quailMeatAvailable;
 
-    document.getElementById("quailMeatSold").value=r.quailMeatSold;
+    document.getElementById("quailMeatSoldClean").value=r.quailMeatSoldClean || r.quailMeatSold || 0;
 
-    document.getElementById("quailMeatRate").value=r.quailMeatRate;
+    document.getElementById("quailMeatRateClean").value=r.quailMeatRateClean || r.quailMeatRate || 0;
+    document.getElementById("quailMeatSoldWithoutClean").value=r.quailMeatSoldWithoutClean || 0;
+    document.getElementById("quailMeatRateWithoutClean").value=r.quailMeatRateWithoutClean || 0;
 
     document.getElementById("medicine").value=r.medicine;
 
@@ -2155,7 +2186,7 @@ function updateDashboard(){
 
 
     document.getElementById("dashQuailMeat")
-    .innerText=latest.quailMeatSold;
+    .innerText=(latest.quailMeatSoldClean || 0) + (latest.quailMeatSoldWithoutClean || 0) || latest.quailMeatSold || 0;
 
 
     document.getElementById("dashSales")
@@ -2164,7 +2195,7 @@ function updateDashboard(){
 
     document.getElementById("stockQuailEggs")
     .innerText=
-    latest.quailProduced-latest.quailEggsSold;
+    (latest.quailEggProduced || latest.quailProduced || 0)-latest.quailEggsSold;
 
 
     document.getElementById("stockNattuEggs")
@@ -2174,7 +2205,8 @@ function updateDashboard(){
 
     document.getElementById("stockQuailMeat")
     .innerText=
-    latest.quailMeatAvailable-latest.quailMeatSold;
+    latest.quailMeatAvailable-
+    ((latest.quailMeatSoldClean || 0) + (latest.quailMeatSoldWithoutClean || 0) || latest.quailMeatSold || 0);
 
 }
 
@@ -2200,7 +2232,7 @@ function updateReports(){
 
         nattuEggs+=r.nattuSold;
 
-        quailMeat+=r.quailMeatSold;
+        quailMeat+=((r.quailMeatSoldClean || 0) + (r.quailMeatSoldWithoutClean || 0) || r.quailMeatSold || 0);
 
         sales+=r.totalSales;
 

@@ -117,6 +117,10 @@ function accountFor(user) {
   return accounts.find((account) => account.user === user);
 }
 
+function userCanEdit(user) {
+  return ["Poongodi", "Sajindharan"].includes(user);
+}
+
 function saveAccounts() {
   fs.writeFileSync(ACCOUNTS_FILE, JSON.stringify(accounts, null, 2), "utf8");
 }
@@ -144,7 +148,7 @@ const server = http.createServer(async (request, response) => {
       }
       let account = accounts.find((candidate) => candidate.user === selectedUser);
       if (!account) {
-        account = { user: selectedUser, email, passwordHash: hashPassword(password), canEdit: selectedUser === "Poongodi" };
+        account = { user: selectedUser, email, passwordHash: hashPassword(password), canEdit: ["Poongodi", "Sajindharan"].includes(selectedUser) };
         accounts.push(account);
         saveAccounts();
       }
@@ -155,7 +159,7 @@ const server = http.createServer(async (request, response) => {
       void notifyLogin(account, request);
       return sendJson(response, 200, {
         user: selectedUser,
-        canEdit: Boolean(account.canEdit),
+        canEdit: userCanEdit(account.user),
         email,
         token,
       });
@@ -171,7 +175,7 @@ const server = http.createServer(async (request, response) => {
       if (!account) return sendJson(response, 401, { error: "Google account is not approved for this farm" });
       const token = createSession(account);
       void notifyLogin(account, request);
-      return sendJson(response, 200, { user: account.user, canEdit: account.canEdit, email: account.email, token });
+      return sendJson(response, 200, { user: account.user, canEdit: userCanEdit(account.user), email: account.email, token });
     }
 
     if (request.method === "POST" && url.pathname === "/api/auth/google/token") {
@@ -191,7 +195,7 @@ const server = http.createServer(async (request, response) => {
           user: selectedUser,
           email: profile.email,
           googleEmail: profile.email,
-          canEdit: selectedUser === "Poongodi",
+          canEdit: userCanEdit(selectedUser),
         };
         accounts.push(account);
         saveAccounts();
@@ -199,7 +203,7 @@ const server = http.createServer(async (request, response) => {
       if (!account) return sendJson(response, 403, { error: "Select a family member before Google login" });
       const token = createSession(account);
       void notifyLogin(account, request);
-      return sendJson(response, 200, { user: account.user, canEdit: account.canEdit, email: profile.email, token });
+      return sendJson(response, 200, { user: account.user, canEdit: userCanEdit(account.user), email: profile.email, token });
     }
 
     if (url.pathname === "/api/records" && request.method === "GET") {
@@ -211,7 +215,7 @@ const server = http.createServer(async (request, response) => {
     if (parts[0] === "api" && parts[1] === "records" && request.method === "POST") {
       const body = await readBody(request);
       const user = authenticatedUser(request);
-      if (user !== "Poongodi") return sendJson(response, 403, { error: "Only Poongodi can add farm data" });
+      if (!["Poongodi", "Sajindharan"].includes(user)) return sendJson(response, 403, { error: "Only Poongodi or Sajindharan can add farm data" });
       if (body.user !== user) return sendJson(response, 403, { error: "User identity mismatch" });
       const validationError = validateRecord(body);
       if (validationError) return sendJson(response, 400, { error: validationError });
@@ -227,7 +231,7 @@ const server = http.createServer(async (request, response) => {
 
     if (parts[0] === "api" && parts[1] === "records" && parts[2] && request.method === "PUT") {
       const body = await readBody(request);
-      if (authenticatedUser(request) !== "Poongodi") return sendJson(response, 403, { error: "Only Poongodi can edit farm data" });
+      if (!["Poongodi", "Sajindharan"].includes(authenticatedUser(request))) return sendJson(response, 403, { error: "Only Poongodi or Sajindharan can edit farm data" });
       const records = readRecords();
       const index = records.findIndex((record) => record.id === parts[2] && record.user === body.user);
       if (index < 0) return sendJson(response, 404, { error: "Record not found" });
@@ -238,7 +242,7 @@ const server = http.createServer(async (request, response) => {
 
     if (parts[0] === "api" && parts[1] === "records" && parts[2] && request.method === "DELETE") {
       const user = url.searchParams.get("user");
-      if (authenticatedUser(request) !== "Poongodi") return sendJson(response, 403, { error: "Only Poongodi can delete farm data" });
+      if (!["Poongodi", "Sajindharan"].includes(authenticatedUser(request))) return sendJson(response, 403, { error: "Only Poongodi or Sajindharan can delete farm data" });
       const records = readRecords();
       const nextRecords = records.filter((record) => !(record.id === parts[2] && record.user === user));
       if (nextRecords.length === records.length) return sendJson(response, 404, { error: "Record not found" });
