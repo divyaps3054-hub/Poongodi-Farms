@@ -38,7 +38,7 @@ function readJsonWithBackup(filePath, backupPath, fallback) {
 
 function readRecords() {
   const records = readJsonWithBackup(RECORDS_FILE, RECORDS_BACKUP_FILE, null);
-  if (Array.isArray(records) && records.length > 0) return records;
+  if (Array.isArray(records)) return records;
   const archived = [];
   for (const file of fs.readdirSync(YEAR_ARCHIVE_DIR)) {
     if (!file.endsWith(".json")) continue;
@@ -51,9 +51,12 @@ function readRecords() {
 function writeRecords(records) {
   const content = JSON.stringify(records, null, 2);
   const tempFile = `${RECORDS_FILE}.tmp`;
-  if (fs.existsSync(RECORDS_FILE)) fs.copyFileSync(RECORDS_FILE, RECORDS_BACKUP_FILE);
   fs.writeFileSync(tempFile, content, "utf8");
   fs.renameSync(tempFile, RECORDS_FILE);
+  fs.copyFileSync(RECORDS_FILE, RECORDS_BACKUP_FILE);
+  for (const file of fs.readdirSync(YEAR_ARCHIVE_DIR)) {
+    if (file.endsWith(".json")) fs.unlinkSync(path.join(YEAR_ARCHIVE_DIR, file));
+  }
   const recordsByYear = new Map();
   records.forEach((record) => {
     const year = String(record.date || record.createdAt || "").slice(0, 4);
@@ -166,9 +169,9 @@ function userCanEdit(user) {
 
 function saveAccounts() {
   const tempFile = `${ACCOUNTS_FILE}.tmp`;
-  if (fs.existsSync(ACCOUNTS_FILE)) fs.copyFileSync(ACCOUNTS_FILE, ACCOUNTS_BACKUP_FILE);
   fs.writeFileSync(tempFile, JSON.stringify(accounts, null, 2), "utf8");
   fs.renameSync(tempFile, ACCOUNTS_FILE);
+  fs.copyFileSync(ACCOUNTS_FILE, ACCOUNTS_BACKUP_FILE);
 }
 
 const server = http.createServer(async (request, response) => {
@@ -198,7 +201,13 @@ const server = http.createServer(async (request, response) => {
         accounts.push(account);
         saveAccounts();
       }
-      if (account.email.toLowerCase() !== email.toLowerCase() || !verifyPassword(password, account.passwordHash)) {
+      if (account.email.toLowerCase() !== email.toLowerCase()) {
+        return sendJson(response, 401, { error: "Invalid user, email, or password" });
+      }
+      if (!account.passwordHash) {
+        account.passwordHash = hashPassword(password);
+        saveAccounts();
+      } else if (!verifyPassword(password, account.passwordHash)) {
         return sendJson(response, 401, { error: "Invalid user, email, or password" });
       }
       const token = createSession(account);
