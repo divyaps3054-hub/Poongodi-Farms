@@ -9,22 +9,41 @@ const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID ||
 const FRONTEND_URL = process.env.FRONTEND_URL ||
   "https://divyaps3054-hub.github.io/Poongodi-Farms/";
 const ROOT = __dirname;
-const DATA_DIR = path.join(ROOT, "data");
+const DATA_DIR = process.env.DATA_DIR || path.join(ROOT, "data");
 const RECORDS_FILE = path.join(DATA_DIR, "records.json");
 const ACCOUNTS_FILE = path.join(DATA_DIR, "accounts.json");
+const RECORDS_BACKUP_FILE = `${RECORDS_FILE}.bak`;
+const ACCOUNTS_BACKUP_FILE = `${ACCOUNTS_FILE}.bak`;
 
 fs.mkdirSync(DATA_DIR, { recursive: true });
-if (!fs.existsSync(RECORDS_FILE)) fs.writeFileSync(RECORDS_FILE, "[]", "utf8");
-if (!fs.existsSync(ACCOUNTS_FILE)) {
+if (!fs.existsSync(RECORDS_FILE) && !fs.existsSync(RECORDS_BACKUP_FILE)) {
+  fs.writeFileSync(RECORDS_FILE, "[]", "utf8");
+}
+if (!fs.existsSync(ACCOUNTS_FILE) && !fs.existsSync(ACCOUNTS_BACKUP_FILE)) {
   fs.writeFileSync(ACCOUNTS_FILE, process.env.FARM_USERS || "[]", "utf8");
 }
 
+function readJsonWithBackup(filePath, backupPath, fallback) {
+  for (const candidate of [filePath, backupPath]) {
+    try {
+      return JSON.parse(fs.readFileSync(candidate, "utf8"));
+    } catch {
+      // Try the backup before failing so a damaged primary file does not hide data.
+    }
+  }
+  return fallback;
+}
+
 function readRecords() {
-  return JSON.parse(fs.readFileSync(RECORDS_FILE, "utf8"));
+  return readJsonWithBackup(RECORDS_FILE, RECORDS_BACKUP_FILE, []);
 }
 
 function writeRecords(records) {
-  fs.writeFileSync(RECORDS_FILE, JSON.stringify(records, null, 2), "utf8");
+  const content = JSON.stringify(records, null, 2);
+  const tempFile = `${RECORDS_FILE}.tmp`;
+  if (fs.existsSync(RECORDS_FILE)) fs.copyFileSync(RECORDS_FILE, RECORDS_BACKUP_FILE);
+  fs.writeFileSync(tempFile, content, "utf8");
+  fs.renameSync(tempFile, RECORDS_FILE);
 }
 
 function sendJson(response, status, body) {
@@ -69,7 +88,7 @@ function validateRecord(record) {
   return null;
 }
 
-let accounts = JSON.parse(fs.readFileSync(ACCOUNTS_FILE, "utf8"));
+let accounts = readJsonWithBackup(ACCOUNTS_FILE, ACCOUNTS_BACKUP_FILE, []);
 const sessions = new Map();
 
 function hashPassword(password, salt = crypto.randomBytes(16).toString("hex")) {
@@ -122,7 +141,10 @@ function userCanEdit(user) {
 }
 
 function saveAccounts() {
-  fs.writeFileSync(ACCOUNTS_FILE, JSON.stringify(accounts, null, 2), "utf8");
+  const tempFile = `${ACCOUNTS_FILE}.tmp`;
+  if (fs.existsSync(ACCOUNTS_FILE)) fs.copyFileSync(ACCOUNTS_FILE, ACCOUNTS_BACKUP_FILE);
+  fs.writeFileSync(tempFile, JSON.stringify(accounts, null, 2), "utf8");
+  fs.renameSync(tempFile, ACCOUNTS_FILE);
 }
 
 const server = http.createServer(async (request, response) => {

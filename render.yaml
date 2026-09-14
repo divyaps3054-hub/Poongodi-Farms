@@ -18,6 +18,8 @@ services:
         value: "141270882885-jtusd34ofr0pfpbro6udqqgol6gepfsp.apps.googleusercontent.com"
       - key: FRONTEND_URL
         value: "https://divyaps3054-hub.github.io/Poongodi-Farms/"
+      - key: DATA_DIR
+        value: "/opt/render/project/src/data"
       - key: FARM_USERS
         sync: false
       - key: RESEND_API_KEY
