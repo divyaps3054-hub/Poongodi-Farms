@@ -14,8 +14,10 @@ const RECORDS_FILE = path.join(DATA_DIR, "records.json");
 const ACCOUNTS_FILE = path.join(DATA_DIR, "accounts.json");
 const RECORDS_BACKUP_FILE = `${RECORDS_FILE}.bak`;
 const ACCOUNTS_BACKUP_FILE = `${ACCOUNTS_FILE}.bak`;
+const YEAR_ARCHIVE_DIR = path.join(DATA_DIR, "yearly-records");
 
 fs.mkdirSync(DATA_DIR, { recursive: true });
+fs.mkdirSync(YEAR_ARCHIVE_DIR, { recursive: true });
 if (!fs.existsSync(RECORDS_FILE) && !fs.existsSync(RECORDS_BACKUP_FILE)) {
   fs.writeFileSync(RECORDS_FILE, "[]", "utf8");
 }
@@ -35,7 +37,15 @@ function readJsonWithBackup(filePath, backupPath, fallback) {
 }
 
 function readRecords() {
-  return readJsonWithBackup(RECORDS_FILE, RECORDS_BACKUP_FILE, []);
+  const records = readJsonWithBackup(RECORDS_FILE, RECORDS_BACKUP_FILE, null);
+  if (Array.isArray(records) && records.length > 0) return records;
+  const archived = [];
+  for (const file of fs.readdirSync(YEAR_ARCHIVE_DIR)) {
+    if (!file.endsWith(".json")) continue;
+    const yearRecords = readJsonWithBackup(path.join(YEAR_ARCHIVE_DIR, file), "", []);
+    if (Array.isArray(yearRecords)) archived.push(...yearRecords);
+  }
+  return archived;
 }
 
 function writeRecords(records) {
@@ -44,6 +54,20 @@ function writeRecords(records) {
   if (fs.existsSync(RECORDS_FILE)) fs.copyFileSync(RECORDS_FILE, RECORDS_BACKUP_FILE);
   fs.writeFileSync(tempFile, content, "utf8");
   fs.renameSync(tempFile, RECORDS_FILE);
+  const recordsByYear = new Map();
+  records.forEach((record) => {
+    const year = String(record.date || record.createdAt || "").slice(0, 4);
+    if (!/^\d{4}$/.test(year)) return;
+    if (!recordsByYear.has(year)) recordsByYear.set(year, []);
+    recordsByYear.get(year).push(record);
+  });
+  for (const [year, yearRecords] of recordsByYear) {
+    fs.writeFileSync(
+      path.join(YEAR_ARCHIVE_DIR, `${year}.json`),
+      JSON.stringify(yearRecords, null, 2),
+      "utf8"
+    );
+  }
 }
 
 function sendJson(response, status, body) {
