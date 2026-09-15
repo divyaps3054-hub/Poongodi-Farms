@@ -68,7 +68,13 @@ async function supabaseRequest(pathname, options = {}) {
 async function readRecords() {
   if (SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY) {
     const rows = await supabaseRequest("farm_records?select=record&order=record_date.asc");
-    return rows.map((row) => row.record);
+    if (rows.length) return rows.map((row) => row.record);
+    const legacyRecords = localReadRecords();
+    if (legacyRecords.length) {
+      await writeRecords(legacyRecords);
+      return legacyRecords;
+    }
+    return [];
   }
   return localReadRecords();
 }
