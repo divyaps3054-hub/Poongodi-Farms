@@ -15,7 +15,11 @@ const ACCOUNTS_FILE = path.join(DATA_DIR, "accounts.json");
 const RECORDS_BACKUP_FILE = `${RECORDS_FILE}.bak`;
 const ACCOUNTS_BACKUP_FILE = `${ACCOUNTS_FILE}.bak`;
 const YEAR_ARCHIVE_DIR = path.join(DATA_DIR, "yearly-records");
-const SUPABASE_URL = String(process.env.SUPABASE_URL || "")
+const SUPABASE_URL = String(
+  process.env.SUPABASE_URL && process.env.SUPABASE_URL.startsWith("http")
+    ? process.env.SUPABASE_URL
+    : "https://tslrqgojisjqeyrnqdeg.supabase.co"
+)
   .replace(/\/rest\/v1\/?$/, "")
   .replace(/\/$/, "");
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
