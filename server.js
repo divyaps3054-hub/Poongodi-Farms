@@ -15,6 +15,8 @@ const ACCOUNTS_FILE = path.join(DATA_DIR, "accounts.json");
 const RECORDS_BACKUP_FILE = `${RECORDS_FILE}.bak`;
 const ACCOUNTS_BACKUP_FILE = `${ACCOUNTS_FILE}.bak`;
 const YEAR_ARCHIVE_DIR = path.join(DATA_DIR, "yearly-records");
+const SUPABASE_URL = String(process.env.SUPABASE_URL || "").replace(/\/$/, "");
+const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
 
 fs.mkdirSync(DATA_DIR, { recursive: true });
 fs.mkdirSync(YEAR_ARCHIVE_DIR, { recursive: true });
@@ -36,7 +38,7 @@ function readJsonWithBackup(filePath, backupPath, fallback) {
   return fallback;
 }
 
-function readRecords() {
+function localReadRecords() {
   const records = readJsonWithBackup(RECORDS_FILE, RECORDS_BACKUP_FILE, null);
   const archived = [];
   for (const file of fs.readdirSync(YEAR_ARCHIVE_DIR)) {
@@ -49,7 +51,29 @@ function readRecords() {
   return records;
 }
 
-function writeRecords(records) {
+async function supabaseRequest(pathname, options = {}) {
+  const response = await fetch(`${SUPABASE_URL}/rest/v1/${pathname}`, {
+    ...options,
+    headers: {
+      apikey: SUPABASE_SERVICE_ROLE_KEY,
+      Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+      "Content-Type": "application/json",
+      ...(options.headers || {}),
+    },
+  });
+  if (!response.ok) throw new Error(`Supabase request failed (${response.status})`);
+  return response.status === 204 ? null : response.json();
+}
+
+async function readRecords() {
+  if (SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY) {
+    const rows = await supabaseRequest("farm_records?select=record&order=record_date.asc");
+    return rows.map((row) => row.record);
+  }
+  return localReadRecords();
+}
+
+async function writeRecords(records) {
   const content = JSON.stringify(records, null, 2);
   const tempFile = `${RECORDS_FILE}.tmp`;
   fs.writeFileSync(tempFile, content, "utf8");
@@ -71,6 +95,29 @@ function writeRecords(records) {
       JSON.stringify(yearRecords, null, 2),
       "utf8"
     );
+  }
+  if (SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY) {
+    const existing = await supabaseRequest("farm_records?select=id");
+    const currentIds = new Set(records.map((record) => record.id));
+    const removedIds = existing
+      .map((row) => row.id)
+      .filter((id) => !currentIds.has(id));
+    if (removedIds.length) {
+      await supabaseRequest(`farm_records?id=in.(${removedIds.join(",")})`, { method: "DELETE" });
+    }
+    if (records.length) {
+      await supabaseRequest("farm_records", {
+        method: "POST",
+        headers: { Prefer: "resolution=merge-duplicates,return=minimal" },
+        body: JSON.stringify(records.map((record) => ({
+          id: record.id,
+          record,
+          record_date: record.date,
+          user_name: record.user,
+          updated_at: record.updatedAt || new Date().toISOString(),
+        }))),
+      });
+    }
   }
 }
 
@@ -265,7 +312,7 @@ const server = http.createServer(async (request, response) => {
     if (url.pathname === "/api/records" && request.method === "GET") {
       const user = authenticatedUser(request);
       if (!user) return sendJson(response, 401, { error: "Login required" });
-      return sendJson(response, 200, readRecords());
+      return sendJson(response, 200, await readRecords());
     }
 
     if (parts[0] === "api" && parts[1] === "records" && request.method === "POST") {
@@ -275,34 +322,34 @@ const server = http.createServer(async (request, response) => {
       if (body.user !== user) return sendJson(response, 403, { error: "User identity mismatch" });
       const validationError = validateRecord(body);
       if (validationError) return sendJson(response, 400, { error: validationError });
-      const records = readRecords();
+      const records = await readRecords();
       const recordId = typeof crypto.randomUUID === "function"
         ? crypto.randomUUID()
         : `record-${Date.now()}-${crypto.randomBytes(8).toString("hex")}`;
       const record = { ...body, id: recordId, createdAt: new Date().toISOString() };
       records.push(record);
-      writeRecords(records);
+      await writeRecords(records);
       return sendJson(response, 201, record);
     }
 
     if (parts[0] === "api" && parts[1] === "records" && parts[2] && request.method === "PUT") {
       const body = await readBody(request);
       if (!["Poongodi", "Sajindharan"].includes(authenticatedUser(request))) return sendJson(response, 403, { error: "Only Poongodi or Sajindharan can edit farm data" });
-      const records = readRecords();
+      const records = await readRecords();
       const index = records.findIndex((record) => record.id === parts[2] && record.user === body.user);
       if (index < 0) return sendJson(response, 404, { error: "Record not found" });
       records[index] = { ...records[index], ...body, id: records[index].id };
-      writeRecords(records);
+      await writeRecords(records);
       return sendJson(response, 200, records[index]);
     }
 
     if (parts[0] === "api" && parts[1] === "records" && parts[2] && request.method === "DELETE") {
       const user = url.searchParams.get("user");
       if (!["Poongodi", "Sajindharan"].includes(authenticatedUser(request))) return sendJson(response, 403, { error: "Only Poongodi or Sajindharan can delete farm data" });
-      const records = readRecords();
+      const records = await readRecords();
       const nextRecords = records.filter((record) => !(record.id === parts[2] && record.user === user));
       if (nextRecords.length === records.length) return sendJson(response, 404, { error: "Record not found" });
-      writeRecords(nextRecords);
+      await writeRecords(nextRecords);
       return sendJson(response, 204, {});
     }
 
