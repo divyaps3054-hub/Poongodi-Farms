@@ -22,7 +22,14 @@ const SUPABASE_URL = String(
 )
   .replace(/\/rest\/v1\/?$/, "")
   .replace(/\/$/, "");
-const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
+const SUPABASE_SERVICE_ROLE_KEY = String(
+  process.env.SUPABASE_SERVICE_ROLE_KEY ||
+  process.env.SUPABASE_SECRET_KEY ||
+  ""
+)
+  .trim()
+  .replace(/^['"]|['"]$/g, "")
+  .replace(/\/rest\/v1\/?$/, "");
 
 fs.mkdirSync(DATA_DIR, { recursive: true });
 fs.mkdirSync(YEAR_ARCHIVE_DIR, { recursive: true });
