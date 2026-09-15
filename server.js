@@ -79,7 +79,8 @@ async function supabaseRequest(pathname, options = {}) {
     console.error("Supabase request failed:", response.status, details);
     throw new Error(`Supabase request failed (${response.status}): ${details.slice(0, 240)}`);
   }
-  return response.status === 204 ? null : response.json();
+  const responseText = await response.text();
+  return responseText ? JSON.parse(responseText) : null;
 }
 
 async function readRecords() {
