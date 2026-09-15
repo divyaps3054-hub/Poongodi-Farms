@@ -38,14 +38,15 @@ function readJsonWithBackup(filePath, backupPath, fallback) {
 
 function readRecords() {
   const records = readJsonWithBackup(RECORDS_FILE, RECORDS_BACKUP_FILE, null);
-  if (Array.isArray(records)) return records;
   const archived = [];
   for (const file of fs.readdirSync(YEAR_ARCHIVE_DIR)) {
     if (!file.endsWith(".json")) continue;
     const yearRecords = readJsonWithBackup(path.join(YEAR_ARCHIVE_DIR, file), "", []);
     if (Array.isArray(yearRecords)) archived.push(...yearRecords);
   }
-  return archived;
+  if (!Array.isArray(records)) return archived;
+  if (records.length === 0 && archived.length > 0) return archived;
+  return records;
 }
 
 function writeRecords(records) {
