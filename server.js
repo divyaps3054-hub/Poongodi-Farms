@@ -15,7 +15,9 @@ const ACCOUNTS_FILE = path.join(DATA_DIR, "accounts.json");
 const RECORDS_BACKUP_FILE = `${RECORDS_FILE}.bak`;
 const ACCOUNTS_BACKUP_FILE = `${ACCOUNTS_FILE}.bak`;
 const YEAR_ARCHIVE_DIR = path.join(DATA_DIR, "yearly-records");
-const SUPABASE_URL = String(process.env.SUPABASE_URL || "").replace(/\/$/, "");
+const SUPABASE_URL = String(process.env.SUPABASE_URL || "")
+  .replace(/\/rest\/v1\/?$/, "")
+  .replace(/\/$/, "");
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
 
 fs.mkdirSync(DATA_DIR, { recursive: true });
@@ -61,7 +63,11 @@ async function supabaseRequest(pathname, options = {}) {
       ...(options.headers || {}),
     },
   });
-  if (!response.ok) throw new Error(`Supabase request failed (${response.status})`);
+  if (!response.ok) {
+    const details = await response.text();
+    console.error("Supabase request failed:", response.status, details);
+    throw new Error(`Supabase request failed (${response.status})`);
+  }
   return response.status === 204 ? null : response.json();
 }
 
