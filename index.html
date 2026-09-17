@@ -1002,41 +1002,20 @@ body{
 
 
             <div class="form-group">
-                <label data-i18n="quailAvailable">🍗 Quail Birds Available</label>
-                <input type="number" id="quailMeatAvailable" placeholder="Enter count">
+                <label>🌾 Quail Feed (kg per day)</label>
+                <input type="number" id="quailFeedKg" min="0" step="0.01" placeholder="Enter kg">
             </div>
 
 
             <div class="form-group">
-                <label data-i18n="quailSoldClean">🍗 Quail Birds Sold (With Clean)</label>
-                <input type="number" id="quailMeatSoldClean" placeholder="Enter count">
-            </div>
-
-            <div class="form-group">
-                <label data-i18n="quailRateClean">₹ Quail Bird Rate (With Clean)</label>
-                <input type="number" id="quailMeatRateClean" placeholder="Rate per bird">
-            </div>
-
-            <div class="form-group">
-                <label data-i18n="quailSoldWithoutClean">🍗 Quail Birds Sold (Without Clean)</label>
-                <input type="number" id="quailMeatSoldWithoutClean" placeholder="Enter count">
-            </div>
-
-            <div class="form-group">
-                <label data-i18n="quailRateWithoutClean">₹ Quail Bird Rate (Without Clean)</label>
-                <input type="number" id="quailMeatRateWithoutClean" placeholder="Rate per bird">
+                <label>₹ Quail Feed Rate (per kg)</label>
+                <input type="number" id="quailFeedRate" min="0" step="0.01" placeholder="Rate per kg">
             </div>
 
 
             <div class="form-group">
-                <label>💊 Medicine ₹</label>
-                <input type="number" id="medicine" placeholder="Enter amount">
-            </div>
-
-
-            <div class="form-group">
-                <label>🏷️ Tray Stickers ₹</label>
-                <input type="number" id="trayStickers" placeholder="Enter amount">
+                <label>💰 Quail Feed Cost ₹ (Auto)</label>
+                <input type="number" id="quailFeedCost" placeholder="Auto calculated" readonly>
             </div>
 
 
@@ -1325,7 +1304,7 @@ async function loadRecords(){
 document.getElementById("todayDate").innerText =
 new Date().toDateString();
 
-["quailEggsSold","quailEggRate","nattuSold","nattuRate","quailMeatSoldClean","quailMeatRateClean","quailMeatSoldWithoutClean","quailMeatRateWithoutClean"]
+["quailEggsSold","quailEggRate","nattuSold","nattuRate","quailFeedKg","quailFeedRate"]
     .forEach(id => document.getElementById(id).addEventListener("input", calculateTotalSales));
 
 function calculateTotalSales(){
@@ -1334,10 +1313,14 @@ function calculateTotalSales(){
         (Number(document.getElementById("quailEggRate").value) || 0) +
         (Number(document.getElementById("nattuSold").value) || 0) *
         (Number(document.getElementById("nattuRate").value) || 0) +
-        (Number(document.getElementById("quailMeatSoldClean").value) || 0) *
-        (Number(document.getElementById("quailMeatRateClean").value) || 0) +
-        (Number(document.getElementById("quailMeatSoldWithoutClean").value) || 0) *
-        (Number(document.getElementById("quailMeatRateWithoutClean").value) || 0);
+        (Number(document.getElementById("quailMeatSoldClean")?.value) || 0) *
+        (Number(document.getElementById("quailMeatRateClean")?.value) || 0) +
+        (Number(document.getElementById("quailMeatSoldWithoutClean")?.value) || 0) *
+        (Number(document.getElementById("quailMeatRateWithoutClean")?.value) || 0);
+    const feedCost =
+        (Number(document.getElementById("quailFeedKg").value) || 0) *
+        (Number(document.getElementById("quailFeedRate").value) || 0);
+    document.getElementById("quailFeedCost").value = feedCost;
     document.getElementById("totalSales").value = value;
 }
 
@@ -1877,28 +1860,16 @@ async function saveRecord(){
             document.getElementById("quailMeatAvailable").value
         ) || 0,
 
-        quailMeatSoldClean:Number(
-            document.getElementById("quailMeatSoldClean").value
+        quailFeedKg:Number(
+            document.getElementById("quailFeedKg").value
         ) || 0,
 
-        quailMeatRateClean:Number(
-            document.getElementById("quailMeatRateClean").value
+        quailFeedRate:Number(
+            document.getElementById("quailFeedRate").value
         ) || 0,
 
-        quailMeatSoldWithoutClean:Number(
-            document.getElementById("quailMeatSoldWithoutClean").value
-        ) || 0,
-
-        quailMeatRateWithoutClean:Number(
-            document.getElementById("quailMeatRateWithoutClean").value
-        ) || 0,
-
-        medicine:Number(
-            document.getElementById("medicine").value
-        ) || 0,
-
-        trayStickers:Number(
-            document.getElementById("trayStickers").value
+        quailFeedCost:Number(
+            document.getElementById("quailFeedCost").value
         ) || 0,
 
         totalSales:Number(
@@ -2000,10 +1971,10 @@ function renderHistory(){
 
 
         let expenses=
-
-        record.medicine+
-        record.trayStickers+
-        record.otherExpenses;
+        (record.medicine || 0)+
+        (record.trayStickers || 0)+
+        (record.quailFeedCost || 0)+
+        (record.otherExpenses || 0);
 
 
         let profit=
@@ -2113,17 +2084,9 @@ function editRecord(index){
 
     document.getElementById("quailMortality").value=r.quailMortality;
 
-    document.getElementById("quailMeatAvailable").value=r.quailMeatAvailable;
-
-    document.getElementById("quailMeatSoldClean").value=r.quailMeatSoldClean || r.quailMeatSold || 0;
-
-    document.getElementById("quailMeatRateClean").value=r.quailMeatRateClean || r.quailMeatRate || 0;
-    document.getElementById("quailMeatSoldWithoutClean").value=r.quailMeatSoldWithoutClean || 0;
-    document.getElementById("quailMeatRateWithoutClean").value=r.quailMeatRateWithoutClean || 0;
-
-    document.getElementById("medicine").value=r.medicine;
-
-    document.getElementById("trayStickers").value=r.trayStickers;
+    document.getElementById("quailFeedKg").value=r.quailFeedKg || 0;
+    document.getElementById("quailFeedRate").value=r.quailFeedRate || 0;
+    document.getElementById("quailFeedCost").value=r.quailFeedCost || 0;
 
     document.getElementById("totalSales").value=r.totalSales;
 
@@ -2169,6 +2132,21 @@ async function deleteRecord(index){
 function updateDashboard(){
 
     let latest=records[records.length-1];
+    const stock = records.reduce((totals, record) => {
+        totals.quailEggs += Number(record.quailEggProduced || record.quailProduced || 0);
+        totals.quailEggs -= Number(record.quailEggsSold || 0);
+        totals.nattuEggs += Number(record.nattuProduced || 0);
+        totals.nattuEggs -= Number(record.nattuSold || 0);
+        const birdsAvailable = Number(record.quailMeatAvailable || 0);
+        const birdsSold = Number(
+            (record.quailMeatSoldClean || 0) +
+            (record.quailMeatSoldWithoutClean || 0) ||
+            record.quailMeatSold ||
+            0
+        );
+        totals.quailBirds += birdsAvailable - birdsSold;
+        return totals;
+    }, {quailEggs:0, nattuEggs:0, quailBirds:0});
 
 
     if(!latest){
@@ -2201,19 +2179,15 @@ function updateDashboard(){
 
 
     document.getElementById("stockQuailEggs")
-    .innerText=
-    (latest.quailEggProduced || latest.quailProduced || 0)-latest.quailEggsSold;
+    .innerText=Math.max(0, stock.quailEggs);
 
 
     document.getElementById("stockNattuEggs")
-    .innerText=
-    latest.nattuProduced-latest.nattuSold;
+    .innerText=Math.max(0, stock.nattuEggs);
 
 
     document.getElementById("stockQuailMeat")
-    .innerText=
-    latest.quailMeatAvailable-
-    ((latest.quailMeatSoldClean || 0) + (latest.quailMeatSoldWithoutClean || 0) || latest.quailMeatSold || 0);
+    .innerText=Math.max(0, stock.quailBirds);
 
 }
 
@@ -2244,9 +2218,10 @@ function updateReports(){
         sales+=r.totalSales;
 
         expenses+=
-        r.medicine+
-        r.trayStickers+
-        r.otherExpenses;
+        (r.medicine || 0)+
+        (r.trayStickers || 0)+
+        (r.quailFeedCost || 0)+
+        (r.otherExpenses || 0);
 
     });
 
