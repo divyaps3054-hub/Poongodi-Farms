@@ -960,7 +960,7 @@ body{
 
 
             <div class="form-group">
-                <label>🐦 Quail Egg Produced</label>
+                <label>🥚 Quail Eggs Produced</label>
                 <input type="number" id="quailEggProduced" placeholder="Enter quantity">
             </div>
 
@@ -968,12 +968,6 @@ body{
             <div class="form-group">
                 <label>🥚 Quail Eggs Sold</label>
                 <input type="number" id="quailEggsSold" placeholder="Enter quantity">
-            </div>
-
-
-            <div class="form-group">
-                <label>₹ Quail Egg Rate</label>
-                <input type="number" id="quailEggRate" placeholder="Rate per egg">
             </div>
 
 
@@ -986,12 +980,6 @@ body{
             <div class="form-group">
                 <label>🥚 Nattu Koli Eggs Sold</label>
                 <input type="number" id="nattuSold" placeholder="Enter quantity">
-            </div>
-
-
-            <div class="form-group">
-                <label>₹ Nattu Koli Egg Rate</label>
-                <input type="number" id="nattuRate" placeholder="Rate per egg">
             </div>
 
 
@@ -1010,6 +998,16 @@ body{
             <div class="form-group">
                 <label>₹ Quail Feed Rate (per kg)</label>
                 <input type="number" id="quailFeedRate" min="0" step="0.01" placeholder="Rate per kg">
+            </div>
+
+            <div class="form-group">
+                <label>₹ Quail Egg Rate</label>
+                <input type="number" id="quailEggRate" placeholder="Rate per egg">
+            </div>
+
+            <div class="form-group">
+                <label>₹ Nattu Koli Egg Rate</label>
+                <input type="number" id="nattuRate" placeholder="Rate per egg">
             </div>
 
 
@@ -1313,10 +1311,7 @@ function calculateTotalSales(){
         (Number(document.getElementById("quailEggRate").value) || 0) +
         (Number(document.getElementById("nattuSold").value) || 0) *
         (Number(document.getElementById("nattuRate").value) || 0) +
-        (Number(document.getElementById("quailMeatSoldClean")?.value) || 0) *
-        (Number(document.getElementById("quailMeatRateClean")?.value) || 0) +
-        (Number(document.getElementById("quailMeatSoldWithoutClean")?.value) || 0) *
-        (Number(document.getElementById("quailMeatRateWithoutClean")?.value) || 0);
+        0;
     const feedCost =
         (Number(document.getElementById("quailFeedKg").value) || 0) *
         (Number(document.getElementById("quailFeedRate").value) || 0);
@@ -1856,10 +1851,6 @@ async function saveRecord(){
             document.getElementById("quailMortality").value
         ) || 0,
 
-        quailMeatAvailable:Number(
-            document.getElementById("quailMeatAvailable").value
-        ) || 0,
-
         quailFeedKg:Number(
             document.getElementById("quailFeedKg").value
         ) || 0,
@@ -1943,119 +1934,42 @@ function clearForm(){
 /* ================= HISTORY ================= */
 
 function renderHistory(){
-
-    let history=document.getElementById(
-        "historyList"
-    );
-
-    history.innerHTML="";
-
-
-    if(records.length===0){
-
-        history.innerHTML=
-        "<div class='history-card'>No farm records available.</div>";
-
+    const history = document.getElementById("historyList");
+    const dates = [...new Set(records.map(record => record.date).filter(Boolean))].sort().reverse();
+    if(!dates.length){
+        history.innerHTML="<div class='history-card'>No farm records available.</div>";
         return;
-
     }
+    history.innerHTML = `<div class="history-card"><h3>Select a date</h3><div class="history-actions">${
+        dates.map(date => `<button class="edit-btn" onclick="showHistoryDate('${date}')">📅 ${date}</button>`).join("")
+    }</div></div><div id="historyDateRecords"></div>`;
+    showHistoryDate(dates[0]);
+}
 
-
-    records
-    .slice()
-    .reverse()
-    .forEach((record,reverseIndex)=>{
-
-        let index=
-        records.length-1-reverseIndex;
-
-
-        let expenses=
-        (record.medicine || 0)+
-        (record.trayStickers || 0)+
-        (record.quailFeedCost || 0)+
-        (record.otherExpenses || 0);
-
-
-        let profit=
-        record.totalSales-expenses;
-
-
-        history.innerHTML+=`
-
-        <div class="history-card">
-
-            <div class="history-top">
-
-                <div class="history-date">
-                    📅 ${record.date}
-                </div>
-
-                <small>
-                    Updated by ${record.updatedBy}
-                </small>
-
-            </div>
-
-
+function showHistoryDate(date){
+    const target = document.getElementById("historyDateRecords");
+    if(!target) return;
+    const selected = records.map((record, index) => ({record, index}))
+        .filter(item => item.record.date === date).reverse();
+    target.innerHTML = selected.map(({record, index}) => {
+        const expenses = (record.quailFeedCost || 0) + (record.otherExpenses || 0);
+        const profit = (record.totalSales || 0) - expenses;
+        return `<div class="history-card">
+            <div class="history-top"><div class="history-date">📅 ${record.date}</div>
+            <small>Updated by ${record.updatedBy || record.user}</small></div>
             <div class="history-grid">
-
-                <div class="history-data">
-                    <small>Quail Eggs Sold</small>
-                    <h4>${record.quailEggsSold}</h4>
-                </div>
-
-
-                <div class="history-data">
-                    <small>Nattu Koli Eggs Sold</small>
-                    <h4>${record.nattuSold}</h4>
-                </div>
-
-
-                <div class="history-data">
-                    <small>Quail Meat Sold</small>
-                    <h4>${(record.quailMeatSoldClean || 0) + (record.quailMeatSoldWithoutClean || 0) || record.quailMeatSold || 0}</h4>
-                </div>
-
-
-                <div class="history-data">
-                    <small>Total Sales</small>
-                    <h4>₹${record.totalSales}</h4>
-                </div>
-
-
-                <div class="history-data">
-                    <small>Expenses</small>
-                    <h4>₹${expenses}</h4>
-                </div>
-
-
-                <div class="history-data">
-                    <small>Profit / Loss</small>
-                    <h4>₹${profit}</h4>
-                </div>
-
+                <div class="history-data"><small>Quail Eggs Sold</small><h4>${record.quailEggsSold || 0}</h4></div>
+                <div class="history-data"><small>Nattu Koli Eggs Sold</small><h4>${record.nattuSold || 0}</h4></div>
+                <div class="history-data"><small>Total Sales</small><h4>₹${record.totalSales || 0}</h4></div>
+                <div class="history-data"><small>Expenses</small><h4>₹${expenses}</h4></div>
+                <div class="history-data"><small>Profit / Loss</small><h4>₹${profit}</h4></div>
             </div>
-
-            <div class="history-notes">
-                <small>Farm Notes</small>
-                <p>${record.farmNotes || "—"}</p>
-            </div>
-
-
-            <div class="history-actions">
-
-                ${canEdit ? `<button class="edit-btn" onclick="editRecord(${index})">✏️ Edit</button>
-                <button class="delete-btn" onclick="deleteRecord(${index})">🗑️ Delete</button>` : ""}
-
-            </div>
-
-        </div>
-
-        `;
-
-    });
-
+            <div class="history-notes"><small>Farm Notes</small><p>${record.farmNotes || "—"}</p></div>
+            <div class="history-actions">${canEdit
+                ? `<button class="edit-btn" onclick="editRecord(${index})">✏️ Edit</button>
+                   <button class="delete-btn" onclick="deleteRecord(${index})">🗑️ Delete</button>` : ""}</div>
+        </div>`;
+    }).join("");
 }
 
 
