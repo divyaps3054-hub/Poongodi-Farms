@@ -97,7 +97,7 @@ async function readRecords() {
   return localReadRecords();
 }
 
-async function writeRecords(records) {
+async function writeRecords(records, changedRecord = null, deletedId = null) {
   const content = JSON.stringify(records, null, 2);
   const tempFile = `${RECORDS_FILE}.tmp`;
   fs.writeFileSync(tempFile, content, "utf8");
@@ -121,25 +121,42 @@ async function writeRecords(records) {
     );
   }
   if (SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY) {
-    const existing = await supabaseRequest("farm_records?select=id");
-    const currentIds = new Set(records.map((record) => record.id));
-    const removedIds = existing
-      .map((row) => row.id)
-      .filter((id) => !currentIds.has(id));
-    if (removedIds.length) {
-      await supabaseRequest(`farm_records?id=in.(${removedIds.join(",")})`, { method: "DELETE" });
+    if (deletedId) {
+      await supabaseRequest(`farm_records?id=eq.${encodeURIComponent(deletedId)}`, { method: "DELETE" });
     }
-    if (records.length) {
+    if (changedRecord) {
+      const databaseRecord = {
+        ...changedRecord,
+        updatedAt: normalizeRecordTimestamp(changedRecord.updatedAt),
+      };
       await supabaseRequest("farm_records", {
         method: "POST",
         headers: { Prefer: "resolution=merge-duplicates,return=minimal" },
-        body: JSON.stringify(records.map((record) => ({
-          id: record.id,
-          record,
-          record_date: record.date,
-          user_name: record.user,
-          updated_at: record.updatedAt || new Date().toISOString(),
-        }))),
+        body: JSON.stringify({
+          id: changedRecord.id,
+          record: databaseRecord,
+          record_date: normalizeRecordDate(databaseRecord.date),
+          user_name: databaseRecord.user,
+          updated_at: databaseRecord.updatedAt,
+        }),
+      });
+    } else if (!deletedId && records.length) {
+      await supabaseRequest("farm_records", {
+        method: "POST",
+        headers: { Prefer: "resolution=merge-duplicates,return=minimal" },
+        body: JSON.stringify(records.map((record) => {
+          const databaseRecord = {
+            ...record,
+            updatedAt: normalizeRecordTimestamp(record.updatedAt),
+          };
+          return {
+            id: databaseRecord.id,
+            record: databaseRecord,
+            record_date: normalizeRecordDate(databaseRecord.date),
+            user_name: databaseRecord.user,
+            updated_at: databaseRecord.updatedAt,
+          };
+        })),
       });
     }
   }
@@ -185,6 +202,20 @@ function validateRecord(record) {
     return "date and user are required";
   }
   return null;
+}
+
+function normalizeRecordDate(value) {
+  const text = String(value || "").trim();
+  if (/^\d{4}-\d{2}-\d{2}$/.test(text)) return text;
+  return "";
+}
+
+function normalizeRecordTimestamp(value) {
+  const text = String(value || "").trim();
+  if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z$/.test(text)) {
+    return text;
+  }
+  return new Date().toISOString();
 }
 
 let accounts = readJsonWithBackup(ACCOUNTS_FILE, ACCOUNTS_BACKUP_FILE, []);
@@ -236,7 +267,7 @@ function accountFor(user) {
 }
 
 function userCanEdit(user) {
-  return ["Poongodi", "Sajindharan"].includes(user);
+  return Boolean(user && accountFor(user));
 }
 
 function saveAccounts() {
@@ -269,7 +300,7 @@ const server = http.createServer(async (request, response) => {
       }
       let account = accounts.find((candidate) => candidate.user === selectedUser);
       if (!account) {
-        account = { user: selectedUser, email, passwordHash: hashPassword(password), canEdit: ["Poongodi", "Sajindharan"].includes(selectedUser) };
+        account = { user: selectedUser, email, passwordHash: hashPassword(password), canEdit: true };
         accounts.push(account);
         saveAccounts();
       }
@@ -342,7 +373,7 @@ const server = http.createServer(async (request, response) => {
     if (parts[0] === "api" && parts[1] === "records" && request.method === "POST") {
       const body = await readBody(request);
       const user = authenticatedUser(request);
-      if (!["Poongodi", "Sajindharan"].includes(user)) return sendJson(response, 403, { error: "Only Poongodi or Sajindharan can add farm data" });
+      if (!user || !accountFor(user)) return sendJson(response, 403, { error: "Login required to add farm data" });
       if (body.user !== user) return sendJson(response, 403, { error: "User identity mismatch" });
       const validationError = validateRecord(body);
       if (validationError) return sendJson(response, 400, { error: validationError });
@@ -350,30 +381,54 @@ const server = http.createServer(async (request, response) => {
       const recordId = typeof crypto.randomUUID === "function"
         ? crypto.randomUUID()
         : `record-${Date.now()}-${crypto.randomBytes(8).toString("hex")}`;
-      const record = { ...body, id: recordId, createdAt: new Date().toISOString() };
+      const normalizedDate = normalizeRecordDate(body.date);
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(normalizedDate)) {
+        return sendJson(response, 400, { error: "Date must be in YYYY-MM-DD format" });
+      }
+      const record = {
+        ...body,
+        date: normalizedDate,
+        id: recordId,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
       records.push(record);
-      await writeRecords(records);
+      await writeRecords(records, record);
       return sendJson(response, 201, record);
     }
 
     if (parts[0] === "api" && parts[1] === "records" && parts[2] && request.method === "PUT") {
       const body = await readBody(request);
-      if (!["Poongodi", "Sajindharan"].includes(authenticatedUser(request))) return sendJson(response, 403, { error: "Only Poongodi or Sajindharan can edit farm data" });
+      const authenticated = authenticatedUser(request);
+      if (!authenticated || !accountFor(authenticated)) return sendJson(response, 403, { error: "Login required to edit farm data" });
+      if (body.user !== authenticated) return sendJson(response, 403, { error: "User identity mismatch" });
       const records = await readRecords();
       const index = records.findIndex((record) => record.id === parts[2] && record.user === body.user);
       if (index < 0) return sendJson(response, 404, { error: "Record not found" });
-      records[index] = { ...records[index], ...body, id: records[index].id };
-      await writeRecords(records);
+      const normalizedDate = normalizeRecordDate(body.date);
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(normalizedDate)) {
+        return sendJson(response, 400, { error: "Date must be in YYYY-MM-DD format" });
+      }
+      records[index] = {
+        ...records[index],
+        ...body,
+        date: normalizedDate,
+        id: records[index].id,
+        updatedAt: new Date().toISOString(),
+      };
+      await writeRecords(records, records[index]);
       return sendJson(response, 200, records[index]);
     }
 
     if (parts[0] === "api" && parts[1] === "records" && parts[2] && request.method === "DELETE") {
       const user = url.searchParams.get("user");
-      if (!["Poongodi", "Sajindharan"].includes(authenticatedUser(request))) return sendJson(response, 403, { error: "Only Poongodi or Sajindharan can delete farm data" });
+      const authenticated = authenticatedUser(request);
+      if (!authenticated || !accountFor(authenticated)) return sendJson(response, 403, { error: "Login required to delete farm data" });
+      if (user !== authenticated) return sendJson(response, 403, { error: "User identity mismatch" });
       const records = await readRecords();
       const nextRecords = records.filter((record) => !(record.id === parts[2] && record.user === user));
       if (nextRecords.length === records.length) return sendJson(response, 404, { error: "Record not found" });
-      await writeRecords(nextRecords);
+      await writeRecords(nextRecords, null, parts[2]);
       return sendJson(response, 204, {});
     }
 

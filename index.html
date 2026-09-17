@@ -990,7 +990,7 @@ body{
 
 
             <div class="form-group">
-                <label>🌾 Quail Feed (kg per day)</label>
+                <label>🌾 Quail Feed Used (kg per day)</label>
                 <input type="number" id="quailFeedKg" min="0" step="0.01" placeholder="Enter kg">
             </div>
 
@@ -1198,6 +1198,14 @@ function apiUrl(path){
     return API_BASE_URL.replace(/\/$/, "") + path;
 }
 
+function normalizeDateForApi(value){
+    const text = String(value || "").trim();
+    if(/^\d{4}-\d{2}-\d{2}$/.test(text)) return text;
+    const match = text.match(/^(\d{1,2})[/-](\d{1,2})[/-](\d{4})/);
+    if(!match) return "";
+    return `${match[3]}-${match[2].padStart(2,"0")}-${match[1].padStart(2,"0")}`;
+}
+
 async function apiRequest(path, options = {}){
     let response;
     const headers = {
@@ -1238,9 +1246,9 @@ function localApiRequest(path, options){
         if(!user || !body.email || !body.password) throw new Error("Please select a user and enter email/password");
         localStorage.setItem("farmGoogleAccounts", JSON.stringify(
             [...localAccounts().filter(account => account.email !== body.email),
-            {user, email:body.email, canEdit:["Poongodi", "Sajindharan"].includes(user)}]
+            {user, email:body.email, canEdit:Boolean(user)}]
         ));
-        return Promise.resolve({user, email:body.email, canEdit:["Poongodi", "Sajindharan"].includes(user)});
+        return Promise.resolve({user, email:body.email, canEdit:Boolean(user)});
     }
     if(path === "/api/auth/google/accounts"){
         return Promise.resolve(localAccounts());
@@ -1254,7 +1262,7 @@ function localApiRequest(path, options){
         return Promise.resolve(JSON.parse(localStorage.getItem("farmRecords_Poongodi") || "[]"));
     }
     if(path === "/api/records"){
-        if(!["Poongodi", "Sajindharan"].includes(currentUser)) throw new Error("Only Poongodi or Sajindharan can add farm data");
+        if(!currentUser) throw new Error("Please login before adding farm data");
         const recordId = window.crypto && typeof window.crypto.randomUUID === "function"
             ? window.crypto.randomUUID()
             : "record-" + Date.now() + "-" + Math.random().toString(16).slice(2);
@@ -1268,7 +1276,7 @@ function localApiRequest(path, options){
         const pathParts = path.split("/");
         const recordId = pathParts[3].split("?")[0];
         const records = JSON.parse(localStorage.getItem("farmRecords_"+currentUser) || "[]");
-        if(!["Poongodi", "Sajindharan"].includes(currentUser)) throw new Error("Only Poongodi or Sajindharan can change farm data");
+        if(!currentUser) throw new Error("Please login before changing farm data");
         if(options.method === "PUT"){
             const index = records.findIndex(record => record.id === recordId);
             if(index < 0) throw new Error("Record not found");
@@ -1381,7 +1389,7 @@ window.onload=async function(){
     if(!savedUser || !savedToken) return;
 
     currentUser = savedUser;
-    canEdit = ["Poongodi", "Sajindharan"].includes(currentUser);
+    canEdit = Boolean(currentUser);
     try{
         await loadRecords();
         document.getElementById("loginPage").style.display="none";
@@ -1503,6 +1511,7 @@ function applyLanguage(){
         ["🥚 Nattu Koli Eggs Sold", "🥚 விற்ற நாட்டுக்கோழி முட்டைகள்"],
         ["₹ Nattu Koli Egg Rate", "₹ நாட்டுக்கோழி முட்டை விலை"],
         ["⚠️ Quail Mortality", "⚠️ காடை இறப்பு"],
+        ["🌾 Quail Feed Used (kg per day)", "🌾 ஒரு நாளைக்கு பயன்படுத்திய காடை தீவனம் (கிலோ)"],
         ["💊 Medicine ₹", "💊 மருந்து ₹"],
         ["🏷️ Tray Stickers ₹", "🏷️ ட்ரே ஸ்டிக்கர்கள் ₹"],
         ["💸 Other Expenses ₹", "💸 மற்ற செலவுகள் ₹"],
@@ -1821,7 +1830,7 @@ async function saveRecord(){
 
     let record={
 
-        date:document.getElementById("date").value,
+        date:normalizeDateForApi(document.getElementById("date").value),
 
         quailEggProduced:Number(
             document.getElementById("quailEggProduced").value
@@ -1878,14 +1887,14 @@ async function saveRecord(){
 
         updatedBy:currentUser,
 
-        updatedAt:new Date().toLocaleString()
+        updatedAt:new Date().toISOString()
 
     };
 
 
     if(!record.date){
 
-        alert("Please select date");
+        alert("Please select a valid date");
 
         return;
 

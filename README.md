@@ -23,7 +23,7 @@ The frontend uses these endpoints for login, daily data, history, dashboard, and
 
 ## Local account access
 
-`Poongodi` is the only account with add/edit/delete access. The other family accounts are read-only:
+Every authenticated farm account can add, edit, and delete daily records from any device. The backend still requires a valid login session for these operations:
 
 - Poongodi: `poongodi@poongodifarms.local` / `poongodi123`
 - Prabakaran: `prabakaran@poongodifarms.local` / `prabakaran123`
