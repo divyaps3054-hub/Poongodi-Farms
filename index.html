@@ -721,6 +721,16 @@ body{
         padding:30px 22px;
     }
 
+    .history-actions{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .history-actions .edit-btn{
+        width:100%;
+        text-align:left;
+    }
+
 }
 
 </style>
@@ -925,12 +935,6 @@ body{
             <div class="icon">🥚</div>
             <p>Nattu Koli Eggs Remaining</p>
             <h2 id="stockNattuEggs">0</h2>
-        </div>
-
-        <div class="stat-card">
-            <div class="icon">🍗</div>
-            <p data-i18n="quailMeatRemaining">Quail Birds Remaining</p>
-            <h2 id="stockQuailMeat">0</h2>
         </div>
 
     </div>
@@ -1445,7 +1449,7 @@ const translations = {
     en: {
         login: "Login", selectMember: "Select Family Member", email: "Email", password: "Password",
         dashboard: "Dashboard", addData: "Add Daily Data", history: "History", reports: "Reports",
-        quailMeatSold: "Quail Birds Sold", quailMeatRemaining: "Quail Birds Remaining",
+        quailMeatSold: "Quail Birds Sold",
         quailAvailable: "🍗 Quail Birds Available", quailSoldClean: "🍗 Quail Birds Sold (With Clean)",
         quailRateClean: "₹ Quail Bird Rate (With Clean)",
         quailSoldWithoutClean: "🍗 Quail Birds Sold (Without Clean)",
@@ -1457,7 +1461,7 @@ const translations = {
         login: "உள்நுழைவு", selectMember: "குடும்ப உறுப்பினரை தேர்வு செய்யவும்", email: "மின்னஞ்சல்",
         password: "கடவுச்சொல்", dashboard: "முகப்பு", addData: "தினசரி தகவல் சேர்க்கவும்",
         history: "வரலாறு", reports: "அறிக்கைகள்", quailMeatSold: "காடை விற்பனை எண்ணிக்கை",
-        quailMeatRemaining: "மீதமுள்ள காடை எண்ணிக்கை", quailAvailable: "🍗 கிடைக்கும் காடை எண்ணிக்கை",
+        quailAvailable: "🍗 கிடைக்கும் காடை எண்ணிக்கை",
         quailSoldClean: "🍗 சுத்தம் செய்த விற்ற காடைகள்",
         quailRateClean: "₹ சுத்தம் செய்த ஒரு காடைக்கான விலை",
         quailSoldWithoutClean: "🍗 சுத்தம் செய்யாத விற்ற காடைகள்",
@@ -1473,7 +1477,6 @@ function applyLanguage(){
         ".nav-btn:nth-child(1)": "dashboard",
         ".nav-btn:nth-child(2)": "addData", ".nav-btn:nth-child(3)": "history",
         ".nav-btn:nth-child(4)": "reports", "[data-i18n='quailMeatSold']": "quailMeatSold",
-        "[data-i18n='quailMeatRemaining']": "quailMeatRemaining",
         "[data-i18n='quailAvailable']": "quailAvailable",
         "[data-i18n='quailSoldClean']": "quailSoldClean",
         "[data-i18n='quailRateClean']": "quailRateClean",
@@ -2060,16 +2063,8 @@ function updateDashboard(){
         totals.quailEggs -= Number(record.quailEggsSold || 0);
         totals.nattuEggs += Number(record.nattuProduced || 0);
         totals.nattuEggs -= Number(record.nattuSold || 0);
-        const birdsAvailable = Number(record.quailMeatAvailable || 0);
-        const birdsSold = Number(
-            (record.quailMeatSoldClean || 0) +
-            (record.quailMeatSoldWithoutClean || 0) ||
-            record.quailMeatSold ||
-            0
-        );
-        totals.quailBirds += birdsAvailable - birdsSold;
         return totals;
-    }, {quailEggs:0, nattuEggs:0, quailBirds:0});
+    }, {quailEggs:0, nattuEggs:0});
 
 
     if(!latest){
@@ -2079,7 +2074,6 @@ function updateDashboard(){
         document.getElementById("dashSales").innerText="₹0";
         document.getElementById("stockQuailEggs").innerText="0";
         document.getElementById("stockNattuEggs").innerText="0";
-        document.getElementById("stockQuailMeat").innerText="0";
         return;
 
     }
@@ -2108,9 +2102,6 @@ function updateDashboard(){
     document.getElementById("stockNattuEggs")
     .innerText=Math.max(0, stock.nattuEggs);
 
-
-    document.getElementById("stockQuailMeat")
-    .innerText=Math.max(0, stock.quailBirds);
 
 }
 
