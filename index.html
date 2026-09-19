@@ -887,7 +887,7 @@ body{
 
 
     <div class="date-box">
-        📅 Today: <b id="todayDate"></b>
+        📅 <span id="dashboardDateLabel">Today:</span> <b id="todayDate"></b>
     </div>
 
 
@@ -1066,6 +1066,15 @@ body{
     <div class="page-title">
         <h1>📅 Farm History</h1>
         <p>Previous daily farm records</p>
+    </div>
+
+    <div class="page" id="historyDatePage">
+        <div class="page-title">
+            <h1 id="historyDateTitle">📅 Daily Record</h1>
+            <p>Records for the selected date</p>
+        </div>
+        <button class="clear-btn" type="button" onclick="showHistoryPicker()">← Back to dates</button>
+        <div class="history-list" id="historyDateRecords"></div>
     </div>
 
     <div class="history-list" id="historyList">
@@ -1954,8 +1963,7 @@ function renderHistory(){
     }
     history.innerHTML = `<div class="history-card"><h3>Select a date</h3><div class="history-actions">${
         dates.map(date => `<button class="edit-btn" onclick="showHistoryDate('${date}')">📅 ${date}</button>`).join("")
-    }</div></div><div id="historyDateRecords"></div>`;
-    showHistoryDate(dates[0]);
+    }</div></div>`;
 }
 
 function showHistoryDate(date){
@@ -1982,6 +1990,14 @@ function showHistoryDate(date){
                    <button class="delete-btn" onclick="deleteRecord(${index})">🗑️ Delete</button>` : ""}</div>
         </div>`;
     }).join("");
+    document.getElementById("history").classList.remove("active");
+    document.getElementById("historyDatePage").classList.add("active");
+    document.getElementById("historyDateTitle").innerText = `📅 ${date}`;
+}
+
+function showHistoryPicker(){
+    document.getElementById("historyDatePage").classList.remove("active");
+    document.getElementById("history").classList.add("active");
 }
 
 
@@ -2058,6 +2074,21 @@ async function deleteRecord(index){
 function updateDashboard(){
 
     let latest=records[records.length-1];
+    const today = new Date();
+    const todayKey = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,"0")}-${String(today.getDate()).padStart(2,"0")}`;
+    const latestDate = latest && /^\d{4}-\d{2}-\d{2}$/.test(latest.date) ? latest.date : todayKey;
+    const dayDifference = Math.round(
+        (Date.parse(todayKey + "T00:00:00Z") - Date.parse(latestDate + "T00:00:00Z")) / 86400000
+    );
+    const dashboardLabel = dayDifference === 0
+        ? "Today:"
+        : dayDifference === 1
+            ? "Yesterday:"
+            : dayDifference === -1
+                ? "Tomorrow:"
+                : "Record date:";
+    document.getElementById("dashboardDateLabel").innerText = dashboardLabel;
+    document.getElementById("todayDate").innerText = latest ? latestDate : today.toDateString();
     const stock = records.reduce((totals, record) => {
         totals.quailEggs += Number(record.quailEggProduced || record.quailProduced || 0);
         totals.quailEggs -= Number(record.quailEggsSold || 0);
