@@ -753,12 +753,9 @@ body{
 
         <p class="family-text">Family Farm Management</p>
         <div class="input-group">
-            <label>Select Family Member</label>
+            <label>User</label>
             <select id="userSelect">
-                <option value="Poongodi">Poongodi</option>
-                <option value="Prabakaran">Prabakaran</option>
-                <option value="Rajindharan">Rajindharan</option>
-                <option value="Sajindharan">Sajindharan</option>
+                <option value="PRS">PRS</option>
             </select>
         </div>
         <div class="input-group">
@@ -895,25 +892,13 @@ body{
 
         <div class="stat-card">
             <div class="icon">🥚</div>
-            <p>Quail Eggs Sold</p>
+            <p>Quail Egg Box Sold</p>
             <h2 id="dashQuailEggs">0</h2>
         </div>
 
         <div class="stat-card">
-            <div class="icon">🥚</div>
-            <p>Nattu Koli Eggs Sold</p>
-            <h2 id="dashNattuEggs">0</h2>
-        </div>
-
-        <div class="stat-card">
-            <div class="icon">🍗</div>
-            <p data-i18n="quailMeatSold">Quail Birds Sold</p>
-            <h2 id="dashQuailMeat">0</h2>
-        </div>
-
-        <div class="stat-card">
             <div class="icon">₹</div>
-            <p>Today's Sales</p>
+            <p>Total Sales</p>
             <h2 id="dashSales">₹0</h2>
         </div>
 
@@ -927,14 +912,8 @@ body{
 
         <div class="stat-card">
             <div class="icon">🥚</div>
-            <p>Quail Eggs Remaining</p>
+            <p>Quail Egg Box Remaining</p>
             <h2 id="stockQuailEggs">0</h2>
-        </div>
-
-        <div class="stat-card">
-            <div class="icon">🥚</div>
-            <p>Nattu Koli Eggs Remaining</p>
-            <h2 id="stockNattuEggs">0</h2>
         </div>
 
     </div>
@@ -962,36 +941,15 @@ body{
                 <input type="date" id="date">
             </div>
 
-
             <div class="form-group">
-                <label>🥚 Quail Eggs Produced</label>
+                <label>🥚 Quail Egg Box Produced</label>
                 <input type="number" id="quailEggProduced" placeholder="Enter quantity">
             </div>
 
-
             <div class="form-group">
-                <label>🥚 Quail Eggs Sold</label>
+                <label>🥚 Quail Egg Box Sold</label>
                 <input type="number" id="quailEggsSold" placeholder="Enter quantity">
             </div>
-
-
-            <div class="form-group">
-                <label>🥚 Nattu Koli Eggs Produced</label>
-                <input type="number" id="nattuProduced" placeholder="Enter quantity">
-            </div>
-
-
-            <div class="form-group">
-                <label>🥚 Nattu Koli Eggs Sold</label>
-                <input type="number" id="nattuSold" placeholder="Enter quantity">
-            </div>
-
-
-            <div class="form-group">
-                <label>⚠️ Quail Mortality</label>
-                <input type="number" id="quailMortality" placeholder="Enter quantity">
-            </div>
-
 
             <div class="form-group">
                 <label>🌾 Quail Feed Used (kg per day)</label>
@@ -1005,15 +963,9 @@ body{
             </div>
 
             <div class="form-group">
-                <label>₹ Quail Egg Rate</label>
+                <label>₹ Quail Egg Box Rate</label>
                 <input type="number" id="quailEggRate" placeholder="Rate per egg">
             </div>
-
-            <div class="form-group">
-                <label>₹ Nattu Koli Egg Rate</label>
-                <input type="number" id="nattuRate" placeholder="Rate per egg">
-            </div>
-
 
             <div class="form-group">
                 <label>💰 Quail Feed Cost ₹ (Auto)</label>
@@ -1022,19 +974,19 @@ body{
 
 
             <div class="form-group">
-                <label data-i18n="totalSales">💰 Total Sales ₹ (Auto)</label>
+                <label data-i18n="totalCost">💰 Total Cost ₹ (Auto)</label>
                 <input type="number" id="totalSales" placeholder="Auto calculated" readonly>
             </div>
 
 
             <div class="form-group">
-                <label>💸 Other Expenses ₹</label>
+                <label>💸 Other Expense ₹</label>
                 <input type="number" id="otherExpenses" placeholder="Enter amount">
             </div>
 
 
             <div class="form-group full">
-                <label>📝 Farm Notes</label>
+                <label>📝 Farm Note</label>
                 <textarea id="farmNotes" placeholder="Enter farm notes"></textarea>
             </div>
 
@@ -1258,9 +1210,9 @@ function localApiRequest(path, options){
         if(!user || !body.email || !body.password) throw new Error("Please select a user and enter email/password");
         localStorage.setItem("farmGoogleAccounts", JSON.stringify(
             [...localAccounts().filter(account => account.email !== body.email),
-            {user, email:body.email, canEdit:Boolean(user)}]
+            {user:"PRS", email:body.email, canEdit:true}]
         ));
-        return Promise.resolve({user, email:body.email, canEdit:Boolean(user)});
+        return Promise.resolve({user:"PRS", email:body.email, canEdit:true});
     }
     if(path === "/api/auth/google/accounts"){
         return Promise.resolve(localAccounts());
@@ -1322,16 +1274,13 @@ async function loadRecords(){
 document.getElementById("todayDate").innerText =
 new Date().toDateString();
 
-["quailEggsSold","quailEggRate","nattuSold","nattuRate","quailFeedKg","quailFeedRate"]
+["quailEggsSold","quailEggRate","quailFeedKg","quailFeedRate"]
     .forEach(id => document.getElementById(id).addEventListener("input", calculateTotalSales));
 
 function calculateTotalSales(){
     const value =
         (Number(document.getElementById("quailEggsSold").value) || 0) *
-        (Number(document.getElementById("quailEggRate").value) || 0) +
-        (Number(document.getElementById("nattuSold").value) || 0) *
-        (Number(document.getElementById("nattuRate").value) || 0) +
-        0;
+        (Number(document.getElementById("quailEggRate").value) || 0);
     const feedCost =
         (Number(document.getElementById("quailFeedKg").value) || 0) *
         (Number(document.getElementById("quailFeedRate").value) || 0);
@@ -1360,8 +1309,8 @@ async function login(){
                 password
             })
         });
-        currentUser = result.user;
-        canEdit = result.canEdit;
+        currentUser = "PRS";
+        canEdit = true;
         if(result.token) localStorage.setItem("farmAuthToken", result.token);
         localStorage.setItem("farmGoogleAccounts", JSON.stringify(
             [...localAccounts().filter(account => account.email !== result.email),
@@ -1401,7 +1350,8 @@ window.onload=async function(){
     if(!savedUser || !savedToken) return;
 
     currentUser = savedUser;
-    canEdit = Boolean(currentUser);
+    currentUser = "PRS";
+    canEdit = true;
     try{
         await loadRecords();
         document.getElementById("loginPage").style.display="none";
@@ -1462,7 +1412,7 @@ const translations = {
         quailRateClean: "₹ Quail Bird Rate (With Clean)",
         quailSoldWithoutClean: "🍗 Quail Birds Sold (Without Clean)",
         quailRateWithoutClean: "₹ Quail Bird Rate (Without Clean)",
-        totalSales: "💰 Total Sales ₹ (Auto)",
+        totalSales: "💰 Total Sales ₹ (Auto)", totalCost: "💰 Total Cost ₹ (Auto)",
         readOnly: "View only access", editAccess: "Edit access", language: "தமிழ்"
     },
     ta: {
@@ -1474,7 +1424,7 @@ const translations = {
         quailRateClean: "₹ சுத்தம் செய்த ஒரு காடைக்கான விலை",
         quailSoldWithoutClean: "🍗 சுத்தம் செய்யாத விற்ற காடைகள்",
         quailRateWithoutClean: "₹ சுத்தம் செய்யாத ஒரு காடைக்கான விலை",
-        totalSales: "💰 மொத்த விற்பனை ₹ (தானியங்கி)", readOnly: "பார்வை மட்டும்",
+        totalSales: "💰 மொத்த விற்பனை ₹ (தானியங்கி)", totalCost: "💰 மொத்த செலவு ₹ (தானியங்கி)", readOnly: "பார்வை மட்டும்",
         editAccess: "திருத்த அனுமதி", language: "English"
     }
 };
@@ -1490,7 +1440,7 @@ function applyLanguage(){
         "[data-i18n='quailRateClean']": "quailRateClean",
         "[data-i18n='quailSoldWithoutClean']": "quailSoldWithoutClean",
         "[data-i18n='quailRateWithoutClean']": "quailRateWithoutClean",
-        "[data-i18n='totalSales']": "totalSales",
+        "[data-i18n='totalSales']": "totalSales", "[data-i18n='totalCost']": "totalCost",
         "#languageButton": "language"
     };
     Object.entries(selectors).forEach(([selector, key]) => {
@@ -1506,30 +1456,36 @@ function applyLanguage(){
         ["Welcome to your farm management dashboard", "உங்கள் பண்ணை மேலாண்மை முகப்புக்கு வரவேற்கிறோம்"],
         ["Today:", "இன்று:"],
         ["Quail Eggs Sold", "விற்ற காடை முட்டைகள்"],
+        ["Quail Egg Box Sold", "விற்ற காடை முட்டை பெட்டிகள்"],
         ["Nattu Koli Eggs Sold", "விற்ற நாட்டுக்கோழி முட்டைகள்"],
         ["Today's Sales", "இன்றைய விற்பனை"],
         ["Current Stock", "தற்போதைய இருப்பு"],
         ["Quail Eggs Remaining", "மீதமுள்ள காடை முட்டைகள்"],
-        ["Nattu Koli Eggs Remaining", "மீதமுள்ள நாட்டுக்கோழி முட்டைகள்"],
+        ["Quail Egg Box Remaining", "மீதமுள்ள காடை முட்டை பெட்டிகள்"],
         ["Add / Update Daily Farm Details", "தினசரி பண்ணை தகவலை சேர்க்க / புதுப்பிக்க"],
         ["Enter today's farm production and sales details", "இன்றைய உற்பத்தி மற்றும் விற்பனை தகவல்களை உள்ளிடவும்"],
         ["📅 Date", "📅 தேதி"],
         ["🐦 Quail Egg Produced", "🐦 உற்பத்தி செய்யப்பட்ட காடை முட்டைகள்"],
         ["🥚 Quail Eggs Produced", "🥚 உற்பத்தி செய்யப்பட்ட காடை முட்டைகள்"],
+        ["🥚 Quail Egg Box Produced", "🥚 உற்பத்தி செய்யப்பட்ட காடை முட்டை பெட்டிகள்"],
+        ["🥚 Quail Egg Box Sold", "🥚 விற்ற காடை முட்டை பெட்டிகள்"],
         ["🐦 Quail Produced", "🐦 உற்பத்தி செய்யப்பட்ட காடைகள்"],
         ["🥚 Quail Eggs Sold", "🥚 விற்ற காடை முட்டைகள்"],
         ["₹ Quail Egg Rate", "₹ காடை முட்டை விலை"],
+        ["₹ Quail Egg Box Rate", "₹ காடை முட்டை பெட்டி விலை"],
         ["🥚 Nattu Koli Eggs Produced", "🥚 உற்பத்தி செய்யப்பட்ட நாட்டுக்கோழி முட்டைகள்"],
         ["🥚 Nattu Koli Eggs Sold", "🥚 விற்ற நாட்டுக்கோழி முட்டைகள்"],
         ["₹ Nattu Koli Egg Rate", "₹ நாட்டுக்கோழி முட்டை விலை"],
         ["⚠️ Quail Mortality", "⚠️ காடை இறப்பு"],
         ["🌾 Quail Feed Used (kg per day)", "🌾 ஒரு நாளைக்கு பயன்படுத்திய காடை தீவனம் (கிலோ)"],
+        ["💰 Quail Feed Cost ₹ (Auto)", "💰 காடை தீவன செலவு ₹ (தானியங்கி)"],
+        ["💰 Total Cost ₹ (Auto)", "💰 மொத்த செலவு ₹ (தானியங்கி)"],
         ["₹ Quail Feed Rate (per kg)", "₹ காடை தீவன விலை (ஒரு கிலோ)"],
         ["💰 Quail Feed Cost ₹ (Auto)", "💰 காடை தீவன செலவு ₹ (தானியங்கி)"],
         ["💊 Medicine ₹", "💊 மருந்து ₹"],
         ["🏷️ Tray Stickers ₹", "🏷️ ட்ரே ஸ்டிக்கர்கள் ₹"],
-        ["💸 Other Expenses ₹", "💸 மற்ற செலவுகள் ₹"],
-        ["📝 Farm Notes", "📝 பண்ணை குறிப்புகள்"],
+        ["💸 Other Expense ₹", "💸 மற்ற செலவு ₹"],
+        ["📝 Farm Note", "📝 பண்ணை குறிப்பு"],
         ["💾 Save Daily Data", "💾 தினசரி தகவலை சேமிக்கவும்"],
         ["Farm History", "பண்ணை வரலாறு"],
         ["Previous daily farm records", "முந்தைய தினசரி பண்ணை பதிவுகள்"],
@@ -1600,10 +1556,6 @@ async function googleLogin(){
         }, 500);
         return;
     }
-    if(!document.getElementById("userSelect").value){
-        alert("Please select a family member first.");
-        return;
-    }
     const googleButton = document.getElementById("googleSignInButton");
     if(googleButton && googleButton.childElementCount){
         googleButton.style.display = "block";
@@ -1623,11 +1575,11 @@ async function handleGoogleCredential(response){
             method:"POST",
             body:JSON.stringify({
                 credential:response.credential,
-                user:document.getElementById("userSelect").value
+                user:"PRS"
             })
         });
-        currentUser = result.user;
-        canEdit = result.canEdit;
+        currentUser = "PRS";
+        canEdit = true;
         localStorage.setItem("currentFarmUser", currentUser);
         if(result.token) localStorage.setItem("farmAuthToken", result.token);
         document.getElementById("loginPage").style.display="none";
@@ -1673,8 +1625,8 @@ async function selectGoogleAccount(user){
         const result = remembered || await apiRequest("/api/auth/google", {
             method:"POST", body:JSON.stringify({user})
         });
-        currentUser = result.user;
-        canEdit = result.canEdit;
+        currentUser = "PRS";
+        canEdit = true;
         if(result.token) localStorage.setItem("farmAuthToken", result.token);
         localStorage.setItem("currentFarmUser", currentUser);
         document.getElementById("loginPage").style.display="none";
@@ -1858,22 +1810,6 @@ async function saveRecord(){
             document.getElementById("quailEggRate").value
         ) || 0,
 
-        nattuProduced:Number(
-            document.getElementById("nattuProduced").value
-        ) || 0,
-
-        nattuSold:Number(
-            document.getElementById("nattuSold").value
-        ) || 0,
-
-        nattuRate:Number(
-            document.getElementById("nattuRate").value
-        ) || 0,
-
-        quailMortality:Number(
-            document.getElementById("quailMortality").value
-        ) || 0,
-
         quailFeedKg:Number(
             document.getElementById("quailFeedKg").value
         ) || 0,
@@ -2020,14 +1956,6 @@ function editRecord(index){
 
     document.getElementById("quailEggRate").value=r.quailEggRate;
 
-    document.getElementById("nattuProduced").value=r.nattuProduced;
-
-    document.getElementById("nattuSold").value=r.nattuSold;
-
-    document.getElementById("nattuRate").value=r.nattuRate;
-
-    document.getElementById("quailMortality").value=r.quailMortality;
-
     document.getElementById("quailFeedKg").value=r.quailFeedKg || 0;
     document.getElementById("quailFeedRate").value=r.quailFeedRate || 0;
     document.getElementById("quailFeedCost").value=r.quailFeedCost || 0;
@@ -2102,11 +2030,8 @@ function updateDashboard(){
 
     if(!latest){
         document.getElementById("dashQuailEggs").innerText="0";
-        document.getElementById("dashNattuEggs").innerText="0";
-        document.getElementById("dashQuailMeat").innerText="0";
         document.getElementById("dashSales").innerText="₹0";
         document.getElementById("stockQuailEggs").innerText="0";
-        document.getElementById("stockNattuEggs").innerText="0";
         return;
 
     }
@@ -2116,24 +2041,12 @@ function updateDashboard(){
     .innerText=latest.quailEggsSold;
 
 
-    document.getElementById("dashNattuEggs")
-    .innerText=latest.nattuSold;
-
-
-    document.getElementById("dashQuailMeat")
-    .innerText=(latest.quailMeatSoldClean || 0) + (latest.quailMeatSoldWithoutClean || 0) || latest.quailMeatSold || 0;
-
-
     document.getElementById("dashSales")
     .innerText="₹"+latest.totalSales;
 
 
     document.getElementById("stockQuailEggs")
     .innerText=Math.max(0, stock.quailEggs);
-
-
-    document.getElementById("stockNattuEggs")
-    .innerText=Math.max(0, stock.nattuEggs);
 
 
 }

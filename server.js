@@ -294,18 +294,18 @@ const server = http.createServer(async (request, response) => {
       const body = await readBody(request);
       const email = String(body.email || "").trim();
       const password = String(body.password || "");
-      const selectedUser = String(body.user || "").trim();
-      if (!selectedUser || !email.includes("@") || password.length < 8) {
-        return sendJson(response, 400, { error: "Select a user, enter a valid email, and use an 8-character password" });
+      const selectedUser = "PRS";
+      if (!email.includes("@") || password.length < 8) {
+        return sendJson(response, 400, { error: "Enter a valid email and use an 8-character password" });
       }
-      let account = accounts.find((candidate) => candidate.user === selectedUser);
+      let account = accounts.find((candidate) =>
+        candidate.user === selectedUser &&
+        String(candidate.email || "").toLowerCase() === email.toLowerCase()
+      );
       if (!account) {
         account = { user: selectedUser, email, passwordHash: hashPassword(password), canEdit: true };
         accounts.push(account);
         saveAccounts();
-      }
-      if (account.email.toLowerCase() !== email.toLowerCase()) {
-        return sendJson(response, 401, { error: "Invalid user, email, or password" });
       }
       if (!account.passwordHash) {
         account.passwordHash = hashPassword(password);
@@ -344,10 +344,15 @@ const server = http.createServer(async (request, response) => {
       if (profile.aud !== GOOGLE_CLIENT_ID || profile.email_verified !== "true") {
         return sendJson(response, 401, { error: "Google account verification failed" });
       }
-      const selectedUser = String(body.user || "").trim();
+      const selectedUser = "PRS";
       let account = accounts.find((candidate) =>
         (candidate.googleEmail || candidate.email || "").toLowerCase() === String(profile.email).toLowerCase()
       );
+      if (account) {
+        account.user = "PRS";
+        account.canEdit = true;
+        saveAccounts();
+      }
       if (!account && selectedUser) {
         account = {
           user: selectedUser,
@@ -358,7 +363,7 @@ const server = http.createServer(async (request, response) => {
         accounts.push(account);
         saveAccounts();
       }
-      if (!account) return sendJson(response, 403, { error: "Select a family member before Google login" });
+      if (!account) return sendJson(response, 403, { error: "Google account could not be registered" });
       const token = createSession(account);
       void notifyLogin(account, request);
       return sendJson(response, 200, { user: account.user, canEdit: userCanEdit(account.user), email: profile.email, token });
@@ -374,7 +379,7 @@ const server = http.createServer(async (request, response) => {
       const body = await readBody(request);
       const user = authenticatedUser(request);
       if (!user || !accountFor(user)) return sendJson(response, 403, { error: "Login required to add farm data" });
-      if (body.user !== user) return sendJson(response, 403, { error: "User identity mismatch" });
+      body.user = user;
       const validationError = validateRecord(body);
       if (validationError) return sendJson(response, 400, { error: validationError });
       const records = await readRecords();
@@ -401,9 +406,8 @@ const server = http.createServer(async (request, response) => {
       const body = await readBody(request);
       const authenticated = authenticatedUser(request);
       if (!authenticated || !accountFor(authenticated)) return sendJson(response, 403, { error: "Login required to edit farm data" });
-      if (body.user !== authenticated) return sendJson(response, 403, { error: "User identity mismatch" });
       const records = await readRecords();
-      const index = records.findIndex((record) => record.id === parts[2] && record.user === body.user);
+      const index = records.findIndex((record) => record.id === parts[2]);
       if (index < 0) return sendJson(response, 404, { error: "Record not found" });
       const normalizedDate = normalizeRecordDate(body.date);
       if (!/^\d{4}-\d{2}-\d{2}$/.test(normalizedDate)) {
@@ -424,9 +428,8 @@ const server = http.createServer(async (request, response) => {
       const user = url.searchParams.get("user");
       const authenticated = authenticatedUser(request);
       if (!authenticated || !accountFor(authenticated)) return sendJson(response, 403, { error: "Login required to delete farm data" });
-      if (user !== authenticated) return sendJson(response, 403, { error: "User identity mismatch" });
       const records = await readRecords();
-      const nextRecords = records.filter((record) => !(record.id === parts[2] && record.user === user));
+      const nextRecords = records.filter((record) => record.id !== parts[2]);
       if (nextRecords.length === records.length) return sendJson(response, 404, { error: "Record not found" });
       await writeRecords(nextRecords, null, parts[2]);
       return sendJson(response, 204, {});
