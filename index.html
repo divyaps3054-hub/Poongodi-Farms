@@ -1048,22 +1048,9 @@ body{
     <div class="cards-grid">
 
         <div class="stat-card report-card">
-            <p>Total Quail Eggs Sold</p>
+            <p>Total Quail Egg Boxes Sold</p>
             <h2 id="reportQuailEggs">0</h2>
         </div>
-
-
-        <div class="stat-card report-card">
-            <p>Total Nattu Koli Eggs Sold</p>
-            <h2 id="reportNattuEggs">0</h2>
-        </div>
-
-
-        <div class="stat-card report-card">
-            <p>Total Quail Meat Sold</p>
-            <h2 id="reportQuailMeat">0</h2>
-        </div>
-
 
         <div class="stat-card report-card">
             <p>Total Sales</p>
@@ -1491,7 +1478,7 @@ function applyLanguage(){
         ["Previous daily farm records", "முந்தைய தினசரி பண்ணை பதிவுகள்"],
         ["Farm Reports", "பண்ணை அறிக்கைகள்"],
         ["Complete farm business overview", "முழுமையான பண்ணை வணிக சுருக்கம்"],
-        ["Total Quail Eggs Sold", "மொத்த விற்ற காடை முட்டைகள்"],
+        ["Total Quail Egg Boxes Sold", "மொத்த விற்ற காடை முட்டை பெட்டிகள்"],
         ["Total Nattu Koli Eggs Sold", "மொத்த விற்ற நாட்டுக்கோழி முட்டைகள்"],
         ["Total Sales", "மொத்த விற்பனை"],
         ["Total Expenses", "மொத்த செலவுகள்"],
@@ -2091,14 +2078,6 @@ function updateReports(){
 
     document.getElementById("reportQuailEggs")
     .innerText=quailEggs;
-
-
-    document.getElementById("reportNattuEggs")
-    .innerText=nattuEggs;
-
-
-    document.getElementById("reportQuailMeat")
-    .innerText=quailMeat;
 
 
     document.getElementById("reportSales")
