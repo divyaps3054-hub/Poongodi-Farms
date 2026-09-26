@@ -228,10 +228,14 @@ function hashPassword(password, salt = crypto.randomBytes(16).toString("hex")) {
 
 function verifyPassword(password, storedHash) {
   const hash = String(storedHash || "");
-  if (!/^[a-f0-9]{32}:[a-f0-9]{128}$/i.test(hash)) return false;
-  const [salt, expected] = hash.split(":");
-  const actual = crypto.scryptSync(password, salt, 64).toString("hex");
-  return crypto.timingSafeEqual(Buffer.from(actual, "hex"), Buffer.from(expected, "hex"));
+  const separator = hash.indexOf(":");
+  if (separator < 1) return false;
+  const salt = hash.slice(0, separator);
+  const expectedHex = hash.slice(separator + 1);
+  if (!/^(?:[a-f0-9]{2})+$/i.test(expectedHex)) return false;
+  const expected = Buffer.from(expectedHex, "hex");
+  const actual = crypto.scryptSync(password, salt, expected.length);
+  return crypto.timingSafeEqual(actual, expected);
 }
 
 function createSession(account) {
@@ -299,11 +303,22 @@ const server = http.createServer(async (request, response) => {
       if (!email.includes("@") || password.length < 8) {
         return sendJson(response, 400, { error: "Enter a valid email and use an 8-character password" });
       }
-      const account = accounts.find((candidate) =>
-        String(candidate.email || "").toLowerCase() === email.toLowerCase()
+      const matchingAccounts = accounts.filter((candidate) =>
+        String(candidate.email || "").trim().toLowerCase() === email.toLowerCase()
       );
-      if (!account || !account.passwordHash || !verifyPassword(password, account.passwordHash)) {
+      if (!matchingAccounts.length) {
         return sendJson(response, 401, { error: "Invalid user, email, or password" });
+      }
+      const account = matchingAccounts.find((candidate) =>
+        candidate.passwordHash && verifyPassword(password, candidate.passwordHash)
+      );
+      if (!account) {
+        const hasPassword = matchingAccounts.some((candidate) => candidate.passwordHash);
+        return sendJson(response, 401, {
+          error: hasPassword
+            ? "Invalid user, email, or password"
+            : "No email/password password is set for this account. Use Google sign-in or contact the farm administrator to set one.",
+        });
       }
       account.user = selectedUser;
       account.canEdit = true;
