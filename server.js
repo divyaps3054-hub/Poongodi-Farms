@@ -227,8 +227,9 @@ function hashPassword(password, salt = crypto.randomBytes(16).toString("hex")) {
 }
 
 function verifyPassword(password, storedHash) {
-  if (!storedHash || !storedHash.includes(":")) return false;
-  const [salt, expected] = storedHash.split(":");
+  const hash = String(storedHash || "");
+  if (!/^[a-f0-9]{32}:[a-f0-9]{128}$/i.test(hash)) return false;
+  const [salt, expected] = hash.split(":");
   const actual = crypto.scryptSync(password, salt, 64).toString("hex");
   return crypto.timingSafeEqual(Buffer.from(actual, "hex"), Buffer.from(expected, "hex"));
 }
@@ -298,21 +299,15 @@ const server = http.createServer(async (request, response) => {
       if (!email.includes("@") || password.length < 8) {
         return sendJson(response, 400, { error: "Enter a valid email and use an 8-character password" });
       }
-      let account = accounts.find((candidate) =>
-        candidate.user === selectedUser &&
+      const account = accounts.find((candidate) =>
         String(candidate.email || "").toLowerCase() === email.toLowerCase()
       );
-      if (!account) {
-        account = { user: selectedUser, email, passwordHash: hashPassword(password), canEdit: true };
-        accounts.push(account);
-        saveAccounts();
-      }
-      if (!account.passwordHash) {
-        account.passwordHash = hashPassword(password);
-        saveAccounts();
-      } else if (!verifyPassword(password, account.passwordHash)) {
+      if (!account || !account.passwordHash || !verifyPassword(password, account.passwordHash)) {
         return sendJson(response, 401, { error: "Invalid user, email, or password" });
       }
+      account.user = selectedUser;
+      account.canEdit = true;
+      saveAccounts();
       const token = createSession(account);
       void notifyLogin(account, request);
       return sendJson(response, 200, {
@@ -328,12 +323,7 @@ const server = http.createServer(async (request, response) => {
     }
 
     if (request.method === "POST" && url.pathname === "/api/auth/google") {
-      const body = await readBody(request);
-      const account = accountFor(body.user);
-      if (!account) return sendJson(response, 401, { error: "Google account is not approved for this farm" });
-      const token = createSession(account);
-      void notifyLogin(account, request);
-      return sendJson(response, 200, { user: account.user, canEdit: userCanEdit(account.user), email: account.email, token });
+      return sendJson(response, 401, { error: "Use verified Google sign-in to authenticate" });
     }
 
     if (request.method === "POST" && url.pathname === "/api/auth/google/token") {
