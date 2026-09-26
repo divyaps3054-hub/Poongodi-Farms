@@ -240,13 +240,28 @@ function verifyPassword(password, storedHash) {
 
 function createSession(account) {
   const token = crypto.randomBytes(32).toString("hex");
-  sessions.set(token, account.user);
+  sessions.set(token, {
+    user: account.user,
+    email: account.googleEmail || account.email,
+  });
   return token;
 }
 
 function authenticatedUser(request) {
   const header = request.headers.authorization || "";
-  return header.startsWith("Bearer ") ? sessions.get(header.slice(7)) : null;
+  return header.startsWith("Bearer ") ? sessions.get(header.slice(7))?.user || null : null;
+}
+
+function authenticatedAccount(request) {
+  const header = request.headers.authorization || "";
+  if (!header.startsWith("Bearer ")) return null;
+  const session = sessions.get(header.slice(7));
+  if (!session) return null;
+  const email = String(session.email || "").toLowerCase();
+  return accounts.find((account) =>
+    [account.email, account.googleEmail]
+      .some((candidate) => String(candidate || "").toLowerCase() === email)
+  ) || null;
 }
 
 async function notifyLogin(account, request) {
@@ -372,6 +387,17 @@ const server = http.createServer(async (request, response) => {
       const token = createSession(account);
       void notifyLogin(account, request);
       return sendJson(response, 200, { user: account.user, canEdit: userCanEdit(account.user), email: profile.email, token });
+    }
+
+    if (request.method === "POST" && url.pathname === "/api/account/password") {
+      const account = authenticatedAccount(request);
+      if (!account) return sendJson(response, 401, { error: "Sign in before setting a password" });
+      const body = await readBody(request);
+      const password = String(body.password || "");
+      if (password.length < 8) return sendJson(response, 400, { error: "Password must be at least 8 characters" });
+      account.passwordHash = hashPassword(password);
+      saveAccounts();
+      return sendJson(response, 200, { success: true });
     }
 
     if (url.pathname === "/api/records" && request.method === "GET") {

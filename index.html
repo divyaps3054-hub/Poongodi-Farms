@@ -828,7 +828,7 @@ body{
                 📋 Account Details
             </div>
 
-            <div class="menu-item">
+            <div class="menu-item" onclick="openFarmPassword(event)">
                 🔒 Change Password
             </div>
 
@@ -1129,6 +1129,23 @@ body{
 
     </div>
 
+</div>
+
+<div class="modal" id="passwordModal">
+    <div class="modal-box">
+        <h2>Set Farm Password</h2>
+        <p>Use this password with your email to sign in next time.</p>
+        <div class="input-group">
+            <label for="newFarmPassword">New password (at least 8 characters)</label>
+            <input type="password" id="newFarmPassword" autocomplete="new-password">
+        </div>
+        <div class="input-group">
+            <label for="confirmFarmPassword">Confirm new password</label>
+            <input type="password" id="confirmFarmPassword" autocomplete="new-password">
+        </div>
+        <button class="save-btn" type="button" onclick="saveFarmPassword()">Save Password</button>
+        <button class="close-btn" type="button" onclick="closeFarmPassword()">Cancel</button>
+    </div>
 </div>
 
 
@@ -1499,6 +1516,12 @@ function applyLanguage(){
         ["Profile", "சுயவிவரம்"],
         ["Account Details", "கணக்கு விவரங்கள்"],
         ["Change Password", "கடவுச்சொல்லை மாற்று"],
+        ["Set Farm Password", "பண்ணை கடவுச்சொல்லை அமைக்கவும்"],
+        ["Use this password with your email to sign in next time.", "அடுத்த முறை உள்நுழைய இந்த கடவுச்சொல்லையும் உங்கள் மின்னஞ்சலையும் பயன்படுத்தவும்."],
+        ["New password (at least 8 characters)", "புதிய கடவுச்சொல் (குறைந்தது 8 எழுத்துகள்)"],
+        ["Confirm new password", "புதிய கடவுச்சொல்லை உறுதிப்படுத்தவும்"],
+        ["Save Password", "கடவுச்சொல்லை சேமிக்கவும்"],
+        ["Cancel", "ரத்து செய்"],
         ["Language", "மொழி"],
         ["Logout", "வெளியேறு"]
     ];
@@ -1695,6 +1718,41 @@ function closeProfile(){
     document.getElementById("profileModal")
     .classList.remove("active");
 
+}
+
+function openFarmPassword(event){
+    event.stopPropagation();
+    document.getElementById("profileMenu").classList.remove("active");
+    document.getElementById("newFarmPassword").value="";
+    document.getElementById("confirmFarmPassword").value="";
+    document.getElementById("passwordModal").classList.add("active");
+}
+
+function closeFarmPassword(){
+    document.getElementById("passwordModal").classList.remove("active");
+}
+
+async function saveFarmPassword(){
+    const password = document.getElementById("newFarmPassword").value;
+    const confirmation = document.getElementById("confirmFarmPassword").value;
+    if(password.length < 8){
+        alert("Password must be at least 8 characters.");
+        return;
+    }
+    if(password !== confirmation){
+        alert("Passwords do not match.");
+        return;
+    }
+    try{
+        await apiRequest("/api/account/password", {
+            method:"POST",
+            body:JSON.stringify({password})
+        });
+        closeFarmPassword();
+        alert("Farm password saved. You can now sign in with your email and this password.");
+    }catch(error){
+        alert("Unable to save password: " + error.message);
+    }
 }
 
 
