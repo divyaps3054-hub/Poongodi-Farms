@@ -2047,10 +2047,19 @@ async function deleteRecord(index){
 
 function updateDashboard(){
 
-    let latest=records[records.length-1];
     const today = new Date();
     const todayKey = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,"0")}-${String(today.getDate()).padStart(2,"0")}`;
-    const latestDate = latest && /^\d{4}-\d{2}-\d{2}$/.test(latest.date) ? latest.date : todayKey;
+    const currentRecords = records.filter(record =>
+        /^\d{4}-\d{2}-\d{2}$/.test(record.date) && record.date <= todayKey
+    );
+    const latest = currentRecords.reduce((latestRecord, record) => {
+        if(!latestRecord || record.date > latestRecord.date) return record;
+        if(record.date === latestRecord.date &&
+            String(record.updatedAt || record.createdAt || "") >
+            String(latestRecord.updatedAt || latestRecord.createdAt || "")) return record;
+        return latestRecord;
+    }, null);
+    const latestDate = latest ? latest.date : todayKey;
     const dayDifference = Math.round(
         (Date.parse(todayKey + "T00:00:00Z") - Date.parse(latestDate + "T00:00:00Z")) / 86400000
     );
@@ -2063,13 +2072,12 @@ function updateDashboard(){
                 : "Record date:";
     document.getElementById("dashboardDateLabel").innerText = dashboardLabel;
     document.getElementById("todayDate").innerText = latest ? latestDate : today.toDateString();
-    const stock = records.reduce((totals, record) => {
-        totals.quailEggs += Number(record.quailEggProduced || record.quailProduced || 0);
-        totals.quailEggs -= Number(record.quailEggsSold || 0);
-        totals.nattuEggs += Number(record.nattuProduced || 0);
-        totals.nattuEggs -= Number(record.nattuSold || 0);
-        return totals;
-    }, {quailEggs:0, nattuEggs:0});
+    const stock = currentRecords.reduce((total, record) => {
+        const produced = record.quailEggProduced ?? record.quailProduced ?? 0;
+        total += Number(produced) || 0;
+        total -= Number(record.quailEggsSold) || 0;
+        return total;
+    }, 0);
 
 
     if(!latest){
@@ -2082,15 +2090,15 @@ function updateDashboard(){
 
 
     document.getElementById("dashQuailEggs")
-    .innerText=latest.quailEggsSold;
+    .innerText=Number(latest.quailEggsSold) || 0;
 
 
     document.getElementById("dashSales")
-    .innerText="₹"+latest.totalSales;
+    .innerText="₹"+(Number(latest.totalSales) || 0);
 
 
     document.getElementById("stockQuailEggs")
-    .innerText=Math.max(0, stock.quailEggs);
+    .innerText=stock;
 
 
 }
