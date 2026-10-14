@@ -1961,6 +1961,7 @@ function showHistoryDate(date){
             <div class="history-top"><div class="history-date">📅 ${record.date}</div>
             <small>Updated by ${record.updatedBy || record.user}</small></div>
             <div class="history-grid">
+                <div class="history-data"><small>Quail Egg Boxes Produced</small><h4>${Number(record.quailEggProduced ?? record.quailProduced) || 0}</h4></div>
                 <div class="history-data"><small>Quail Egg Boxes Sold</small><h4>${record.quailEggsSold || 0}</h4></div>
                 <div class="history-data"><small>Total Sales</small><h4>₹${record.totalSales || 0}</h4></div>
                 <div class="history-data"><small>Expenses</small><h4>₹${expenses}</h4></div>
@@ -2072,7 +2073,7 @@ function updateDashboard(){
                 : "Record date:";
     document.getElementById("dashboardDateLabel").innerText = dashboardLabel;
     document.getElementById("todayDate").innerText = latest ? latestDate : today.toDateString();
-    const stock = currentRecords.reduce((total, record) => {
+    const stock = records.reduce((total, record) => {
         const produced = record.quailEggProduced ?? record.quailProduced ?? 0;
         total += Number(produced) || 0;
         total -= Number(record.quailEggsSold) || 0;
